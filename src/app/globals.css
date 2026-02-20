@@ -2,14 +2,22 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #0f172a;
+  /* stLukes-900 */
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: 'Inter', sans-serif;
+  --color-stLukes-50: #f4fbf0;
+  --color-stLukes-100: #e5f5df;
+  --color-stLukes-500: #58b330;
+  --color-stLukes-600: #469623;
+  --color-stLukes-900: #0f172a;
+  --color-stLukesRed-50: #fef2f2;
+  --color-stLukesRed-500: #ff0000;
+  --color-stLukesRed-600: #dc2626;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -19,8 +27,18 @@
   }
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.bg-soft-gradient {
+  background: radial-gradient(circle at 50% 50%, var(--color-stLukes-100) 0%, #ffffff 50%);
 }
