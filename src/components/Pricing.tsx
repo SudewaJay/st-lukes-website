@@ -93,14 +93,14 @@ export default function Pricing() {
                                 </ul>
                             </div>
 
-                            <button className={`w-full py-4 rounded-xl font-semibold mt-auto transition-colors
+                            <a href="tel:+94711231954" className={`w-full py-4 rounded-xl font-semibold mt-auto transition-colors flex items-center justify-center
                 ${pkg.highlighted
                                     ? 'bg-stLukesRed-500 hover:bg-stLukesRed-600 text-white shadow-lg shadow-stLukesRed-500/25'
                                     : 'bg-slate-100 hover:bg-slate-200 text-slate-900'
                                 }
               `}>
                                 Book Package
-                            </button>
+                            </a>
 
                         </div>
                     </ScrollReveal>

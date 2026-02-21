@@ -51,14 +51,14 @@ export default function Locations() {
 
                         <ScrollReveal delay={0.3}>
                             <div className="flex flex-col sm:flex-row gap-4">
-                                <button className="bg-stLukesRed-500 hover:bg-stLukesRed-600 text-white px-8 py-4 rounded-full font-semibold transition-all shadow-md shadow-stLukesRed-500/20 flex items-center justify-center gap-2">
+                                <a href="https://maps.app.goo.gl/ssRxtUg5VJDPYVdL9?g_st=ic" target="_blank" rel="noopener noreferrer" className="bg-stLukesRed-500 hover:bg-stLukesRed-600 text-white px-8 py-4 rounded-full font-semibold transition-all shadow-md shadow-stLukesRed-500/20 flex items-center justify-center gap-2">
                                     <Navigation size={20} />
                                     View Locations Map
-                                </button>
-                                <button className="bg-white hover:bg-slate-50 text-slate-700 px-8 py-4 rounded-full font-semibold transition-all border border-slate-200 shadow-sm flex items-center justify-center gap-2">
+                                </a>
+                                <a href="tel:+94711231954" className="bg-white hover:bg-slate-50 text-slate-700 px-8 py-4 rounded-full font-semibold transition-all border border-slate-200 shadow-sm flex items-center justify-center gap-2">
                                     <PhoneCall size={20} />
                                     Call Us Now
-                                </button>
+                                </a>
                             </div>
                         </ScrollReveal>
                     </div>

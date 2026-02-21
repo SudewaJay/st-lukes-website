@@ -50,11 +50,11 @@ export default function Footer() {
                             </li>
                             <li className="flex items-center gap-3">
                                 <Phone size={18} className="shrink-0 text-stLukes-500" />
-                                <span>+94 11 234 5678</span>
+                                <span>+94 71 123 1954</span>
                             </li>
                             <li className="flex items-center gap-3">
                                 <Mail size={18} className="shrink-0 text-stLukes-500" />
-                                <span>support@stlukeslab.com</span>
+                                <span>medilabstlukes@gmail.com</span>
                             </li>
                         </ul>
                     </div>

@@ -50,9 +50,9 @@ export default function Navbar() {
                                 {link.name}
                             </Link>
                         ))}
-                        <button className="bg-stLukesRed-500 hover:bg-stLukesRed-600 text-white px-5 py-2.5 rounded-full font-medium transition-all shadow-md shadow-stLukesRed-500/20 hover:shadow-lg hover:shadow-stLukesRed-500/30 text-sm">
+                        <a href="tel:+94711231954" className="bg-stLukesRed-500 hover:bg-stLukesRed-600 text-white px-5 py-2.5 rounded-full font-medium transition-all shadow-md shadow-stLukesRed-500/20 hover:shadow-lg hover:shadow-stLukesRed-500/30 text-sm flex items-center justify-center">
                             Book Home Visit
-                        </button>
+                        </a>
                     </nav>
 
                     {/* Mobile Menu Toggle */}
@@ -85,9 +85,9 @@ export default function Navbar() {
                                     {link.name}
                                 </Link>
                             ))}
-                            <button className="w-full bg-stLukesRed-500 hover:bg-stLukesRed-600 text-white px-5 py-3 rounded-xl font-medium mt-4 transition-colors">
+                            <a href="tel:+94711231954" className="w-full bg-stLukesRed-500 hover:bg-stLukesRed-600 text-white px-5 py-3 rounded-xl font-medium mt-4 transition-colors flex items-center justify-center">
                                 Book Home Visit
-                            </button>
+                            </a>
                         </div>
                     </motion.div>
                 )}

@@ -46,9 +46,9 @@ export default function Hero() {
                                     View Test Menu
                                     <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
                                 </button>
-                                <button className="bg-white hover:bg-slate-50 text-slate-700 px-8 py-4 rounded-full font-semibold transition-all border border-slate-200 shadow-sm hover:shadow-md text-lg">
+                                <a href="https://maps.app.goo.gl/ssRxtUg5VJDPYVdL9?g_st=ic" target="_blank" rel="noopener noreferrer" className="bg-white hover:bg-slate-50 text-slate-700 px-8 py-4 rounded-full font-semibold transition-all border border-slate-200 shadow-sm hover:shadow-md text-lg flex items-center justify-center">
                                     Find Nearest Centre
-                                </button>
+                                </a>
                             </div>
                         </ScrollReveal>
 
