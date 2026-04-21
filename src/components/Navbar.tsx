@@ -19,17 +19,17 @@ export default function Navbar() {
 
     const navLinks = [
         { name: "Services", href: "/#services" },
-        { name: "Price List", href: "/price-list" },
         { name: "Our Packages", href: "/#packages" },
         { name: "Locations", href: "/#locations" },
         { name: "Blog", href: "/#blog" },
         { name: "About Us", href: "/#about" },
+        { name: "Price List", href: "/price-list" },
     ];
 
     return (
         <header
             className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
-                ? "bg-white/80 backdrop-blur-md shadow-sm py-3"
+                ? "bg-white/90 backdrop-blur-md shadow-sm py-3"
                 : "bg-transparent py-5"
                 }`}
         >
@@ -46,7 +46,7 @@ export default function Navbar() {
                             <Link
                                 key={link.name}
                                 href={link.href}
-                                className="text-slate-600 hover:text-stLukes-500 font-medium transition-colors text-sm"
+                                className={`font-medium transition-colors text-sm ${isScrolled ? "text-slate-600 hover:text-stLukes-500" : "text-white/85 hover:text-white"}`}
                             >
                                 {link.name}
                             </Link>
@@ -58,7 +58,7 @@ export default function Navbar() {
 
                     {/* Mobile Menu Toggle */}
                     <button
-                        className="md:hidden text-slate-900 p-2"
+                        className={`md:hidden p-2 ${isScrolled ? "text-slate-900" : "text-white"}`}
                         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                     >
                         {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
