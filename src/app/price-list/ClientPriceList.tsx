@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Search, Filter, Stethoscope } from "lucide-react";
+import { Search, Filter, FlaskConical, X } from "lucide-react";
 
 type PriceItem = {
   name: string;
@@ -10,26 +10,44 @@ type PriceItem = {
   notes?: string;
 };
 
+const CATEGORY_COLORS: Record<string, string> = {
+  "Biochemistry":        "bg-blue-50 border-blue-200 text-blue-700",
+  "Hematology":          "bg-rose-50 border-rose-200 text-rose-700",
+  "Serology & Immunology": "bg-purple-50 border-purple-200 text-purple-700",
+  "Urine & Seminal Fluid": "bg-amber-50 border-amber-200 text-amber-700",
+  "Renal & Biochemistry": "bg-cyan-50 border-cyan-200 text-cyan-700",
+  "Profiles & Packages": "bg-emerald-50 border-emerald-200 text-emerald-700",
+};
+
+const CATEGORY_ACCENT: Record<string, string> = {
+  "Biochemistry":          "bg-blue-500",
+  "Hematology":            "bg-rose-500",
+  "Serology & Immunology": "bg-purple-500",
+  "Urine & Seminal Fluid": "bg-amber-500",
+  "Renal & Biochemistry":  "bg-cyan-500",
+  "Profiles & Packages":   "bg-emerald-500",
+};
+
 export default function ClientPriceList({ initialData }: { initialData: PriceItem[] }) {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm]         = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
 
-  const categories = ["All", ...Array.from(new Set(initialData.map((item) => item.category)))].sort();
+  const categories = useMemo(
+    () => ["All", ...Array.from(new Set(initialData.map((i) => i.category))).sort()],
+    [initialData]
+  );
 
   const filteredData = useMemo(() => {
+    const normalize = (s: string) => s.replace(/\s+/g, "").toLowerCase();
     return initialData.filter((item) => {
-      const normalize = (str: string) => str.replace(/\s+/g, '').toLowerCase();
-      const matchesSearch = normalize(item.name).includes(normalize(searchTerm));
-      const matchesCategory = selectedCategory === "All" || item.category === selectedCategory;
-      return matchesSearch && matchesCategory;
+      const matchSearch   = normalize(item.name).includes(normalize(searchTerm));
+      const matchCategory = selectedCategory === "All" || item.category === selectedCategory;
+      return matchSearch && matchCategory;
     });
   }, [searchTerm, selectedCategory, initialData]);
 
-  // Group by category for display if viewing "All", otherwise just show list
   const displayData = useMemo(() => {
-    if (selectedCategory !== "All") {
-      return { [selectedCategory]: filteredData };
-    }
+    if (selectedCategory !== "All") return { [selectedCategory]: filteredData };
     return filteredData.reduce((acc, item) => {
       if (!acc[item.category]) acc[item.category] = [];
       acc[item.category].push(item);
@@ -37,108 +55,150 @@ export default function ClientPriceList({ initialData }: { initialData: PriceIte
     }, {} as Record<string, PriceItem[]>);
   }, [filteredData, selectedCategory]);
 
+  const hasResults = Object.keys(displayData).length > 0;
+
   return (
-    <div className="bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden relative z-20">
-      {/* Controls Header */}
-      <div className="p-6 md:p-8 border-b border-slate-100 bg-white">
-        <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-          <div className="relative w-full md:max-w-md">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Search className="h-5 w-5 text-slate-400" />
-            </div>
-            <input
-              type="text"
-              className="block w-full pl-10 pr-3 py-3 border border-slate-200 rounded-xl leading-5 bg-slate-50 placeholder-slate-500 focus:outline-none focus:placeholder-slate-400 focus:ring-2 focus:ring-stLukes-500 focus:border-stLukes-500 transition-all sm:text-sm"
-              placeholder="Search tests (e.g., FBS, FBC)..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-          
-          <div className="flex items-center gap-2 w-full md:w-auto overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
-            <Filter className="h-5 w-5 text-slate-400 shrink-0" />
-            <div className="flex gap-2">
-              {categories.map((category) => (
-                <button
-                  key={category}
-                  onClick={() => setSelectedCategory(category)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
-                    selectedCategory === category
-                      ? "bg-stLukes-100 text-stLukes-600 border-stLukes-500 border"
-                      : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-50"
-                  }`}
-                >
-                  {category}
-                </button>
-              ))}
-            </div>
-          </div>
+    <div className="space-y-6">
+
+      {/* ── Search + Filter bar ─────────────────────────────────────── */}
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 md:p-6">
+        {/* Search */}
+        <div className="relative mb-4">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 pointer-events-none" />
+          <input
+            type="text"
+            aria-label="Search tests"
+            placeholder="Search tests (e.g. FBS, FBC, Lipid Profile)…"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-12 pr-10 py-3.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-stLukes-500 focus:border-stLukes-500 transition-all"
+          />
+          {searchTerm && (
+            <button
+              onClick={() => setSearchTerm("")}
+              aria-label="Clear search"
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-slate-200 transition-colors cursor-pointer"
+            >
+              <X className="h-4 w-4 text-slate-400" />
+            </button>
+          )}
+        </div>
+
+        {/* Category filters */}
+        <div className="flex items-center gap-2 flex-wrap">
+          <Filter className="h-4 w-4 text-slate-400 shrink-0" aria-hidden="true" />
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setSelectedCategory(cat)}
+              className={`px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-150 cursor-pointer border ${
+                selectedCategory === cat
+                  ? "bg-stLukes-500 text-white border-stLukes-500 shadow-sm"
+                  : "bg-white text-slate-600 border-slate-200 hover:border-stLukes-400 hover:text-stLukes-600"
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* List Content */}
-      <div className="p-6 md:p-8 bg-slate-50/50 min-h-[400px]">
-        {Object.keys(displayData).length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 text-center">
-            <div className="bg-slate-100 p-4 rounded-full mb-4">
-              <Search className="h-8 w-8 text-slate-400" />
-            </div>
-            <h3 className="text-xl font-semibold text-slate-900 mb-2">No tests found</h3>
-            <p className="text-slate-500 max-w-md mx-auto">
-              We couldn&apos;t find any tests matching "{searchTerm}". Try checking for spelling errors or adjusting your filters.
-            </p>
-            <button 
-              onClick={() => {
-                setSearchTerm("");
-                setSelectedCategory("All");
-              }}
-              className="mt-6 text-stLukes-600 font-medium hover:text-stLukes-600 hover:underline"
-            >
-              Clear all filters
-            </button>
-          </div>
-        ) : (
-          <div className="space-y-10">
-            {Object.entries(displayData).map(([category, items]) => (
-              <div key={category} className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="bg-stLukes-100 p-2 rounded-lg text-stLukes-600">
-                    <Stethoscope size={20} />
-                  </div>
-                  <h2 className="text-xl font-bold text-slate-800">{category}</h2>
-                  <div className="h-px bg-slate-200 flex-grow ml-4"></div>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {items.map((item, index) => (
-                    <div 
-                      key={index} 
-                      className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm hover:shadow-md hover:border-stLukes-500 transition-all group"
-                    >
-                      <div className="flex justify-between items-start gap-4">
-                        <div>
-                          <h3 className="font-semibold text-slate-800 group-hover:text-stLukes-600 transition-colors">
-                            {item.name}
-                          </h3>
-                          {item.notes && (
-                            <span className="inline-block mt-1 text-xs font-medium bg-amber-100 text-amber-800 px-2 py-0.5 rounded-md">
-                              {item.notes}
-                            </span>
-                          )}
-                        </div>
-                        <div className="text-right shrink-0">
-                          <span className="text-sm text-slate-500 font-medium mr-1">Rs.</span>
-                          <span className="text-lg font-bold text-slate-900">{item.price.toLocaleString()}</span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
+      {/* ── Results count ───────────────────────────────────────────── */}
+      <div className="flex items-center justify-between px-1">
+        <p className="text-sm text-slate-500">
+          {hasResults ? (
+            <>
+              Showing <span className="font-semibold text-slate-700">{filteredData.length}</span> test{filteredData.length !== 1 ? "s" : ""}
+              {searchTerm && <> for &ldquo;<span className="font-semibold text-stLukes-600">{searchTerm}</span>&rdquo;</>}
+            </>
+          ) : null}
+        </p>
+        {(searchTerm || selectedCategory !== "All") && (
+          <button
+            onClick={() => { setSearchTerm(""); setSelectedCategory("All"); }}
+            className="text-xs font-medium text-stLukes-600 hover:text-stLukes-700 underline cursor-pointer"
+          >
+            Clear filters
+          </button>
         )}
       </div>
+
+      {/* ── Content ─────────────────────────────────────────────────── */}
+      {!hasResults ? (
+        /* Empty state */
+        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm flex flex-col items-center justify-center py-20 text-center px-6">
+          <div className="w-14 h-14 bg-slate-100 rounded-full flex items-center justify-center mb-4">
+            <Search className="h-7 w-7 text-slate-400" />
+          </div>
+          <h3 className="text-lg font-semibold text-slate-800 mb-1">No tests found</h3>
+          <p className="text-slate-500 text-sm max-w-xs">
+            No results for &ldquo;{searchTerm}&rdquo;. Try a different spelling or clear your filters.
+          </p>
+          <button
+            onClick={() => { setSearchTerm(""); setSelectedCategory("All"); }}
+            className="mt-6 px-5 py-2.5 rounded-full bg-stLukes-500 text-white text-sm font-semibold hover:bg-stLukes-600 transition-colors cursor-pointer"
+          >
+            Clear filters
+          </button>
+        </div>
+      ) : (
+        <div className="space-y-8">
+          {Object.entries(displayData).map(([category, items]) => (
+            <div key={category}>
+
+              {/* Category heading */}
+              <div className="flex items-center gap-3 mb-4">
+                <div className={`w-1 h-6 rounded-full ${CATEGORY_ACCENT[category] ?? "bg-stLukes-500"}`} aria-hidden="true" />
+                <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border ${CATEGORY_COLORS[category] ?? "bg-slate-50 border-slate-200 text-slate-700"}`}>
+                  <FlaskConical size={12} aria-hidden="true" />
+                  {category}
+                </div>
+                <span className="text-xs text-slate-400">{items.length} test{items.length !== 1 ? "s" : ""}</span>
+                <div className="flex-1 h-px bg-slate-100" aria-hidden="true" />
+              </div>
+
+              {/* Test cards grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+                {items.map((item, i) => (
+                  <div
+                    key={i}
+                    className="group bg-white rounded-xl border border-slate-100 shadow-sm hover:shadow-md hover:border-stLukes-300 transition-all duration-200 overflow-hidden"
+                  >
+                    {/* Accent top bar */}
+                    <div className={`h-0.5 w-full ${CATEGORY_ACCENT[item.category] ?? "bg-stLukes-500"}`} />
+
+                    <div className="px-4 py-4 flex items-start justify-between gap-3">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-slate-800 group-hover:text-stLukes-600 transition-colors leading-snug">
+                          {item.name}
+                        </p>
+                        {item.notes && (
+                          <span className="inline-block mt-1.5 text-[10px] font-semibold bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full uppercase tracking-wide">
+                            {item.notes}
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-right shrink-0">
+                        <p className="text-[10px] text-slate-400 uppercase tracking-wide mb-0.5">LKR</p>
+                        <p className="text-lg font-bold text-stLukes-600 tabular-nums">
+                          {item.price.toLocaleString()}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* ── Footer note ─────────────────────────────────────────────── */}
+      {hasResults && (
+        <p className="text-center text-xs text-slate-400 pt-4 pb-2">
+          All prices are indicative and subject to change. Contact us for the latest pricing.
+        </p>
+      )}
     </div>
   );
 }
