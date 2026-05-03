@@ -57,10 +57,10 @@ export default function Features() {
                         </ScrollReveal>
                     </div>
                     <ScrollReveal delay={0.2}>
-                        <button className="flex items-center gap-2 text-stLukes-500 font-semibold hover:text-stLukes-600 transition-colors group">
+                        <a href="/price-list" className="flex items-center gap-2 text-stLukes-500 font-semibold hover:text-stLukes-600 transition-colors group">
                             View All Test Menus
                             <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-                        </button>
+                        </a>
                     </ScrollReveal>
                 </div>
 

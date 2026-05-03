@@ -1,6 +1,6 @@
 "use client";
 
-import { Phone, ArrowUpRight, Star, CheckCircle2, MapPin } from "lucide-react";
+import { ArrowUpRight, Star, CheckCircle2, MapPin } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 
@@ -28,7 +28,7 @@ export default function Hero() {
     transition: {
       delay: shouldReduceMotion ? 0 : delay,
       duration: 0.65,
-      ease: [0.22, 1, 0.36, 1],
+      ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
     },
   });
 
@@ -37,16 +37,17 @@ export default function Hero() {
 
       {/* ── Background layer ─────────────────────────────────────────────── */}
       <div className="absolute inset-0">
-        {/* Hero photo */}
+        {/* Hero photo — place your image at /public/hero-photo.jpg */}
         <Image
-          src="/hero-photo.jpg"
+          src="/hero-photo.jpeg"
           alt=""
           fill
           priority
-          className="object-cover object-center"
+          className="object-cover object-[center_20%]"
+          onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
         />
         {/* Dark gradient overlay — keeps text readable over the photo */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#051a0c]/92 via-[#051a0c]/70 to-[#051a0c]/45" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#051a0c]/80 via-[#051a0c]/55 to-[#051a0c]/25" />
         {/* Subtle dot texture */}
         <div
           className="absolute inset-0 opacity-[0.03]"
@@ -59,24 +60,6 @@ export default function Hero() {
         <div className="absolute top-[-10%] right-[10%] w-[600px] h-[600px] rounded-full bg-stLukes-500/10 blur-[140px] pointer-events-none" />
       </div>
 
-      {/* ── Floating phone card ───────────────────────────────────────── */}
-      <motion.div
-        initial={{ opacity: 0, x: shouldReduceMotion ? 0 : -36, rotate: -4 }}
-        animate={{ opacity: 1, x: 0, rotate: -4 }}
-        transition={{ delay: shouldReduceMotion ? 0 : 0.9, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="absolute top-36 left-6 lg:left-28 z-30 pointer-events-none select-none"
-        aria-hidden="true"
-      >
-        <div className="bg-white rounded-2xl px-4 py-3.5 shadow-2xl shadow-black/30 flex items-center gap-3">
-          <div className="w-10 h-10 bg-stLukes-500 rounded-full flex items-center justify-center flex-shrink-0">
-            <Phone size={17} className="text-white" />
-          </div>
-          <div>
-            <p className="font-bold text-slate-900 text-sm leading-none mb-1">+94 71 123 1954</p>
-            <p className="text-slate-500 text-xs">Home Visit Available</p>
-          </div>
-        </div>
-      </motion.div>
 
       {/* ── Main content (anchored to bottom) ────────────────────────── */}
       <div className="relative z-20 flex-1 flex flex-col justify-end pb-10 pt-44">
@@ -107,13 +90,13 @@ export default function Hero() {
               >
                 <a
                   href="tel:+94711231954"
-                  className="inline-flex items-center justify-center gap-2 bg-stLukes-500 hover:bg-stLukes-600 text-white font-semibold px-7 rounded-xl transition-all duration-200 hover:shadow-xl hover:shadow-stLukes-500/30 hover:-translate-y-0.5 min-h-[52px] cursor-pointer"
+                  className="inline-flex items-center justify-center gap-2 bg-stLukes-500 hover:bg-stLukes-600 text-white font-semibold px-8 rounded-full transition-all duration-200 hover:shadow-xl hover:shadow-stLukes-500/30 hover:-translate-y-0.5 min-h-[52px] cursor-pointer"
                 >
                   BOOK HOME VISIT
                 </a>
                 <a
                   href="/#services"
-                  className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white font-semibold px-7 rounded-xl border border-white/20 backdrop-blur-sm transition-all duration-200 hover:-translate-y-0.5 min-h-[52px] cursor-pointer"
+                  className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white font-semibold px-8 rounded-full border border-white/30 backdrop-blur-sm transition-all duration-200 hover:-translate-y-0.5 min-h-[52px] cursor-pointer"
                 >
                   OUR SERVICES
                   <ArrowUpRight size={17} />
@@ -125,7 +108,7 @@ export default function Hero() {
             <div className="flex flex-col gap-7">
               <motion.p
                 {...fadeUp(0.3)}
-                className="text-white/75 text-lg leading-relaxed max-w-sm"
+                className="text-white/75 text-lg leading-snug max-w-sm"
               >
                 Providing world-class diagnostic services with advanced facilities, expert doctors, and compassionate care — right in your neighbourhood.
               </motion.p>
