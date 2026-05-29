@@ -54,7 +54,7 @@ export default function Footer() {
                             </li>
                             <li className="flex items-center gap-3">
                                 <Mail size={18} className="shrink-0 text-stLukes-500" />
-                                <span>medilabstlukes@gmail.com</span>
+                                <a href="mailto:info@stlukesmedilab.com" className="hover:text-stLukes-500 transition-colors">info@stlukesmedilab.com</a>
                             </li>
                         </ul>
                     </div>
@@ -68,8 +68,8 @@ export default function Footer() {
                         Developed by <a href="https://uniixstudio.com" target="_blank" rel="noopener noreferrer" className="text-white hover:text-stLukes-500 transition-colors font-medium">Uniix Studio</a>
                     </p>
                     <div className="flex items-center gap-6">
-                        <Link href="#" className="hover:text-white transition-colors">Privacy Policy</Link>
-                        <Link href="#" className="hover:text-white transition-colors">Terms of Service</Link>
+                        <Link href="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link>
+                        <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
                     </div>
                 </div>
             </div>

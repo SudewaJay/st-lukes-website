@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowRight, Calendar, User } from "lucide-react";
+import Link from "next/link";
 import { ScrollReveal } from "./ui/ScrollReveal";
 
 const posts = [
@@ -37,17 +38,17 @@ export default function Blog() {
                 <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
                     <div className="max-w-2xl">
                         <ScrollReveal>
-                            <h2 className="text-sm font-bold tracking-widest text-stLukes-500 uppercase mb-3">Health Hub</h2>
+                            <h2 className="text-sm font-bold tracking-widest text-stLukes-500 uppercase mb-3">Health Tips &amp; Lab-Test Guides</h2>
                             <h3 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">
                                 Latest Insights & Advice.
                             </h3>
                         </ScrollReveal>
                     </div>
                     <ScrollReveal delay={0.2}>
-                        <button className="flex items-center gap-2 text-stLukes-500 font-semibold hover:text-stLukes-600 transition-colors group border border-slate-200 px-6 py-3 rounded-full hover:bg-slate-50">
+                        <Link href="/blog" className="flex items-center gap-2 text-stLukes-500 font-semibold hover:text-stLukes-600 transition-colors group border border-slate-200 px-6 py-3 rounded-full hover:bg-slate-50">
                             Visit Our Blog
                             <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-                        </button>
+                        </Link>
                     </ScrollReveal>
                 </div>
 

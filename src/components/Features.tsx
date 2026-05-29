@@ -9,36 +9,42 @@ export default function Features() {
             title: "General Blood Tests",
             description: "Comprehensive blood analysis including Complete Blood Count (CBC) and Lipid profiles to monitor essential health markers.",
             icon: Droplet,
+            href: "/services/blood-tests",
             delay: 0,
         },
         {
             title: "Urine Analysis",
             description: "Routine screening to detect and manage a wide range of disorders, from kidney function to urinary tract infections.",
             icon: FlaskConical,
+            href: "/services/blood-tests",
             delay: 0.1,
         },
         {
             title: "ECG & Cardiac Tests",
             description: "Accurate electrocardiograms and cardiovascular health assessments performed by experienced technicians.",
             icon: HeartPulse,
+            href: "/services/ecg-cardiac-tests",
             delay: 0.2,
         },
         {
             title: "Corporate Health Screenings",
             description: "Tailored pre-employment medical checks and annual wellness programs for companies of all sizes.",
             icon: BriefcaseMedical,
+            href: "/services/corporate-health-screening",
             delay: 0.3,
         },
         {
             title: "Biochemical Profiles",
             description: "Detailed analysis of liver, kidney, and metabolic functions to provide a complete picture of your internal health.",
             icon: Activity,
+            href: "/services/blood-tests",
             delay: 0.4,
         },
         {
-            title: "Specialised Diagnostics",
-            description: "Advanced hormonal level testing and customized panels required for specific physician referrals.",
+            title: "Home Blood Collection",
+            description: "Qualified phlebotomists visit your home across Ja-Ela, Kandana, Welisara, Ragama and Wattala.",
             icon: Stethoscope,
+            href: "/services/home-blood-collection",
             delay: 0.5,
         },
     ];
@@ -50,7 +56,7 @@ export default function Features() {
                 <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
                     <div className="max-w-2xl">
                         <ScrollReveal>
-                            <h2 className="text-sm font-bold tracking-widest text-stLukes-500 uppercase mb-3">Comprehensive Services</h2>
+                            <h2 className="text-sm font-bold tracking-widest text-stLukes-500 uppercase mb-3">Medical Diagnostic Services in Ja-Ela</h2>
                             <h3 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">
                                 Specialized Testing for Every Need.
                             </h3>
@@ -69,7 +75,7 @@ export default function Features() {
                         const Icon = service.icon;
                         return (
                             <ScrollReveal key={index} delay={service.delay}>
-                                <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl hover:border-stLukes-100 transition-all duration-300 group cursor-pointer h-full flex flex-col">
+                                <a href={service.href} className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl hover:border-stLukes-100 transition-all duration-300 group cursor-pointer h-full flex flex-col">
 
                                     <div className="w-14 h-14 rounded-2xl bg-stLukes-50 text-stLukes-500 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-stLukes-500 group-hover:text-white transition-all duration-300">
                                         <Icon size={28} />
@@ -85,7 +91,7 @@ export default function Features() {
                                     <div className="mt-8 flex items-center gap-2 text-sm font-semibold text-slate-400 group-hover:text-stLukes-500 transition-colors">
                                         Learn more <ArrowRight size={16} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
                                     </div>
-                                </div>
+                                </a>
                             </ScrollReveal>
                         );
                     })}

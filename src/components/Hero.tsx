@@ -40,9 +40,10 @@ export default function Hero() {
         {/* Hero photo — place your image at /public/hero-photo.jpg */}
         <Image
           src="/hero-photo.jpeg"
-          alt=""
+          alt="St. Luke's Medical Laboratory diagnostic centre in Ja-Ela, Sri Lanka"
           fill
           priority
+          sizes="100vw"
           className="object-cover object-[center_20%]"
           onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
         />
@@ -78,11 +79,17 @@ export default function Hero() {
 
               <motion.h1
                 {...fadeUp(0.2)}
-                className="text-[clamp(2.6rem,6vw,4.5rem)] font-bold text-white leading-[1.06] tracking-tight mb-9"
+                className="text-[clamp(2.6rem,6vw,4.5rem)] font-bold text-white leading-[1.06] tracking-tight mb-5"
               >
-                Together for<br />
-                <span className="text-stLukes-400">Better Health.</span>
+                Trusted Medical Laboratory<br />
+                <span className="text-stLukes-400">in Ja-Ela.</span>
               </motion.h1>
+              <motion.p
+                {...fadeUp(0.25)}
+                className="text-white/70 text-base sm:text-lg italic mb-9"
+              >
+                Together for better health — blood tests, ECG &amp; home visits with 24-hour reports.
+              </motion.p>
 
               <motion.div
                 {...fadeUp(0.35)}

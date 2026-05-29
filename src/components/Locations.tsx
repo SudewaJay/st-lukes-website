@@ -1,7 +1,9 @@
 "use client";
 
 import { MapPin, Navigation, PhoneCall, Building2 } from "lucide-react";
+import Link from "next/link";
 import { ScrollReveal } from "./ui/ScrollReveal";
+import { locations } from "@/lib/locations";
 
 export default function Locations() {
     return (
@@ -13,7 +15,7 @@ export default function Locations() {
                     {/* Content */}
                     <div>
                         <ScrollReveal>
-                            <h2 className="text-sm font-bold tracking-widest text-stLukes-500 uppercase mb-3">Our Network</h2>
+                            <h2 className="text-sm font-bold tracking-widest text-stLukes-500 uppercase mb-3">Our Collection Centres Across Ja-Ela, Kandana, Ragama &amp; Wattala</h2>
                             <h3 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight mb-6">
                                 Accessible Care, Wherever You Are.
                             </h3>
@@ -46,6 +48,20 @@ export default function Locations() {
                                         <p className="text-slate-600 text-sm">Strategically located across the region for easy sample drop-off.</p>
                                     </div>
                                 </div>
+                            </div>
+                        </ScrollReveal>
+
+                        <ScrollReveal delay={0.25}>
+                            <div className="flex flex-wrap gap-2 mb-8">
+                                {locations.map((loc) => (
+                                    <Link
+                                        key={loc.slug}
+                                        href={`/locations/${loc.slug}`}
+                                        className="px-4 py-1.5 rounded-full bg-white border border-slate-200 text-sm font-medium text-slate-700 hover:border-stLukes-500 hover:text-stLukes-600 transition-colors"
+                                    >
+                                        {loc.name}
+                                    </Link>
+                                ))}
                             </div>
                         </ScrollReveal>
 

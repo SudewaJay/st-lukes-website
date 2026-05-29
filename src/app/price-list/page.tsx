@@ -4,8 +4,10 @@ import ClientPriceList from "./ClientPriceList";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Price List - St. Luke's Medical Laboratory",
-  description: "Transparent pricing for all our medical laboratory tests and profiles.",
+  title: "Lab Test Price List (LKR) — Blood Tests, ECG & Profiles",
+  description:
+    "Transparent LKR pricing for blood tests, ECG, urine analysis, biochemistry profiles and full-body checkups at St. Luke's Medical Laboratory, Ja-Ela.",
+  alternates: { canonical: "/price-list" },
 };
 
 const priceData = [
