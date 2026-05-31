@@ -1,35 +1,32 @@
 "use client";
 
-import { ArrowRight, Calendar, User } from "lucide-react";
+import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
+import { ArrowRight, Calendar, User } from "lucide-react";
 import { ScrollReveal } from "./ui/ScrollReveal";
+import { posts } from "@/lib/posts";
 
-const posts = [
-    {
-        title: "Understanding Your Fasting Blood Sugar Results",
-        excerpt: "A comprehensive guide to interpreting what your fasting glucose numbers mean for your long-term health and diabetes risk.",
-        category: "Health Tips",
-        date: "Feb 15, 2026",
-        author: "Dr. L. Perera",
-        delay: 0,
-    },
-    {
-        title: "Why Regular Lipid Profiling is Crucial",
-        excerpt: "Cholesterol isn't just a buzzword. Discover why monitoring your HDL, LDL, and triglycerides can save your life.",
-        category: "Cardiology",
-        date: "Feb 10, 2026",
-        author: "Medical Team",
-        delay: 0.1,
-    },
-    {
-        title: "Preparing for Your First ECG: What to Expect",
-        excerpt: "Nervous about your upcoming electrocardiogram? We break down the simple, painless process step by step.",
-        category: "Patient Guide",
-        date: "Feb 05, 2026",
-        author: "Sarah F.",
-        delay: 0.2,
+function PostImage({ src, alt }: { src: string; alt: string }) {
+    const [errored, setErrored] = useState(false);
+    if (errored) {
+        return (
+            <div className="absolute inset-0 bg-stLukes-50 flex items-center justify-center">
+                <div className="w-32 h-32 bg-stLukes-200 rounded-full blur-2xl opacity-60" />
+            </div>
+        );
     }
-];
+    return (
+        <Image
+            src={src}
+            alt={alt}
+            fill
+            sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+            className="object-cover transition-transform duration-700 group-hover:scale-105"
+            onError={() => setErrored(true)}
+        />
+    );
+}
 
 export default function Blog() {
     return (
@@ -54,14 +51,11 @@ export default function Blog() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {posts.map((post, index) => (
-                        <ScrollReveal key={index} delay={post.delay}>
+                        <ScrollReveal key={post.slug} delay={index * 0.1}>
                             <article className="group cursor-pointer h-full flex flex-col border border-slate-100 rounded-3xl overflow-hidden hover:shadow-xl hover:border-stLukes-100 transition-all duration-300">
-                                {/* Image Placeholder */}
                                 <div className="aspect-[16/9] w-full bg-slate-100 relative overflow-hidden">
-                                    <div className="absolute inset-0 bg-stLukes-50 group-hover:bg-stLukes-100 transition-colors duration-500"></div>
-                                    {/* Abstract shapes to simulate image */}
-                                    <div className="absolute top-1/2 left-1/2 w-32 h-32 bg-stLukes-200 rounded-full blur-2xl -translate-x-1/2 -translate-y-1/2 opacity-50 group-hover:scale-125 transition-transform duration-700"></div>
-                                    <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 text-xs font-bold text-stLukes-600 rounded-full">
+                                    <PostImage src={post.image} alt={post.title} />
+                                    <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-sm px-3 py-1 text-xs font-bold text-stLukes-600 rounded-full">
                                         {post.category}
                                     </div>
                                 </div>
