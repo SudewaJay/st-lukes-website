@@ -1,204 +1,152 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Search, Filter, FlaskConical, X } from "lucide-react";
-
-type PriceItem = {
-  name: string;
-  price: number;
-  category: string;
-  notes?: string;
-};
+import { Search, X } from "lucide-react";
+import type { PriceCategory } from "@/lib/priceList";
 
 const CATEGORY_COLORS: Record<string, string> = {
-  "Biochemistry":        "bg-blue-50 border-blue-200 text-blue-700",
-  "Hematology":          "bg-rose-50 border-rose-200 text-rose-700",
-  "Serology & Immunology": "bg-purple-50 border-purple-200 text-purple-700",
-  "Urine & Seminal Fluid": "bg-amber-50 border-amber-200 text-amber-700",
-  "Renal & Biochemistry": "bg-cyan-50 border-cyan-200 text-cyan-700",
-  "Profiles & Packages": "bg-emerald-50 border-emerald-200 text-emerald-700",
+  "Haematology": "bg-rose-50 border-rose-200 text-rose-700",
+  "Coagulation": "bg-rose-50 border-rose-200 text-rose-700",
+  "Blood Sugar / Diabetes": "bg-amber-50 border-amber-200 text-amber-700",
+  "Lipids & Cardiac": "bg-cyan-50 border-cyan-200 text-cyan-700",
+  "Liver Function": "bg-blue-50 border-blue-200 text-blue-700",
+  "Renal / Kidney": "bg-blue-50 border-blue-200 text-blue-700",
+  "Thyroid & Hormones": "bg-purple-50 border-purple-200 text-purple-700",
+  "Inflammation & Immunology": "bg-purple-50 border-purple-200 text-purple-700",
+  "Infectious Disease": "bg-fuchsia-50 border-fuchsia-200 text-fuchsia-700",
+  "Vitamins": "bg-emerald-50 border-emerald-200 text-emerald-700",
+  "Urine & Fluid Analysis": "bg-amber-50 border-amber-200 text-amber-700",
+  "Comprehensive Panels": "bg-emerald-50 border-emerald-200 text-emerald-700",
 };
 
-const CATEGORY_ACCENT: Record<string, string> = {
-  "Biochemistry":          "bg-blue-500",
-  "Hematology":            "bg-rose-500",
-  "Serology & Immunology": "bg-purple-500",
-  "Urine & Seminal Fluid": "bg-amber-500",
-  "Renal & Biochemistry":  "bg-cyan-500",
-  "Profiles & Packages":   "bg-emerald-500",
-};
+const formatLKR = (n: number) => n.toLocaleString("en-LK");
 
-export default function ClientPriceList({ initialData }: { initialData: PriceItem[] }) {
-  const [searchTerm, setSearchTerm]         = useState("");
+export default function ClientPriceList({ data }: { data: PriceCategory[] }) {
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
 
-  const categories = useMemo(
-    () => ["All", ...Array.from(new Set(initialData.map((i) => i.category))).sort()],
-    [initialData]
-  );
+  const categories = useMemo(() => ["All", ...data.map((c) => c.category)], [data]);
 
   const filteredData = useMemo(() => {
-    const normalize = (s: string) => s.replace(/\s+/g, "").toLowerCase();
-    return initialData.filter((item) => {
-      const matchSearch   = normalize(item.name).includes(normalize(searchTerm));
-      const matchCategory = selectedCategory === "All" || item.category === selectedCategory;
-      return matchSearch && matchCategory;
-    });
-  }, [searchTerm, selectedCategory, initialData]);
+    const term = searchTerm.trim().toLowerCase();
+    return data
+      .filter((cat) => selectedCategory === "All" || cat.category === selectedCategory)
+      .map((cat) => ({
+        ...cat,
+        tests: cat.tests.filter((t) =>
+          term ? t.name.toLowerCase().includes(term) : true
+        ),
+      }))
+      .filter((cat) => cat.tests.length > 0);
+  }, [data, searchTerm, selectedCategory]);
 
-  const displayData = useMemo(() => {
-    if (selectedCategory !== "All") return { [selectedCategory]: filteredData };
-    return filteredData.reduce((acc, item) => {
-      if (!acc[item.category]) acc[item.category] = [];
-      acc[item.category].push(item);
-      return acc;
-    }, {} as Record<string, PriceItem[]>);
-  }, [filteredData, selectedCategory]);
-
-  const hasResults = Object.keys(displayData).length > 0;
+  const visibleCount = filteredData.reduce((n, c) => n + c.tests.length, 0);
+  const hasReduced = filteredData.some((c) => c.tests.some((t) => t.was));
 
   return (
-    <div className="space-y-6">
-
-      {/* ── Search + Filter bar ─────────────────────────────────────── */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 md:p-6">
-        {/* Search */}
-        <div className="relative mb-4">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 pointer-events-none" />
-          <input
-            type="text"
-            aria-label="Search tests"
-            placeholder="Search tests (e.g. FBS, FBC, Lipid Profile)…"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-12 pr-10 py-3.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-stLukes-500 focus:border-stLukes-500 transition-all"
-          />
-          {searchTerm && (
-            <button
-              onClick={() => setSearchTerm("")}
-              aria-label="Clear search"
-              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-slate-200 transition-colors cursor-pointer"
-            >
-              <X className="h-4 w-4 text-slate-400" />
-            </button>
+    <div>
+      <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 mb-6 sticky top-20 z-30">
+        <div className="flex flex-col md:flex-row gap-4">
+          <div className="relative flex-grow">
+            <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+            <input
+              type="text"
+              placeholder="Search any test (e.g. FBC, Thyroid, Lipid)…"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-11 pr-10 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:border-stLukes-500 focus:bg-white transition-colors text-slate-900 placeholder:text-slate-400"
+            />
+            {searchTerm && (
+              <button
+                onClick={() => setSearchTerm("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700"
+                aria-label="Clear search"
+              >
+                <X size={18} />
+              </button>
+            )}
+          </div>
+          <select
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            className="px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:border-stLukes-500 focus:bg-white transition-colors text-slate-900 cursor-pointer"
+          >
+            {categories.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="mt-3 flex items-center justify-between text-xs text-slate-500">
+          <span>
+            Showing <strong className="text-slate-900">{visibleCount}</strong> test
+            {visibleCount === 1 ? "" : "s"}
+          </span>
+          {hasReduced && (
+            <span className="flex items-center gap-1.5">
+              <s className="text-slate-400">old price</s> = recently reduced
+            </span>
           )}
         </div>
-
-        {/* Category filters */}
-        <div className="flex items-center gap-2 flex-wrap">
-          <Filter className="h-4 w-4 text-slate-400 shrink-0" aria-hidden="true" />
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-150 cursor-pointer border ${
-                selectedCategory === cat
-                  ? "bg-stLukes-500 text-white border-stLukes-500 shadow-sm"
-                  : "bg-white text-slate-600 border-slate-200 hover:border-stLukes-400 hover:text-stLukes-600"
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
       </div>
 
-      {/* ── Results count ───────────────────────────────────────────── */}
-      <div className="flex items-center justify-between px-1">
-        <p className="text-sm text-slate-500">
-          {hasResults ? (
-            <>
-              Showing <span className="font-semibold text-slate-700">{filteredData.length}</span> test{filteredData.length !== 1 ? "s" : ""}
-              {searchTerm && <> for &ldquo;<span className="font-semibold text-stLukes-600">{searchTerm}</span>&rdquo;</>}
-            </>
-          ) : null}
-        </p>
-        {(searchTerm || selectedCategory !== "All") && (
-          <button
-            onClick={() => { setSearchTerm(""); setSelectedCategory("All"); }}
-            className="text-xs font-medium text-stLukes-600 hover:text-stLukes-700 underline cursor-pointer"
-          >
-            Clear filters
-          </button>
-        )}
-      </div>
-
-      {/* ── Content ─────────────────────────────────────────────────── */}
-      {!hasResults ? (
-        /* Empty state */
-        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm flex flex-col items-center justify-center py-20 text-center px-6">
-          <div className="w-14 h-14 bg-slate-100 rounded-full flex items-center justify-center mb-4">
-            <Search className="h-7 w-7 text-slate-400" />
-          </div>
-          <h3 className="text-lg font-semibold text-slate-800 mb-1">No tests found</h3>
-          <p className="text-slate-500 text-sm max-w-xs">
-            No results for &ldquo;{searchTerm}&rdquo;. Try a different spelling or clear your filters.
-          </p>
-          <button
-            onClick={() => { setSearchTerm(""); setSelectedCategory("All"); }}
-            className="mt-6 px-5 py-2.5 rounded-full bg-stLukes-500 text-white text-sm font-semibold hover:bg-stLukes-600 transition-colors cursor-pointer"
-          >
-            Clear filters
-          </button>
+      {filteredData.length === 0 ? (
+        <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center">
+          <p className="text-slate-500">No tests match your search.</p>
         </div>
       ) : (
-        <div className="space-y-8">
-          {Object.entries(displayData).map(([category, items]) => (
-            <div key={category}>
-
-              {/* Category heading */}
-              <div className="flex items-center gap-3 mb-4">
-                <div className={`w-1 h-6 rounded-full ${CATEGORY_ACCENT[category] ?? "bg-stLukes-500"}`} aria-hidden="true" />
-                <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border ${CATEGORY_COLORS[category] ?? "bg-slate-50 border-slate-200 text-slate-700"}`}>
-                  <FlaskConical size={12} aria-hidden="true" />
-                  {category}
-                </div>
-                <span className="text-xs text-slate-400">{items.length} test{items.length !== 1 ? "s" : ""}</span>
-                <div className="flex-1 h-px bg-slate-100" aria-hidden="true" />
-              </div>
-
-              {/* Test cards grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
-                {items.map((item, i) => (
-                  <div
-                    key={i}
-                    className="group bg-white rounded-xl border border-slate-100 shadow-sm hover:shadow-md hover:border-stLukes-300 transition-all duration-200 overflow-hidden"
+        <div className="space-y-6">
+          {filteredData.map((cat) => (
+            <section
+              key={cat.category}
+              className="bg-white rounded-2xl border border-slate-200 overflow-hidden"
+            >
+              <header className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+                <h2 className="text-lg font-bold text-slate-900">{cat.category}</h2>
+                <span
+                  className={`text-[11px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full border ${
+                    CATEGORY_COLORS[cat.category] ?? "bg-slate-50 border-slate-200 text-slate-700"
+                  }`}
+                >
+                  {cat.tests.length} {cat.tests.length === 1 ? "test" : "tests"}
+                </span>
+              </header>
+              <ul className="divide-y divide-slate-100">
+                {cat.tests.map((t) => (
+                  <li
+                    key={t.name}
+                    className="flex items-center justify-between gap-4 px-5 py-3 hover:bg-slate-50 transition-colors"
                   >
-                    {/* Accent top bar */}
-                    <div className={`h-0.5 w-full ${CATEGORY_ACCENT[item.category] ?? "bg-stLukes-500"}`} />
-
-                    <div className="px-4 py-4 flex items-start justify-between gap-3">
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-slate-800 group-hover:text-stLukes-600 transition-colors leading-snug">
-                          {item.name}
-                        </p>
-                        {item.notes && (
-                          <span className="inline-block mt-1.5 text-[10px] font-semibold bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full uppercase tracking-wide">
-                            {item.notes}
-                          </span>
-                        )}
-                      </div>
-                      <div className="text-right shrink-0">
-                        <p className="text-[10px] text-slate-400 uppercase tracking-wide mb-0.5">LKR</p>
-                        <p className="text-lg font-bold text-stLukes-600 tabular-nums">
-                          {item.price.toLocaleString()}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+                    <span className="text-slate-700 text-sm">
+                      {t.name}
+                      {t.note && (
+                        <span className="text-slate-400 text-xs ml-2">({t.note})</span>
+                      )}
+                    </span>
+                    <span className="flex items-baseline gap-2 whitespace-nowrap">
+                      {t.was && (
+                        <s className="text-slate-400 text-xs">LKR {formatLKR(t.was)}</s>
+                      )}
+                      <strong className="text-slate-900 text-sm">
+                        LKR {formatLKR(t.price)}
+                      </strong>
+                    </span>
+                  </li>
                 ))}
-              </div>
-            </div>
+              </ul>
+            </section>
           ))}
         </div>
       )}
 
-      {/* ── Footer note ─────────────────────────────────────────────── */}
-      {hasResults && (
-        <p className="text-center text-xs text-slate-400 pt-4 pb-2">
-          All prices are indicative and subject to change. Contact us for the latest pricing.
-        </p>
-      )}
+      <p className="text-center text-xs text-slate-500 mt-8">
+        Prices subject to change. Call{" "}
+        <a href="tel:+94711231954" className="text-stLukes-600 font-semibold">
+          071 123 1954
+        </a>{" "}
+        to confirm before booking.
+      </p>
     </div>
   );
 }

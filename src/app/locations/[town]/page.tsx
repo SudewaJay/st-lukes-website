@@ -20,7 +20,7 @@ export async function generateMetadata(
   if (!loc) return {};
   return {
     title: `Medical Laboratory in ${loc.name} | Blood Tests & Home Visits`,
-    description: `St. Luke's Medical Laboratory serves ${loc.name} with blood tests, ECG, full-body checkups and home sample collection. 24hr reports. Call +94 71 123 1954.`,
+    description: `St. Luke's Medical Laboratory serves ${loc.name} with blood tests, ECG, full-body checkups and home sample collection. 24hr reports, transparent LKR pricing. Call 071 123 1954.`,
     alternates: { canonical: `/locations/${loc.slug}` },
   };
 }
@@ -91,7 +91,7 @@ export default async function LocationPage(
           <p className="text-slate-600 mb-8">
             Book a home visit on{" "}
             <a href="tel:+94711231954" className="text-stLukes-600 font-semibold underline">
-              +94 71 123 1954
+              071 123 1954
             </a>
             .
           </p>
@@ -135,7 +135,7 @@ export default async function LocationPage(
               href="tel:+94711231954"
               className="inline-flex items-center bg-stLukesRed-500 hover:bg-stLukesRed-600 text-white px-6 py-3 rounded-full font-semibold"
             >
-              Call +94 71 123 1954
+              Call 071 123 1954
             </a>
           </div>
 

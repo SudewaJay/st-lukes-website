@@ -107,7 +107,7 @@ export default function OGImage() {
               fontWeight: 700,
             }}
           >
-            +94 71 123 1954
+            071 123 1954
           </div>
         </div>
       </div>

@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     template: "%s | St. Luke's Medical Laboratory",
   },
   description:
-    "St. Luke's Medical Laboratory in Ja-Ela offers blood tests, ECG, urine analysis & full-body checkups with 24hr reports and home sample collection across Ja-Ela, Kandana, Ragama, Wattala & Welisara. Call +94 71 123 1954.",
+    "St. Luke's Medical Laboratory in Ja-Ela: blood tests, ECG, full-body checkups with 24hr reports and home sample collection across Ja-Ela, Kandana, Ragama, Wattala & Welisara. Transparent LKR pricing. Call 071 123 1954.",
   keywords: [
     "medical laboratory Ja-Ela",
     "blood test Ja-Ela",
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     siteName: "St. Luke's Medical Laboratory",
     title: "Medical Laboratory in Ja-Ela | St. Luke's",
     description:
-      "World-class diagnostics with 24hr reports and home sample collection across Ja-Ela & surrounding towns.",
+      "Affordable diagnostics with 24hr reports and home collection across Ja-Ela & surrounding towns.",
   },
   twitter: {
     card: "summary_large_image",

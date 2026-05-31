@@ -1,5 +1,18 @@
 export const SITE = "https://www.stlukesmedilab.com";
 
+export const NAP = {
+  name: "St. Luke's Medical Laboratory",
+  street: "No. 67, Old Negombo Road",
+  city: "Ja-Ela",
+  region: "Western Province",
+  postalCode: "11350",
+  country: "LK",
+  phone: "+94711231954",
+  phoneDisplay: "071 123 1954",
+  // TODO <<CONFIRM>>: keep medilabstlukes@gmail.com or move to info@stlukesmedilab.com
+  email: "info@stlukesmedilab.com",
+};
+
 export const TOWNS = [
   "Ja-Ela",
   "Kandana",
@@ -14,23 +27,25 @@ export const medicalBusinessSchema = {
   "@context": "https://schema.org",
   "@type": "MedicalBusiness",
   "@id": `${SITE}/#organization`,
-  name: "St. Luke's Medical Laboratory",
+  name: NAP.name,
   url: `${SITE}/`,
   logo: `${SITE}/logo.png`,
   image: `${SITE}/hero-photo.jpeg`,
-  telephone: "+94711231954",
-  email: "info@stlukesmedilab.com",
-  priceRange: "LKR 100–4,250",
+  telephone: NAP.phone,
+  email: NAP.email,
+  priceRange: "LKR 100–4,400",
   medicalSpecialty: "Pathology",
   currenciesAccepted: "LKR",
   address: {
     "@type": "PostalAddress",
-    streetAddress: "No. 67, Old Negombo Road",
-    addressLocality: "Ja-Ela",
-    addressRegion: "Western Province",
-    postalCode: "11350",
-    addressCountry: "LK",
+    streetAddress: NAP.street,
+    addressLocality: NAP.city,
+    addressRegion: NAP.region,
+    postalCode: NAP.postalCode,
+    addressCountry: NAP.country,
   },
+  // TODO <<CONFIRM optional>>: add geo coordinates from Maps URL
+  // geo: { "@type": "GeoCoordinates", latitude: "", longitude: "" },
   hasMap: "https://maps.app.goo.gl/ssRxtUg5VJDPYVdL9",
   areaServed: TOWNS.map((name) => ({ "@type": "City", name })),
   openingHoursSpecification: [
@@ -38,16 +53,18 @@ export const medicalBusinessSchema = {
       "@type": "OpeningHoursSpecification",
       dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
       opens: "07:00",
-      closes: "20:00",
+      closes: "19:30",
     },
     {
       "@type": "OpeningHoursSpecification",
-      dayOfWeek: ["Sunday"],
-      opens: "07:00",
-      closes: "13:00",
+      dayOfWeek: "Sunday",
+      opens: "07:30",
+      closes: "12:30",
     },
   ],
-  sameAs: [] as string[],
+  // aggregateRating intentionally omitted — 5.0 from 3 reviews is too thin to safely publish.
+  // TODO <<CONFIRM>>: fill GBP and Facebook URLs (the filter strips unconfirmed placeholders)
+  sameAs: ["<<GBP_URL>>", "<<FB_URL>>"].filter((u) => !u.startsWith("<<")),
   availableService: [
     { "@type": "MedicalTest", name: "Complete Blood Count (CBC / FBC)" },
     { "@type": "MedicalTest", name: "Lipid Profile" },
@@ -72,69 +89,34 @@ export const faqSchema = {
   mainEntity: [
     {
       "@type": "Question",
-      name: "Do you offer home blood collection in Ja-Ela?",
+      name: "Do you offer home blood collection in Ja-Ela and nearby towns?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Yes. We provide home sample collection across Ja-Ela, Kandana, Welisara, Ragama, Wattala, Batagama and Thudella. Call +94 71 123 1954 to book.",
+        text: "Yes. We provide home sample collection across Ja-Ela, Kandana, Welisara, Ragama, Wattala, Batagama and Thudella. Call 071 123 1954 to book a home visit.",
       },
     },
     {
       "@type": "Question",
-      name: "How fast are reports delivered?",
+      name: "How quickly will I get my lab report?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Most reports are delivered within 24 hours and are available digitally.",
+        text: "Most reports are ready within 24 hours.",
       },
     },
     {
       "@type": "Question",
-      name: "Do I need to fast before a blood test?",
+      name: "Do I need to fast before my blood test?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Fasting (8–12 hours) is required for tests such as FBS and the lipid profile. Our team will advise when you book.",
+        text: "Fasting of 8–12 hours is required for tests such as Fasting Blood Sugar and the Lipid Profile. Our team advises you when you book.",
       },
     },
     {
       "@type": "Question",
-      name: "Where is St. Luke's Medical Laboratory located?",
+      name: "Are your test prices published?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Our headquarters is at No. 67, Old Negombo Road, Ja-Ela, Sri Lanka. We also operate 20+ collection centres across the region.",
-      },
-    },
-  ],
-};
-
-export const packagesSchema = {
-  "@context": "https://schema.org",
-  "@type": "OfferCatalog",
-  name: "Health Checkup Packages — St. Luke's Medical Laboratory",
-  itemListElement: [
-    {
-      "@type": "Offer",
-      name: "Basic Wellness Profile",
-      priceCurrency: "LKR",
-      price: "1500",
-      itemOffered: { "@type": "MedicalTest", name: "CBC, FBS, UFR, Lipid Profile" },
-    },
-    {
-      "@type": "Offer",
-      name: "Comprehensive Full Body",
-      priceCurrency: "LKR",
-      price: "4100",
-      itemOffered: {
-        "@type": "MedicalTest",
-        name: "LFT, Kidney Profile, Resting ECG, Thyroid + Basic Wellness",
-      },
-    },
-    {
-      "@type": "Offer",
-      name: "Senior Citizen Care",
-      priceCurrency: "LKR",
-      price: "3500",
-      itemOffered: {
-        "@type": "MedicalTest",
-        name: "Bone density, Vitamin D & B12, Prostate/Ovarian, Priority Home Collection",
+        text: "Yes — every test price is listed in LKR on our price list page, with no hidden charges.",
       },
     },
   ],

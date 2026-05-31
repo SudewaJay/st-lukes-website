@@ -104,7 +104,7 @@ export default async function ServicePage(
               href="tel:+94711231954"
               className="inline-flex items-center bg-stLukesRed-500 hover:bg-stLukesRed-600 text-white px-6 py-3 rounded-full font-semibold"
             >
-              Call +94 71 123 1954
+              Call 071 123 1954
             </a>
           </div>
 

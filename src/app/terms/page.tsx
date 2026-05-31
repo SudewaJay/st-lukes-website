@@ -45,7 +45,7 @@ export default function Terms() {
             Questions? Email{" "}
             <a href="mailto:info@stlukesmedilab.com" className="text-stLukes-600 underline">info@stlukesmedilab.com</a>{" "}
             or call{" "}
-            <a href="tel:+94711231954" className="text-stLukes-600 underline">+94 71 123 1954</a>.
+            <a href="tel:+94711231954" className="text-stLukes-600 underline">071 123 1954</a>.
           </p>
         </div>
       </section>

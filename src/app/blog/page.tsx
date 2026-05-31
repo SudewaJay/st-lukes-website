@@ -4,9 +4,9 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "Health Hub — Tips & Test Guides",
+  title: "Health Hub — Lab Test Guides & Wellness Tips",
   description:
-    "Health tips, lab-test explainers and wellness advice from St. Luke's Medical Laboratory, Ja-Ela.",
+    "Health tips and lab-test explainers from St. Luke's Medical Laboratory, Ja-Ela.",
   alternates: { canonical: "/blog" },
 };
 
@@ -60,7 +60,7 @@ export default function BlogIndex() {
             <h2 className="text-2xl font-bold text-slate-900 mb-2">Need a test now?</h2>
             <p className="text-slate-600 mb-4">
               Browse our full <Link href="/price-list" className="text-stLukes-600 underline">price list</Link> or call{" "}
-              <a href="tel:+94711231954" className="text-stLukes-600 underline">+94 71 123 1954</a> to book a home visit.
+              <a href="tel:+94711231954" className="text-stLukes-600 underline">071 123 1954</a> to book a home visit.
             </p>
           </div>
         </div>
