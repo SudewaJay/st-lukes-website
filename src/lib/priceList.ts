@@ -26,22 +26,20 @@ export const priceList: PriceCategory[] = [
       { name: "Glucose Challenge Test (GCT)", price: 750, note: "with FBS" },
       { name: "OGTT (1st hr, 2nd hr, FBS)", price: 1300 },
       { name: "OGTT (FBS, 2nd hr)", price: 1000 },
-      { name: "HbA1C", price: 950, was: 2100 },
+      { name: "HbA1C", price: 2100 },
     ],
   },
   {
     category: "Haematology",
     tests: [
-      // TODO <<CONFIRM>>: spec §3 item 1 — LKR 100 is unusually low for FBC.
-      // Confirm intentional loss-leader before publishing live.
-      { name: "Full Blood Count (FBC)", price: 100, was: 400 },
+      { name: "Full Blood Count (FBC)", price: 400 },
       { name: "WBC / DC", price: 250 },
       { name: "Platelet Count", price: 400 },
       { name: "Haemoglobin (Hb)", price: 400 },
       { name: "ESR", price: 400 },
       { name: "Blood Group", price: 550 },
       { name: "Malarial Parasites", price: 250 },
-      { name: "Ferritin", price: 1400, was: 2400 },
+      { name: "Ferritin", price: 2400 },
     ],
   },
   {
@@ -79,7 +77,7 @@ export const priceList: PriceCategory[] = [
       { name: "Blood Urea", price: 650 },
       { name: "Serum Creatinine", price: 650 },
       { name: "Serum Creatinine with GFR", price: 700 },
-      { name: "Serum Electrolytes", price: 400, was: 1350 },
+      { name: "Serum Electrolytes", price: 1350 },
       { name: "Serum Uric Acid", price: 850 },
       { name: "Calcium (Total)", price: 850 },
       { name: "Ionized Calcium (Ca²⁺)", price: 1350 },
@@ -90,9 +88,9 @@ export const priceList: PriceCategory[] = [
   {
     category: "Thyroid & Hormones",
     tests: [
-      { name: "TSH", price: 800, was: 1800 },
-      { name: "Free T4 (FT4)", price: 800, was: 1900 },
-      { name: "Free T3 (FT3)", price: 800, was: 1900 },
+      { name: "TSH", price: 1800 },
+      { name: "Free T4 (FT4)", price: 1900 },
+      { name: "Free T3 (FT3)", price: 1900 },
     ],
   },
   {
@@ -105,15 +103,15 @@ export const priceList: PriceCategory[] = [
   {
     category: "Infectious Disease",
     tests: [
-      { name: "HIV 1, 2", price: 700, was: 1800 },
-      { name: "VDRL", price: 300, was: 1000 },
-      { name: "HBs Ag", price: 400, was: 1200 },
-      { name: "Dengue NS1 Ag", price: 900, was: 1200 },
+      { name: "HIV 1, 2", price: 1800 },
+      { name: "VDRL", price: 1000 },
+      { name: "HBs Ag", price: 1200 },
+      { name: "Dengue NS1 Ag", price: 1200 },
     ],
   },
   {
     category: "Vitamins",
-    tests: [{ name: "Vitamin D", price: 3000, was: 6000 }],
+    tests: [{ name: "Vitamin D", price: 6000 }],
   },
   {
     category: "Comprehensive Panels",
