@@ -1,34 +1,13 @@
-"use client";
-
-import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Calendar, User } from "lucide-react";
 import { ScrollReveal } from "./ui/ScrollReveal";
-import { posts } from "@/lib/posts";
+import { getAllPosts, formatPostDate } from "@/lib/blog";
 
-function PostImage({ src, alt }: { src: string; alt: string }) {
-    const [errored, setErrored] = useState(false);
-    if (errored) {
-        return (
-            <div className="absolute inset-0 bg-stLukes-50 flex items-center justify-center">
-                <div className="w-32 h-32 bg-stLukes-200 rounded-full blur-2xl opacity-60" />
-            </div>
-        );
-    }
-    return (
-        <Image
-            src={src}
-            alt={alt}
-            fill
-            sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-            className="object-cover transition-transform duration-700 group-hover:scale-105"
-            onError={() => setErrored(true)}
-        />
-    );
-}
+export default async function Blog() {
+    const posts = (await getAllPosts()).slice(0, 3);
+    if (posts.length === 0) return null;
 
-export default function Blog() {
     return (
         <section className="py-24 bg-white" id="blog">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -37,7 +16,7 @@ export default function Blog() {
                         <ScrollReveal>
                             <h2 className="text-sm font-bold tracking-widest text-stLukes-500 uppercase mb-3">Health Tips &amp; Lab-Test Guides</h2>
                             <h3 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">
-                                Latest Insights & Advice.
+                                Latest Insights &amp; Advice.
                             </h3>
                         </ScrollReveal>
                     </div>
@@ -52,9 +31,20 @@ export default function Blog() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {posts.map((post, index) => (
                         <ScrollReveal key={post.slug} delay={index * 0.1}>
-                            <article className="group cursor-pointer h-full flex flex-col border border-slate-100 rounded-3xl overflow-hidden hover:shadow-xl hover:border-stLukes-100 transition-all duration-300">
+                            <Link
+                                href={`/blog/${post.slug}`}
+                                className="group cursor-pointer h-full flex flex-col border border-slate-100 rounded-3xl overflow-hidden hover:shadow-xl hover:border-stLukes-100 transition-all duration-300"
+                            >
                                 <div className="aspect-[16/9] w-full bg-slate-100 relative overflow-hidden">
-                                    <PostImage src={post.image} alt={post.title} />
+                                    {post.image && (
+                                        <Image
+                                            src={post.image}
+                                            alt={post.title}
+                                            fill
+                                            sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                                            className="object-cover transition-transform duration-700 group-hover:scale-105"
+                                        />
+                                    )}
                                     <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-sm px-3 py-1 text-xs font-bold text-stLukes-600 rounded-full">
                                         {post.category}
                                     </div>
@@ -63,7 +53,7 @@ export default function Blog() {
                                 <div className="p-6 flex flex-col flex-grow bg-white">
                                     <div className="flex items-center gap-4 text-xs text-slate-400 mb-4 font-medium">
                                         <div className="flex items-center gap-1">
-                                            <Calendar size={14} /> {post.date}
+                                            <Calendar size={14} /> {formatPostDate(post.date)}
                                         </div>
                                         <div className="flex items-center gap-1">
                                             <User size={14} /> {post.author}
@@ -81,7 +71,7 @@ export default function Blog() {
                                         Read Article <ArrowRight size={16} className="group-hover:translate-x-2 transition-transform" />
                                     </div>
                                 </div>
-                            </article>
+                            </Link>
                         </ScrollReveal>
                     ))}
                 </div>
