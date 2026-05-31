@@ -43,7 +43,7 @@ export default function PrivacyPolicy() {
           <h2 className="text-2xl font-bold text-slate-900 mt-10 mb-3">Your rights</h2>
           <p className="text-slate-600">
             You may request access to or correction of your personal information at any time by contacting us at{" "}
-            <a href="mailto:info@stlukesmedilab.com" className="text-stLukes-600 underline">info@stlukesmedilab.com</a>{" "}
+            <a href="mailto:medilabstlukes@gmail.com" className="text-stLukes-600 underline">medilabstlukes@gmail.com</a>{" "}
             or{" "}
             <a href="tel:+94711231954" className="text-stLukes-600 underline">071 123 1954</a>.
           </p>

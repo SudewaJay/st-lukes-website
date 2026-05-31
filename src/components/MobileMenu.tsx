@@ -126,12 +126,12 @@ export default function MobileMenu({ open, onClose, links }: Props) {
                   071 123 1954
                 </a>
                 <a
-                  href="mailto:info@stlukesmedilab.com"
+                  href="mailto:medilabstlukes@gmail.com"
                   className="flex items-center gap-2 hover:text-stLukes-600"
                   onClick={onClose}
                 >
                   <Mail size={13} className="text-stLukes-500" />
-                  info@stlukesmedilab.com
+                  medilabstlukes@gmail.com
                 </a>
                 <div className="flex items-start gap-2">
                   <MapPin size={13} className="text-stLukes-500 mt-0.5 flex-shrink-0" />

@@ -9,8 +9,7 @@ export const NAP = {
   country: "LK",
   phone: "+94711231954",
   phoneDisplay: "071 123 1954",
-  // TODO <<CONFIRM>>: keep medilabstlukes@gmail.com or move to info@stlukesmedilab.com
-  email: "info@stlukesmedilab.com",
+  email: "medilabstlukes@gmail.com",
 };
 
 export const TOWNS = [
