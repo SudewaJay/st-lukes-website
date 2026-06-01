@@ -23,10 +23,13 @@ export default function Footer() {
                     <div>
                         <h4 className="text-white font-semibold mb-6">Quick Links</h4>
                         <ul className="space-y-4 text-sm">
-                            <li><Link href="#why-us" className="hover:text-stLukes-500 transition-colors">Why Choose Us</Link></li>
-                            <li><Link href="#services" className="hover:text-stLukes-500 transition-colors">Our Services</Link></li>
-                            <li><Link href="#how-it-works" className="hover:text-stLukes-500 transition-colors">How It Works</Link></li>
-                            <li><Link href="#pricing" className="hover:text-stLukes-500 transition-colors">Pricing Plans</Link></li>
+                            <li><Link href="/about" className="hover:text-stLukes-500 transition-colors">About Us</Link></li>
+                            <li><Link href="/services" className="hover:text-stLukes-500 transition-colors">Our Services</Link></li>
+                            <li><Link href="/technology" className="hover:text-stLukes-500 transition-colors">Lab Technology</Link></li>
+                            <li><Link href="/packages" className="hover:text-stLukes-500 transition-colors">Health Packages</Link></li>
+                            <li><Link href="/locations" className="hover:text-stLukes-500 transition-colors">Locations</Link></li>
+                            <li><Link href="/price-list" className="hover:text-stLukes-500 transition-colors">Price List</Link></li>
+                            <li><Link href="/blog" className="hover:text-stLukes-500 transition-colors">Health Hub</Link></li>
                         </ul>
                     </div>
 

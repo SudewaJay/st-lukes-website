@@ -6,12 +6,12 @@ import Link from "next/link";
 import MobileMenu, { type NavLink } from "./MobileMenu";
 
 const navLinks: NavLink[] = [
-    { name: "Services", href: "/#services" },
-    { name: "Technology", href: "/#technology" },
-    { name: "Our Packages", href: "/#packages" },
-    { name: "Locations", href: "/#locations" },
+    { name: "Services", href: "/services" },
+    { name: "Technology", href: "/technology" },
+    { name: "Our Packages", href: "/packages" },
+    { name: "Locations", href: "/locations" },
     { name: "Blog", href: "/blog" },
-    { name: "About Us", href: "/#about" },
+    { name: "About Us", href: "/about" },
     { name: "Price List", href: "/price-list" },
 ];
 
