@@ -2,7 +2,12 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { JsonLd } from "@/components/JsonLd";
-import { medicalBusinessSchema, faqSchema } from "@/lib/seo";
+import {
+  medicalBusinessSchema,
+  faqSchema,
+  websiteSchema,
+  siteNavigationSchema,
+} from "@/lib/seo";
 
 const inter = Inter({
   variable: "--font-sans",
@@ -12,8 +17,8 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.stlukesmedilab.com"),
   title: {
-    default:
-      "Medical Laboratory in Ja-Ela | Blood Tests & Home Visits — St. Luke's",
+    // Leads with the brand so it doesn't get truncated by Google.
+    default: "St. Luke's Medical Laboratory — Ja-Ela | Blood Tests & ECG",
     template: "%s | St. Luke's Medical Laboratory",
   },
   description:
@@ -34,13 +39,13 @@ export const metadata: Metadata = {
     locale: "en_LK",
     url: "https://www.stlukesmedilab.com/",
     siteName: "St. Luke's Medical Laboratory",
-    title: "Medical Laboratory in Ja-Ela | St. Luke's",
+    title: "St. Luke's Medical Laboratory — Ja-Ela",
     description:
       "Affordable diagnostics with 24hr reports and home collection across Ja-Ela & surrounding towns.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Medical Laboratory in Ja-Ela | St. Luke's",
+    title: "St. Luke's Medical Laboratory — Ja-Ela",
     description:
       "Blood tests, ECG and home sample collection with 24-hour reports across Ja-Ela & surrounds.",
   },
@@ -56,6 +61,8 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable} antialiased`}>
         <JsonLd data={medicalBusinessSchema} />
+        <JsonLd data={websiteSchema} />
+        <JsonLd data={siteNavigationSchema} />
         <JsonLd data={faqSchema} />
         {children}
       </body>

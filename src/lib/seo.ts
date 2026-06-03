@@ -27,6 +27,18 @@ export const medicalBusinessSchema = {
   "@type": "MedicalBusiness",
   "@id": `${SITE}/#organization`,
   name: NAP.name,
+  // Entity disambiguation — helps Google distinguish us from St. Luke's
+  // hospitals in the US / Philippines that dominate brand searches.
+  alternateName: [
+    "St Luke's Medilab",
+    "St. Luke's Medilab",
+    "St Lukes Medical Laboratory",
+    "St. Luke's Lab Ja-Ela",
+    "St. Luke's Medical Lab",
+  ],
+  description:
+    "Independent medical diagnostic laboratory in Ja-Ela, Sri Lanka — blood tests, ECG, full-body checkups and home sample collection with transparent LKR pricing.",
+  slogan: "Together for Better Health",
   url: `${SITE}/`,
   logo: `${SITE}/logo.png`,
   image: `${SITE}/hero-photo.jpeg`,
@@ -79,6 +91,43 @@ export const medicalBusinessSchema = {
     { "@type": "MedicalDevice", name: "BioSystems A15 Fully Automated Biochemistry Analyzer" },
     { "@type": "MedicalDevice", name: "Audicom Electrolyte Analyzer" },
     { "@type": "MedicalDevice", name: "Medonic Hematology Analyzer" },
+  ],
+};
+
+// Helps Google show a sitelinks search box and recognise the canonical site name.
+export const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": `${SITE}/#website`,
+  url: `${SITE}/`,
+  name: NAP.name,
+  alternateName: "St. Luke's Medilab",
+  publisher: { "@id": `${SITE}/#organization` },
+  inLanguage: "en-LK",
+  potentialAction: {
+    "@type": "SearchAction",
+    target: {
+      "@type": "EntryPoint",
+      urlTemplate: `${SITE}/price-list?q={search_term_string}`,
+    },
+    "query-input": "required name=search_term_string",
+  },
+};
+
+// Hints at the top-level pages we want to surface as sitelinks.
+export const siteNavigationSchema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: "Primary navigation",
+  itemListElement: [
+    { "@type": "SiteNavigationElement", position: 1, name: "Home", url: `${SITE}/` },
+    { "@type": "SiteNavigationElement", position: 2, name: "About Us", url: `${SITE}/about` },
+    { "@type": "SiteNavigationElement", position: 3, name: "Services", url: `${SITE}/services` },
+    { "@type": "SiteNavigationElement", position: 4, name: "Lab Technology", url: `${SITE}/technology` },
+    { "@type": "SiteNavigationElement", position: 5, name: "Health Packages", url: `${SITE}/packages` },
+    { "@type": "SiteNavigationElement", position: 6, name: "Locations", url: `${SITE}/locations` },
+    { "@type": "SiteNavigationElement", position: 7, name: "Price List", url: `${SITE}/price-list` },
+    { "@type": "SiteNavigationElement", position: 8, name: "Health Hub (Blog)", url: `${SITE}/blog` },
   ],
 };
 
