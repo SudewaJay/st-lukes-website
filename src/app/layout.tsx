@@ -50,6 +50,9 @@ export const metadata: Metadata = {
       "Blood tests, ECG and home sample collection with 24-hour reports across Ja-Ela & surrounds.",
   },
   robots: { index: true, follow: true },
+  verification: {
+    google: "google7a398f5b32cd1f7c",
+  },
 };
 
 export default function RootLayout({
