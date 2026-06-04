@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { JsonLd } from "@/components/JsonLd";
+import { ChatWidget } from "@/components/ChatWidget";
 import {
   medicalBusinessSchema,
   faqSchema,
@@ -68,6 +69,7 @@ export default function RootLayout({
         <JsonLd data={siteNavigationSchema} />
         <JsonLd data={faqSchema} />
         {children}
+        <ChatWidget />
       </body>
     </html>
   );
