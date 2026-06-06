@@ -30,6 +30,8 @@ async function readAll(): Promise<Post[]> {
   const posts = await Promise.all(
     files
       .filter((f) => f.endsWith(".mdx") || f.endsWith(".md"))
+      // Skip non-post files: README, anything starting with _ or .
+      .filter((f) => !/^readme/i.test(f) && !/^[._]/.test(f))
       .map(async (file) => {
         const slug = file.replace(/\.mdx?$/, "");
         const raw = await fs.readFile(path.join(BLOG_DIR, file), "utf8");
