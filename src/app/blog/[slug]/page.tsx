@@ -7,7 +7,7 @@ import remarkGfm from "remark-gfm";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { JsonLd } from "@/components/JsonLd";
-import { getAllSlugs, getPost, getAllPosts, formatPostDate } from "@/lib/blog";
+import { getAllSlugs, getPost, getAllPosts, formatPostDate, ogImageUrl } from "@/lib/blog";
 import { SITE } from "@/lib/seo";
 
 export async function generateStaticParams() {
@@ -21,6 +21,18 @@ export async function generateMetadata(
   const { slug } = await params;
   const post = await getPost(slug);
   if (!post) return {};
+  const ogImage = post.image
+    ? [
+        {
+          url: ogImageUrl(post.image),
+          width: 1200,
+          height: 630,
+          alt: post.title,
+          type: "image/jpeg",
+        },
+      ]
+    : undefined;
+
   return {
     title: post.title,
     description: post.excerpt,
@@ -31,7 +43,13 @@ export async function generateMetadata(
       type: "article",
       publishedTime: post.date,
       authors: [post.author],
-      images: post.image ? [{ url: post.image }] : undefined,
+      images: ogImage,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.excerpt,
+      images: ogImage,
     },
   };
 }

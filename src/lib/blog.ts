@@ -73,6 +73,23 @@ export async function getAllSlugs(): Promise<string[]> {
   return all.map((p) => p.slug);
 }
 
+/**
+ * Force a Cloudinary URL to be exactly 1200×630 by injecting transform
+ * parameters between `/upload/` and the version segment. Returns non-Cloudinary
+ * URLs unchanged. Required because Facebook/WhatsApp/LinkedIn social cards
+ * expect 1200×630 (the OG image standard).
+ */
+export function ogImageUrl(url: string): string {
+  if (!url) return url;
+  if (!url.includes("res.cloudinary.com")) return url;
+  // Don't double-transform if the URL already has a transform segment
+  if (/\/upload\/[a-z]_[^/]+\//.test(url)) return url;
+  return url.replace(
+    "/upload/",
+    "/upload/c_fill,g_auto,w_1200,h_630,q_auto,f_jpg/"
+  );
+}
+
 /** Format an ISO date as "Feb 15, 2026". */
 export function formatPostDate(iso: string) {
   const d = new Date(iso);
