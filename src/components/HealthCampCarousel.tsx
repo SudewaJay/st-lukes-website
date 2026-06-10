@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight, HeartPulse, ShieldAlert, Award } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, type Variants } from "framer-motion";
 import { ScrollReveal } from "./ui/ScrollReveal";
 import CldImage from "./CldImage";
 
@@ -108,7 +108,7 @@ export default function HealthCampCarousel() {
         }
     };
 
-    const slideVariants = {
+    const slideVariants: Variants = {
         enter: (dir: number) => ({
             x: dir > 0 ? "100%" : "-100%",
             opacity: 0,
@@ -119,7 +119,7 @@ export default function HealthCampCarousel() {
             opacity: 1,
             scale: 1,
             transition: {
-                x: { type: "spring", stiffness: 300, damping: 30 },
+                x: { type: "spring" as const, stiffness: 300, damping: 30 },
                 opacity: { duration: 0.4 },
                 scale: { duration: 0.4 },
             },
@@ -129,7 +129,7 @@ export default function HealthCampCarousel() {
             opacity: 0,
             scale: 0.95,
             transition: {
-                x: { type: "spring", stiffness: 300, damping: 30 },
+                x: { type: "spring" as const, stiffness: 300, damping: 30 },
                 opacity: { duration: 0.4 },
                 scale: { duration: 0.4 },
             },
