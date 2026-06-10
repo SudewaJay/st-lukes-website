@@ -5,6 +5,7 @@ import Analyzers from "@/components/Analyzers";
 import SimpleSteps from "@/components/SimpleSteps";
 import Pricing from "@/components/Pricing";
 import Locations from "@/components/Locations";
+import HealthCampCarousel from "@/components/HealthCampCarousel";
 import Blog from "@/components/Blog";
 import Footer from "@/components/Footer";
 
@@ -18,6 +19,7 @@ export default function Home() {
       <SimpleSteps />
       <Pricing />
       <Locations />
+      <HealthCampCarousel />
       <Blog />
       <Footer />
     </main>
