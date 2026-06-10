@@ -3,7 +3,10 @@
 import { useState, useEffect } from "react";
 import { Menu } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import MobileMenu, { type NavLink } from "./MobileMenu";
+
+const TRANSPARENT_HERO_ROUTES = ["/", "/price-list"];
 
 const navLinks: NavLink[] = [
     { name: "Services", href: "/services" },
@@ -18,6 +21,10 @@ const navLinks: NavLink[] = [
 export default function Navbar() {
     const [isScrolled, setIsScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const pathname = usePathname();
+
+    const hasTransparentHero = TRANSPARENT_HERO_ROUTES.includes(pathname ?? "/");
+    const useSolidStyle = isScrolled || !hasTransparentHero;
 
     useEffect(() => {
         const handleScroll = () => {
@@ -28,9 +35,7 @@ export default function Navbar() {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    // When the menu is open we don't care about the scrolled state for the hamburger color;
-    // the menu's own backdrop covers everything.
-    const navStyle = isScrolled
+    const navStyle = useSolidStyle
         ? "bg-white/90 backdrop-blur-md shadow-sm py-3"
         : "bg-transparent py-5";
 
@@ -49,7 +54,7 @@ export default function Navbar() {
                                 <Link
                                     key={link.name}
                                     href={link.href}
-                                    className={`font-medium transition-colors text-sm ${isScrolled ? "text-slate-600 hover:text-stLukes-500" : "text-white/85 hover:text-white"}`}
+                                    className={`font-medium transition-colors text-sm ${useSolidStyle ? "text-slate-600 hover:text-stLukes-500" : "text-white/85 hover:text-white"}`}
                                 >
                                     {link.name}
                                 </Link>
@@ -70,7 +75,7 @@ export default function Navbar() {
                             aria-expanded={mobileMenuOpen}
                             aria-controls="mobile-menu"
                             className={`md:hidden w-11 h-11 -mr-1 rounded-full flex items-center justify-center transition-colors ${
-                                isScrolled
+                                useSolidStyle
                                     ? "text-slate-900 hover:bg-slate-100 active:bg-slate-200"
                                     : "text-white hover:bg-white/15 active:bg-white/25"
                             }`}
