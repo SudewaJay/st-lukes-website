@@ -1,5 +1,3 @@
-"use client";
-
 import { ScrollReveal } from "./ui/ScrollReveal";
 import { UserPlus, TestTube, FileCheck } from "lucide-react";
 

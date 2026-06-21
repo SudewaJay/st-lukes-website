@@ -1,6 +1,7 @@
 "use client";
 
 import { Activity, Mail, Phone, MapPin } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 export default function Footer() {
@@ -12,7 +13,15 @@ export default function Footer() {
                     {/* Brand */}
                     <div className="col-span-1 md:col-span-1 border-b border-slate-800 pb-8 md:border-0 md:pb-0">
                         <Link href="/" className="flex items-center gap-2 mb-6 group">
-                            <img src="/logo.png" alt="St. Luke's Medical Laboratory" className="h-12 w-auto bg-white/95 p-2 rounded-xl" />
+                            <Image
+                                src="/logo.png"
+                                alt="St. Luke's Medical Laboratory"
+                                width={160}
+                                height={48}
+                                sizes="160px"
+                                loading="lazy"
+                                className="h-12 w-auto bg-white/95 p-2 rounded-xl"
+                            />
                         </Link>
                         <p className="text-sm text-slate-400 leading-relaxed mb-6 max-w-xs">
                             Reliable, fast, and accessible diagnostic excellence delivered right to your neighbourhood.

@@ -1,5 +1,3 @@
-"use client";
-
 import { MapPin, Navigation, PhoneCall, Building2 } from "lucide-react";
 import Link from "next/link";
 import { ScrollReveal } from "./ui/ScrollReveal";

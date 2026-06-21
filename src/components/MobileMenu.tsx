@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { X, Phone, MapPin, Mail } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -69,7 +70,14 @@ export default function MobileMenu({ open, onClose, links }: Props) {
                 className="flex items-center gap-2"
                 aria-label="St. Luke's Medical Laboratory home"
               >
-                <img src="/logo.png" alt="St. Luke's" className="h-9 w-auto" />
+                <Image
+                  src="/logo.png"
+                  alt="St. Luke's"
+                  width={120}
+                  height={36}
+                  sizes="120px"
+                  className="h-9 w-auto"
+                />
               </Link>
               <button
                 type="button"

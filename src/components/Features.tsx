@@ -1,5 +1,3 @@
-"use client";
-
 import { ScrollReveal } from "./ui/ScrollReveal";
 import { ArrowRight, Droplet, FlaskConical, HeartPulse, BriefcaseMedical, Activity, Stethoscope } from "lucide-react";
 

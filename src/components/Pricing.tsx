@@ -1,5 +1,3 @@
-"use client";
-
 import { Check, Star } from "lucide-react";
 import { ScrollReveal } from "./ui/ScrollReveal";
 import { packages, formatLKR } from "@/lib/packages";
