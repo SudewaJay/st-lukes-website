@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Menu } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import MobileMenu, { type NavLink } from "./MobileMenu";
@@ -45,7 +46,15 @@ export default function Navbar() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center">
                         <Link href="/" className="flex items-center gap-2 group" aria-label="St. Luke's Medical Laboratory home">
-                            <img src="/logo.png" alt="St. Luke's Medical Laboratory" className="h-10 w-auto" />
+                            <Image
+                                src="/logo.png"
+                                alt="St. Luke's Medical Laboratory"
+                                width={133}
+                                height={40}
+                                priority
+                                sizes="133px"
+                                className="h-10 w-auto"
+                            />
                         </Link>
 
                         {/* Desktop Nav */}

@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import dynamic from "next/dynamic";
 import "./globals.css";
 import { JsonLd } from "@/components/JsonLd";
-import { ChatWidget } from "@/components/ChatWidget";
+
+const ChatWidget = dynamic(
+  () => import("@/components/ChatWidget").then((m) => m.ChatWidget),
+);
 import {
   medicalBusinessSchema,
   faqSchema,
