@@ -18,7 +18,7 @@ export const packages: Package[] = [
     recommended: true,
     tagline: "A complete routine health screen.",
     description:
-      "A complete routine screen covering your blood count, blood sugar, cholesterol, and liver and kidney function — ideal for an annual check-up or establishing a general health baseline.",
+      "Complete annual screen: blood count, sugar, cholesterol, liver, kidney function.",
     includes: [
       "Full Blood Count (FBC)",
       "ESR",
@@ -39,7 +39,7 @@ export const packages: Package[] = [
     priceLKR: 4500,
     tagline: "For body aches, joint pain and tiredness.",
     description:
-      "Targets the common causes of body aches, joint pain and persistent tiredness — checking inflammation, rheumatoid markers, thyroid function, blood count and blood sugar.",
+      "Checks inflammation, rheumatoid, thyroid and blood markers behind aches, fatigue.",
     includes: [
       "Full Blood Count (FBC)",
       "ESR",
@@ -56,7 +56,7 @@ export const packages: Package[] = [
     priceLKR: 3500,
     tagline: "Kidney function and gout risk.",
     description:
-      "A focused look at kidney function and gout risk — electrolytes, kidney filtration (creatinine with GFR), uric acid and urine analysis.",
+      "Focused kidney function and gout check: electrolytes, creatinine, uric acid.",
     includes: [
       "Serum Electrolytes",
       "Ionized Calcium",
@@ -71,7 +71,7 @@ export const packages: Package[] = [
     priceLKR: 3600,
     tagline: "Early kidney monitoring for diabetes.",
     description:
-      "Designed for people managing diabetes, to catch early kidney changes — including urine microalbumin, the key early marker of diabetic kidney disease.",
+      "For diabetics: catches early kidney damage via urine microalbumin marker.",
     includes: [
       "Urine Microalbumin (UACR)",
       "Serum Electrolytes",
