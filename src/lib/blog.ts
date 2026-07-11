@@ -11,6 +11,7 @@ export type PostMeta = {
   category: string;
   date: string; // ISO YYYY-MM-DD
   author: string;
+  reviewedBy?: string;
   image: string;
   draft?: boolean;
 };
@@ -43,6 +44,7 @@ async function readAll(): Promise<Post[]> {
           category: (data.category as string) ?? "Health Tips",
           date: (data.date as string) ?? new Date().toISOString().slice(0, 10),
           author: (data.author as string) ?? "St. Luke's Team",
+          reviewedBy: (data.reviewedBy as string) ?? undefined,
           image: (data.image as string) ?? "",
           draft: (data.draft as boolean) ?? false,
           content,

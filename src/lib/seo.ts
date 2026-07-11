@@ -44,7 +44,7 @@ export const medicalBusinessSchema = {
   image: `${SITE}/hero-photo.jpeg`,
   telephone: NAP.phone,
   email: NAP.email,
-  priceRange: "LKR 100–6,000",
+  priceRange: "LKR 100–7,000",
   medicalSpecialty: "Pathology",
   currenciesAccepted: "LKR",
   address: {

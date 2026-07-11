@@ -124,6 +124,9 @@ export default async function BlogPost(
     image: post.image || undefined,
     datePublished: post.date,
     author: { "@type": "Person", name: post.author },
+    ...(post.reviewedBy && {
+      reviewedBy: { "@type": "Person", name: post.reviewedBy },
+    }),
     publisher: { "@id": `${SITE}/#organization` },
     mainEntityOfPage: `${SITE}/blog/${post.slug}`,
   };
@@ -176,6 +179,12 @@ export default async function BlogPost(
           </h1>
           <p className="text-sm text-slate-500 mb-8">
             {formatPostDate(post.date)} · {post.author}
+            {post.reviewedBy && (
+              <>
+                <br />
+                <span className="text-slate-400">Medically reviewed by {post.reviewedBy}</span>
+              </>
+            )}
           </p>
 
           <div className="prose-content">

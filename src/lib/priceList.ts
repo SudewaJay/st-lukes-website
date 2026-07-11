@@ -111,7 +111,7 @@ export const priceList: PriceCategory[] = [
   },
   {
     category: "Vitamins",
-    tests: [{ name: "Vitamin D", price: 6000 }],
+    tests: [{ name: "Vitamin D", price: 7000 }],
   },
   {
     category: "Comprehensive Panels",
