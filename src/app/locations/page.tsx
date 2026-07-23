@@ -6,9 +6,9 @@ import Footer from "@/components/Footer";
 import { locations } from "@/lib/locations";
 
 export const metadata: Metadata = {
-  title: "Our Collection Centres — Ja-Ela, Kandana, Ragama & Wattala",
+  title: "Areas We Serve — Ja-Ela, Wattala, Seeduwa, Katunayake & Negombo",
   description:
-    "St. Luke's Medical Laboratory serves Ja-Ela, Kandana, Welisara, Ragama, Wattala, Batagama and Thudella with walk-in centres and home sample collection.",
+    "St. Luke's Medical Laboratory serves Ja-Ela, Kandana, Welisara, Ragama, Wattala, Batagama, Thudella, Seeduwa, Katunayake and Negombo — walk-in tests at our Ja-Ela lab plus home sample collection across the Negombo Road corridor.",
   alternates: { canonical: "/locations" },
 };
 
@@ -26,7 +26,7 @@ export default function LocationsIndex() {
             Our Collection Centres Across Ja-Ela &amp; Beyond
           </h1>
           <p className="text-lg text-slate-700 max-w-2xl">
-            Our headquarters is on Old Negombo Road, Ja-Ela. From there, we serve seven neighbouring towns with walk-in centres and home sample collection — every test priced transparently in LKR, every report back within 24 hours.
+            Our lab is on Old Negombo Road, Ja-Ela — walk in any day for your tests. From there we bring home sample collection right along the Negombo Road corridor and up to the airport and Negombo: Kandana, Welisara, Ragama, Wattala, Batagama, Thudella, Seeduwa, Katunayake and Negombo. Every test is priced transparently in LKR, with most reports back within 24 hours.
           </p>
         </div>
       </section>

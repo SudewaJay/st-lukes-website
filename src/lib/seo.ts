@@ -20,6 +20,9 @@ export const TOWNS = [
   "Wattala",
   "Batagama",
   "Thudella",
+  "Seeduwa",
+  "Katunayake",
+  "Negombo",
 ];
 
 export const medicalBusinessSchema = {
@@ -137,10 +140,10 @@ export const faqSchema = {
   mainEntity: [
     {
       "@type": "Question",
-      name: "Do you offer home blood collection in Ja-Ela and nearby towns?",
+      name: "Which areas do you cover for home blood collection?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Yes. We provide home sample collection across Ja-Ela, Kandana, Welisara, Ragama, Wattala, Batagama and Thudella. Call 071 123 1954 to book a home visit.",
+        text: "We provide home sample collection across Ja-Ela, Kandana, Welisara, Ragama, Wattala, Batagama and Thudella, and as a scheduled home-visit service area we also cover Seeduwa, Katunayake (including the airport and Free Trade Zone) and Negombo. Call 071 123 1954 to book a home visit.",
       },
     },
     {
