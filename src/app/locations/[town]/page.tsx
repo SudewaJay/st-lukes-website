@@ -4,6 +4,7 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { JsonLd } from "@/components/JsonLd";
+import { LocationMap } from "@/components/LocationMap";
 import { locations, getLocation } from "@/lib/locations";
 import { medicalBusinessSchema, SITE } from "@/lib/seo";
 import { services } from "@/lib/services";
@@ -53,6 +54,21 @@ export default async function LocationPage(
     parentOrganization: { "@id": `${SITE}/#organization` },
     areaServed,
   };
+
+  // Map: service-area towns centre on the town (honest — no branch there);
+  // HQ and walk-in towns centre on the real Ja-Ela laboratory.
+  const HQ_QUERY = "St. Luke's Medical Laboratory, No. 67 Old Negombo Road, Ja-Ela, Sri Lanka";
+  const mapQuery = loc.isServiceArea ? `${loc.name}, Sri Lanka` : HQ_QUERY;
+  const mapCaption = loc.isServiceArea
+    ? `${loc.name} is a home-visit service area — our nearest laboratory is our Ja-Ela HQ (${loc.distanceFromHQ}).`
+    : loc.isHQ
+      ? "St. Luke's Medical Laboratory — No. 67, Old Negombo Road, Ja-Ela."
+      : `Your nearest walk-in lab is our Ja-Ela HQ — and we come to you in ${loc.name} for home visits.`;
+  const mapSectionHeading = loc.isServiceArea
+    ? `Where we serve in ${loc.name}`
+    : loc.isHQ
+      ? "Find our laboratory"
+      : `Your nearest St. Luke's laboratory`;
 
   const breadcrumb = {
     "@context": "https://schema.org",
@@ -161,6 +177,17 @@ export default async function LocationPage(
             </a>
             .
           </p>
+
+          <h2 className="text-2xl font-bold text-slate-900 mt-12 mb-4">
+            {mapSectionHeading}
+          </h2>
+          <div className="mb-12">
+            <LocationMap
+              query={mapQuery}
+              caption={mapCaption}
+              title={`Map of ${loc.name} — St. Luke's Medical Laboratory`}
+            />
+          </div>
 
           <h2 className="text-2xl font-bold text-slate-900 mt-12 mb-4">
             {loc.neighbourhoods && loc.neighbourhoods.length > 0
