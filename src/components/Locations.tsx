@@ -4,6 +4,12 @@ import { ScrollReveal } from "./ui/ScrollReveal";
 import { locations } from "@/lib/locations";
 
 export default function Locations() {
+    const mapsKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+    const hqMapSrc = mapsKey
+        ? `https://www.google.com/maps/embed/v1/place?key=${mapsKey}&q=${encodeURIComponent(
+              "St. Luke's Medical Laboratory, No. 67 Old Negombo Road, Ja-Ela, Sri Lanka"
+          )}&zoom=14`
+        : null;
     return (
         <section className="py-24 bg-stLukes-50 overflow-hidden relative" id="locations">
             <div className="absolute top-0 right-0 -translate-y-12 translate-x-1/3 w-[500px] h-[500px] bg-stLukes-100 rounded-full blur-3xl opacity-50 pointer-events-none" />
@@ -13,7 +19,7 @@ export default function Locations() {
                     {/* Content */}
                     <div>
                         <ScrollReveal>
-                            <h2 className="text-sm font-bold tracking-widest text-stLukes-500 uppercase mb-3">Our Collection Centres Across Ja-Ela, Kandana, Ragama &amp; Wattala</h2>
+                            <h2 className="text-sm font-bold tracking-widest text-stLukes-500 uppercase mb-3">Home Visits Across Ja-Ela, Wattala, Katunayake &amp; Negombo</h2>
                             <h3 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight mb-6">
                                 Accessible Care, Wherever You Are.
                             </h3>
@@ -21,7 +27,7 @@ export default function Locations() {
 
                         <ScrollReveal delay={0.1}>
                             <p className="text-lg text-slate-600 mb-8 leading-relaxed">
-                                Our main state-of-the-art laboratory is headquartered in Ja-Ela, Sri Lanka. To ensure you have convenient access to premium diagnostics, we maintain a growing network of over 20 collection centres region-wide.
+                                Our fully equipped laboratory is in Ja-Ela, Sri Lanka &mdash; walk in any day for your tests. And to make diagnostics effortless, a qualified phlebotomist brings home sample collection right to your door across ten towns, from Ja-Ela and Wattala up to Seeduwa, Katunayake and Negombo.
                             </p>
                         </ScrollReveal>
 
@@ -42,8 +48,8 @@ export default function Locations() {
                                         <MapPin size={24} />
                                     </div>
                                     <div>
-                                        <h4 className="font-bold text-slate-900 mb-1">20+ Collecting Centres</h4>
-                                        <p className="text-slate-600 text-sm">Strategically located across the region for easy sample drop-off.</p>
+                                        <h4 className="font-bold text-slate-900 mb-1">Home Sample Collection</h4>
+                                        <p className="text-slate-600 text-sm">A qualified phlebotomist visits your home or office across all ten towns we serve &mdash; most reports back within 24 hours.</p>
                                     </div>
                                 </div>
                             </div>
@@ -81,28 +87,40 @@ export default function Locations() {
                     <div className="relative">
                         <ScrollReveal direction="left" delay={0.2}>
                             <div className="bg-white p-2 rounded-3xl shadow-xl border border-slate-100 relative">
-                                {/* Map abstract placeholder */}
+                                {/* Real map of our Ja-Ela laboratory */}
                                 <div className="aspect-[4/3] bg-slate-100 rounded-2xl relative overflow-hidden flex items-center justify-center">
-                                    <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#0ea5e9_1px,transparent_1px)] [background-size:20px_20px]"></div>
-                                    <MapPin size={64} className="text-stLukes-200 animate-pulse" />
-
-                                    {/* Map pins markers */}
-                                    <div className="absolute top-[30%] left-[20%] w-3 h-3 bg-stLukesRed-500 rounded-full animate-ping shadow-[0_0_15px_rgba(220,38,38,0.5)]"></div>
-                                    <div className="absolute top-[30%] left-[20%] w-3 h-3 bg-stLukesRed-500 rounded-full border-2 border-white"></div>
-
-                                    <div className="absolute top-[60%] right-[30%] w-3 h-3 bg-stLukes-500 rounded-full shadow-lg border-2 border-white hover:scale-150 transition-transform cursor-pointer"></div>
-                                    <div className="absolute bottom-[20%] left-[40%] w-3 h-3 bg-stLukes-500 rounded-full shadow-lg border-2 border-white hover:scale-150 transition-transform cursor-pointer"></div>
-                                    <div className="absolute top-[40%] right-[15%] w-3 h-3 bg-stLukes-500 rounded-full shadow-lg border-2 border-white hover:scale-150 transition-transform cursor-pointer"></div>
-                                    <div className="absolute top-[10%] left-[50%] w-3 h-3 bg-stLukes-500 rounded-full shadow-lg border-2 border-white hover:scale-150 transition-transform cursor-pointer"></div>
+                                    {hqMapSrc ? (
+                                        <iframe
+                                            src={hqMapSrc}
+                                            title="St. Luke's Medical Laboratory — Ja-Ela"
+                                            className="absolute inset-0 w-full h-full border-0"
+                                            loading="lazy"
+                                            referrerPolicy="no-referrer-when-downgrade"
+                                            allowFullScreen
+                                        />
+                                    ) : (
+                                        <>
+                                            <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#0ea5e9_1px,transparent_1px)] [background-size:20px_20px]" />
+                                            <div className="flex flex-col items-center gap-2 text-center px-6">
+                                                <MapPin size={48} className="text-stLukes-300" />
+                                                <p className="text-sm font-semibold text-slate-600">
+                                                    St. Luke&apos;s Medical Laboratory
+                                                </p>
+                                                <p className="text-xs text-slate-500">
+                                                    No. 67, Old Negombo Road, Ja-Ela
+                                                </p>
+                                            </div>
+                                        </>
+                                    )}
                                 </div>
                                 <div className="absolute -bottom-6 -right-6 bg-white p-4 rounded-2xl shadow-xl border border-slate-100">
                                     <div className="flex items-center gap-3">
                                         <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-green-600">
-                                            <Navigation size={20} />
+                                            <Building2 size={20} />
                                         </div>
                                         <div>
-                                            <p className="text-xs text-slate-500 font-medium uppercase">Nearest Centre</p>
-                                            <p className="font-bold text-slate-900">2.5 km away</p>
+                                            <p className="text-xs text-slate-500 font-medium uppercase">Our Lab</p>
+                                            <p className="font-bold text-slate-900">Ja-Ela HQ</p>
                                         </div>
                                     </div>
                                 </div>

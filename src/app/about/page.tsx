@@ -83,7 +83,7 @@ export default function About() {
             We started St. Luke&apos;s because the people of Ja-Ela and the surrounding towns deserved a better lab. The national chains in Colombo don&apos;t publish their prices, don&apos;t name our towns, and treat patients like ticket numbers. We do the opposite — we publish every price in LKR, we serve seven local towns by name with home sample collection, and every patient gets the same standard of care our own families would expect.
           </p>
           <p className="text-slate-700 leading-relaxed">
-            Today our HQ in Ja-Ela runs a full panel of modern analyzers — BioSystems A15 biochemistry, CLIA immunoassay, Medonic hematology and Audicom electrolyte — and partners with hundreds of physicians across the region. Our 20+ collection centres make it easy to walk in, and our home-visit phlebotomists make it easy to never have to.
+            Today our HQ in Ja-Ela runs a full panel of modern analyzers — BioSystems A15 biochemistry, CLIA immunoassay, Medonic hematology and Audicom electrolyte — and partners with hundreds of physicians across the region. Our Ja-Ela lab makes it easy to walk in, and our home-visit phlebotomists make it easy to never have to.
           </p>
         </div>
       </section>
@@ -121,10 +121,10 @@ export default function About() {
         <div className="mx-auto max-w-5xl">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
-              { value: "20+", label: "Collection Centres" },
+              { value: "100%", label: "Prices in LKR" },
               { value: "500+", label: "Partner Doctors" },
               { value: "24hr", label: "Report Turnaround" },
-              { value: "7", label: "Towns Served" },
+              { value: "10", label: "Towns Served" },
             ].map((s) => (
               <div key={s.label} className="text-center">
                 <p className="text-4xl font-bold text-stLukes-500">{s.value}</p>

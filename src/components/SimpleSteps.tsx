@@ -4,8 +4,8 @@ import { UserPlus, TestTube, FileCheck } from "lucide-react";
 export default function SimpleSteps() {
     const steps = [
         {
-            title: "Visit a Centre or Book Home Collection",
-            description: "Walk into any of our 20+ centres or schedule a convenient home visit online or by phone.",
+            title: "Visit Our Lab or Book Home Collection",
+            description: "Walk into our Ja-Ela laboratory or schedule a convenient home visit online or by phone.",
             icon: UserPlus,
             delay: 0,
         },

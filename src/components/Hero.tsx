@@ -13,7 +13,7 @@ const avatarColors = [
 const avatarInitials = ["D", "S", "R", "+"];
 
 const stats = [
-  { value: "20+", label: "Collection Centres" },
+  { value: "10", label: "Towns Served" },
   { value: "500+", label: "Partner Doctors" },
   { value: "24hr", label: "Report Turnaround" },
   { value: "ISO", label: "Certified Lab" },
@@ -74,7 +74,7 @@ export default function Hero() {
                 className="inline-flex items-center gap-2 text-stLukes-400 text-sm font-semibold uppercase tracking-widest mb-5"
               >
                 <MapPin size={14} />
-                Ja-Ela, Sri Lanka · 20+ Centres
+                Ja-Ela, Sri Lanka · Home Visits in 10 Towns
               </motion.p>
 
               <motion.h1

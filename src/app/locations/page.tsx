@@ -23,7 +23,7 @@ export default function LocationsIndex() {
             Our Network
           </p>
           <h1 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight mb-5">
-            Our Collection Centres Across Ja-Ela &amp; Beyond
+Areas We Serve Across Ja-Ela &amp; Beyond
           </h1>
           <p className="text-lg text-slate-700 max-w-2xl">
             Our lab is on Old Negombo Road, Ja-Ela — walk in any day for your tests. From there we bring home sample collection right along the Negombo Road corridor and up to the airport and Negombo: Kandana, Welisara, Ragama, Wattala, Batagama, Thudella, Seeduwa, Katunayake and Negombo. Every test is priced transparently in LKR, with most reports back within 24 hours.

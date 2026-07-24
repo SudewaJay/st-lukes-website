@@ -22,6 +22,13 @@ export type Location = {
   localFocus?: string[];
   /** Town-specific FAQs — unique content + FAQPage schema + "People also ask" capture. */
   faqs?: TownFaq[];
+  /**
+   * Exact map location for this centre, as a Google Maps Embed `q` value.
+   * Accepts "lat,lng" (best — from a shared pin), a full address, or a place name.
+   * When set, the location page map points HERE instead of the town centre / HQ.
+   * Fill this from the Google Maps share link the client provides per centre.
+   */
+  mapQuery?: string;
 };
 
 export const locations: Location[] = [
@@ -77,7 +84,7 @@ export const locations: Location[] = [
     blurb:
       "Diagnostic testing and home visits across Welisara (also spelt Walisara) and surrounding areas.",
     intro:
-      "Welisara (also spelt Walisara) residents can access St. Luke's full range of blood tests, ECG, and full-body checkups with home sample collection or via our nearby collection centres — every price published in LKR.",
+      "Welisara (also spelt Walisara) residents can access St. Luke's full range of blood tests, ECG, and full-body checkups with home sample collection — a qualified phlebotomist comes to your home or office, and every price is published in LKR.",
     serviceAngle:
       "We cover Welisara and the surrounding Naval-base neighbourhoods with scheduled home visits and next-day reporting, so families and service personnel can get routine bloods, diabetic checks and full-body screenings done without travelling into Colombo.",
     landmarks: ["Welisara Naval Base area", "Welisara Junction", "Walisara town"],

@@ -58,7 +58,9 @@ export default async function LocationPage(
   // Map: service-area towns centre on the town (honest — no branch there);
   // HQ and walk-in towns centre on the real Ja-Ela laboratory.
   const HQ_QUERY = "St. Luke's Medical Laboratory, No. 67 Old Negombo Road, Ja-Ela, Sri Lanka";
-  const mapQuery = loc.isServiceArea ? `${loc.name}, Sri Lanka` : HQ_QUERY;
+  // An exact per-centre pin (loc.mapQuery) always wins; otherwise service-area
+  // towns show the town and walk-in towns show the HQ lab.
+  const mapQuery = loc.mapQuery ?? (loc.isServiceArea ? `${loc.name}, Sri Lanka` : HQ_QUERY);
   const mapCaption = loc.isServiceArea
     ? `${loc.name} is a home-visit service area — our nearest laboratory is our Ja-Ela HQ (${loc.distanceFromHQ}).`
     : loc.isHQ
