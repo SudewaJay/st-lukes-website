@@ -1,135 +1,170 @@
-import { MapPin, Navigation, PhoneCall, Building2 } from "lucide-react";
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
-import { ScrollReveal } from "./ui/ScrollReveal";
+import { MapPin, Navigation, Phone, ArrowRight, Building2, Home } from "lucide-react";
 import { locations } from "@/lib/locations";
+import { cn } from "@/lib/cn";
 
+const HQ_DIRECTIONS = "https://maps.app.goo.gl/ssRxtUg5VJDPYVdL9";
+
+/**
+ * Interactive location explorer. The town list on the left drives a detail
+ * panel on the right — hover or arrow-key on a pointer device, tap on touch.
+ * Every town is a real link as well as a selector, so nothing here depends on
+ * JavaScript to reach the underlying page.
+ */
 export default function Locations() {
-    const mapsKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-    const hqMapSrc = mapsKey
-        ? `https://www.google.com/maps/embed/v1/place?key=${mapsKey}&q=${encodeURIComponent(
-              "St. Luke's Medical Laboratory, No. 67 Old Negombo Road, Ja-Ela, Sri Lanka"
-          )}&zoom=14`
-        : null;
-    return (
-        <section className="py-24 bg-stLukes-50 overflow-hidden relative" id="locations">
-            <div className="absolute top-0 right-0 -translate-y-12 translate-x-1/3 w-[500px] h-[500px] bg-stLukes-100 rounded-full blur-3xl opacity-50 pointer-events-none" />
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+  const [active, setActive] = useState(0);
+  const town = locations[active];
 
-                    {/* Content */}
-                    <div>
-                        <ScrollReveal>
-                            <h2 className="text-sm font-bold tracking-widest text-stLukes-500 uppercase mb-3">Home Visits Across Ja-Ela, Wattala, Katunayake &amp; Negombo</h2>
-                            <h3 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight mb-6">
-                                Accessible Care, Wherever You Are.
-                            </h3>
-                        </ScrollReveal>
+  return (
+    <section className="section-padding bg-brand-primary-soft" id="locations">
+      <div className="container-content">
+        <div className="mb-10 max-w-2xl md:mb-12">
+          <p className="eyebrow mb-3">Our Network</p>
+          <h2 className="type-h2 text-text-primary">
+            Ten towns, one laboratory.
+          </h2>
+          <p className="mt-4 type-body-large">
+            Walk in at our Ja-Ela lab on Old Negombo Road, or have a qualified
+            phlebotomist come to you anywhere along the corridor.
+          </p>
+        </div>
 
-                        <ScrollReveal delay={0.1}>
-                            <p className="text-lg text-slate-600 mb-8 leading-relaxed">
-                                Our fully equipped laboratory is in Ja-Ela, Sri Lanka &mdash; walk in any day for your tests. And to make diagnostics effortless, a qualified phlebotomist brings home sample collection right to your door across ten towns, from Ja-Ela and Wattala up to Seeduwa, Katunayake and Negombo.
-                            </p>
-                        </ScrollReveal>
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-10">
+          {/* Town selector */}
+          <ul
+            className="grid grid-cols-2 gap-2 self-start sm:grid-cols-3 lg:grid-cols-1 lg:gap-0"
+            aria-label="Towns we serve"
+          >
+            {locations.map((loc, i) => (
+              <li key={loc.slug}>
+                <button
+                  type="button"
+                  onClick={() => setActive(i)}
+                  onMouseEnter={() => setActive(i)}
+                  onFocus={() => setActive(i)}
+                  aria-current={i === active ? "true" : undefined}
+                  className={cn(
+                    "flex min-h-11 w-full items-center justify-between gap-2 rounded-lg px-3.5 py-2.5 text-left text-sm font-medium transition-colors lg:rounded-none lg:border-l-2 lg:px-4",
+                    i === active
+                      ? "bg-surface text-text-primary lg:border-brand-primary-dark"
+                      : "bg-surface/60 text-text-secondary hover:bg-surface lg:border-border-brand lg:bg-transparent",
+                  )}
+                >
+                  <span>{loc.name}</span>
+                  {loc.isHQ && (
+                    <span className="rounded bg-brand-primary-dark px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-text-inverse">
+                      HQ
+                    </span>
+                  )}
+                </button>
+              </li>
+            ))}
+          </ul>
 
-                        <ScrollReveal delay={0.2}>
-                            <div className="space-y-6 mb-10">
-                                <div className="flex items-start gap-4">
-                                    <div className="w-12 h-12 bg-white rounded-xl shadow-sm text-stLukes-500 flex items-center justify-center shrink-0">
-                                        <Building2 size={24} />
-                                    </div>
-                                    <div>
-                                        <h4 className="font-bold text-slate-900 mb-1">Ja-Ela Headquarters</h4>
-                                        <p className="text-slate-600 text-sm">No. 67, Old Negombo Road, Ja-Ela. Fully equipped central processing facility.</p>
-                                    </div>
-                                </div>
+          {/* Detail panel — keyed so it re-animates on change */}
+          <article
+            key={town.slug}
+            className="panel-in rounded-2xl border border-border-brand bg-surface p-6 md:p-9"
+          >
+            <p className="eyebrow mb-3 flex items-center gap-2">
+              {town.isServiceArea ? (
+                <>
+                  <Home size={13} aria-hidden="true" /> Home visit service area
+                </>
+              ) : (
+                <>
+                  <Building2 size={13} aria-hidden="true" /> Walk-in &amp; home visits
+                </>
+              )}
+            </p>
 
-                                <div className="flex items-start gap-4">
-                                    <div className="w-12 h-12 bg-white rounded-xl shadow-sm text-stLukes-500 flex items-center justify-center shrink-0">
-                                        <MapPin size={24} />
-                                    </div>
-                                    <div>
-                                        <h4 className="font-bold text-slate-900 mb-1">Home Sample Collection</h4>
-                                        <p className="text-slate-600 text-sm">A qualified phlebotomist visits your home or office across all ten towns we serve &mdash; most reports back within 24 hours.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </ScrollReveal>
+            <h3 className="type-h2 text-text-primary">{town.name}</h3>
 
-                        <ScrollReveal delay={0.25}>
-                            <div className="flex flex-wrap gap-2 mb-8">
-                                {locations.map((loc) => (
-                                    <Link
-                                        key={loc.slug}
-                                        href={`/locations/${loc.slug}`}
-                                        className="px-4 py-1.5 rounded-full bg-white border border-slate-200 text-sm font-medium text-slate-700 hover:border-stLukes-500 hover:text-stLukes-600 transition-colors"
-                                    >
-                                        {loc.name}
-                                    </Link>
-                                ))}
-                            </div>
-                        </ScrollReveal>
+            <p className="mt-4 max-w-xl leading-relaxed text-text-secondary">
+              {town.blurb}
+            </p>
 
-                        <ScrollReveal delay={0.3}>
-                            <div className="flex flex-col sm:flex-row gap-4">
-                                <a href="https://maps.app.goo.gl/ssRxtUg5VJDPYVdL9?g_st=ic" target="_blank" rel="noopener noreferrer" className="bg-stLukesRed-500 hover:bg-stLukesRed-600 text-white px-8 py-4 rounded-full font-semibold transition-all shadow-md shadow-stLukesRed-500/20 flex items-center justify-center gap-2">
-                                    <Navigation size={20} />
-                                    View Locations Map
-                                </a>
-                                <a href="tel:+94711231954" className="bg-white hover:bg-slate-50 text-slate-700 px-8 py-4 rounded-full font-semibold transition-all border border-slate-200 shadow-sm flex items-center justify-center gap-2">
-                                    <PhoneCall size={20} />
-                                    Call Us Now
-                                </a>
-                            </div>
-                        </ScrollReveal>
-                    </div>
-
-                    {/* Visual */}
-                    <div className="relative">
-                        <ScrollReveal direction="left" delay={0.2}>
-                            <div className="bg-white p-2 rounded-3xl shadow-xl border border-slate-100 relative">
-                                {/* Real map of our Ja-Ela laboratory */}
-                                <div className="aspect-[4/3] bg-slate-100 rounded-2xl relative overflow-hidden flex items-center justify-center">
-                                    {hqMapSrc ? (
-                                        <iframe
-                                            src={hqMapSrc}
-                                            title="St. Luke's Medical Laboratory — Ja-Ela"
-                                            className="absolute inset-0 w-full h-full border-0"
-                                            loading="lazy"
-                                            referrerPolicy="no-referrer-when-downgrade"
-                                            allowFullScreen
-                                        />
-                                    ) : (
-                                        <>
-                                            <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#0ea5e9_1px,transparent_1px)] [background-size:20px_20px]" />
-                                            <div className="flex flex-col items-center gap-2 text-center px-6">
-                                                <MapPin size={48} className="text-stLukes-300" />
-                                                <p className="text-sm font-semibold text-slate-600">
-                                                    St. Luke&apos;s Medical Laboratory
-                                                </p>
-                                                <p className="text-xs text-slate-500">
-                                                    No. 67, Old Negombo Road, Ja-Ela
-                                                </p>
-                                            </div>
-                                        </>
-                                    )}
-                                </div>
-                                <div className="absolute -bottom-6 -right-6 bg-white p-4 rounded-2xl shadow-xl border border-slate-100">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-green-600">
-                                            <Building2 size={20} />
-                                        </div>
-                                        <div>
-                                            <p className="text-xs text-slate-500 font-medium uppercase">Our Lab</p>
-                                            <p className="font-bold text-slate-900">Ja-Ela HQ</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </ScrollReveal>
-                    </div>
-
+            <dl className="mt-7 grid gap-5 sm:grid-cols-2">
+              <div>
+                <dt className="text-[11px] font-semibold uppercase tracking-[0.12em] text-text-muted">
+                  {town.isHQ ? "Address" : "Distance from our lab"}
+                </dt>
+                <dd className="mt-1.5 text-sm text-text-primary">
+                  {town.isHQ
+                    ? "No. 67, Old Negombo Road, Ja-Ela"
+                    : town.distanceFromHQ}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-[11px] font-semibold uppercase tracking-[0.12em] text-text-muted">
+                  Opening hours
+                </dt>
+                <dd className="mt-1.5 text-sm text-text-primary">
+                  Mon–Sat 07:00–19:30 · Sun 07:30–12:30
+                </dd>
+              </div>
+              {town.neighbourhoods && town.neighbourhoods.length > 0 && (
+                <div className="sm:col-span-2">
+                  <dt className="text-[11px] font-semibold uppercase tracking-[0.12em] text-text-muted">
+                    Areas covered
+                  </dt>
+                  <dd className="mt-2 flex flex-wrap gap-1.5">
+                    {town.neighbourhoods.map((n) => (
+                      <span
+                        key={n}
+                        className="rounded-md bg-brand-primary-soft px-2.5 py-1 text-xs text-brand-primary-darker"
+                      >
+                        {n}
+                      </span>
+                    ))}
+                  </dd>
                 </div>
+              )}
+            </dl>
+
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <Link
+                href={`/locations/${town.slug}`}
+                className="btn btn-primary !text-sm"
+              >
+                {town.name} details
+                <ArrowRight size={15} className="btn-arrow" aria-hidden="true" />
+              </Link>
+              <a
+                href="tel:+94711231954"
+                className="btn btn-secondary !text-sm"
+                data-track="phone_click"
+              >
+                <Phone size={15} aria-hidden="true" />
+                Call 071 123 1954
+              </a>
+              {town.isHQ && (
+                <a
+                  href={HQ_DIRECTIONS}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-ghost !text-sm"
+                >
+                  <Navigation size={15} aria-hidden="true" />
+                  Directions
+                </a>
+              )}
             </div>
-        </section>
-    );
+
+            {town.isServiceArea && (
+              <p className="mt-6 flex items-start gap-2 rounded-lg bg-surface-soft px-4 py-3 text-xs leading-relaxed text-text-muted">
+                <MapPin size={14} className="mt-0.5 shrink-0" aria-hidden="true" />
+                We do not have a walk-in branch in {town.name}. Samples are
+                collected at your home or office and processed at our Ja-Ela
+                laboratory.
+              </p>
+            )}
+          </article>
+        </div>
+      </div>
+    </section>
+  );
 }

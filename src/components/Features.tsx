@@ -1,101 +1,117 @@
-import { ScrollReveal } from "./ui/ScrollReveal";
-import { ArrowRight, Droplet, FlaskConical, HeartPulse, BriefcaseMedical, Activity, Stethoscope } from "lucide-react";
+"use client";
+
+import { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { services } from "@/lib/services";
+import { cn } from "@/lib/cn";
+
+const visuals: Record<string, { src: string; alt: string; cta: string; href: string }> = {
+  "blood-tests": {
+    src: "/equipment/medonic-hematology.jpg",
+    alt: "Haematology analyzer used for blood tests at St. Luke's",
+    cta: "View blood test prices",
+    href: "/price-list",
+  },
+  "ecg-cardiac-tests": {
+    src: "/equipment/clia-analyzer.jpg",
+    alt: "Diagnostic analyzer supporting cardiac and specialist testing",
+    cta: "Book an ECG",
+    href: "/services/ecg-cardiac-tests",
+  },
+  "home-blood-collection": {
+    src: "/hero-photo.jpeg",
+    alt: "St. Luke's laboratory team supporting home sample collection",
+    cta: "Request a home visit",
+    href: "tel:+94711231954",
+  },
+  "corporate-health-screening": {
+    src: "/equipment/biosystems-a15.jpg",
+    alt: "Biochemistry analyzer used for workplace health screening panels",
+    cta: "Plan a workplace screening",
+    href: "/services/corporate-health-screening",
+  },
+};
 
 export default function Features() {
-    const services = [
-        {
-            title: "General Blood Tests",
-            description: "Comprehensive blood analysis including Complete Blood Count (CBC) and Lipid profiles to monitor essential health markers.",
-            icon: Droplet,
-            href: "/services/blood-tests",
-            delay: 0,
-        },
-        {
-            title: "Urine Analysis",
-            description: "Routine screening to detect and manage a wide range of disorders, from kidney function to urinary tract infections.",
-            icon: FlaskConical,
-            href: "/services/blood-tests",
-            delay: 0.1,
-        },
-        {
-            title: "ECG & Cardiac Tests",
-            description: "Accurate electrocardiograms and cardiovascular health assessments performed by experienced technicians.",
-            icon: HeartPulse,
-            href: "/services/ecg-cardiac-tests",
-            delay: 0.2,
-        },
-        {
-            title: "Corporate Health Screenings",
-            description: "Tailored pre-employment medical checks and annual wellness programs for companies of all sizes.",
-            icon: BriefcaseMedical,
-            href: "/services/corporate-health-screening",
-            delay: 0.3,
-        },
-        {
-            title: "Biochemical Profiles",
-            description: "Detailed analysis of liver, kidney, and metabolic functions to provide a complete picture of your internal health.",
-            icon: Activity,
-            href: "/services/blood-tests",
-            delay: 0.4,
-        },
-        {
-            title: "Home Blood Collection",
-            description: "Qualified phlebotomists visit your home across Ja-Ela, Kandana, Welisara, Ragama and Wattala.",
-            icon: Stethoscope,
-            href: "/services/home-blood-collection",
-            delay: 0.5,
-        },
-    ];
+  const [active, setActive] = useState(0);
+  const service = services[active];
+  const visual = visuals[service.slug];
 
-    return (
-        <section className="py-24 bg-slate-50" id="services">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  return (
+    <section className="section-padding bg-surface" id="services">
+      <div className="container-content">
+        <p className="eyebrow mb-3">Diagnostic Services</p>
+        <h2 className="type-h2 mb-10 text-text-primary">
+          Find the care you need.
+        </h2>
 
-                <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
-                    <div className="max-w-2xl">
-                        <ScrollReveal>
-                            <h2 className="text-sm font-bold tracking-widest text-stLukes-500 uppercase mb-3">Medical Diagnostic Services in Ja-Ela</h2>
-                            <h3 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">
-                                Specialized Testing for Every Need.
-                            </h3>
-                        </ScrollReveal>
-                    </div>
-                    <ScrollReveal delay={0.2}>
-                        <a href="/price-list" className="flex items-center gap-2 text-stLukes-500 font-semibold hover:text-stLukes-600 transition-colors group">
-                            View All Test Menus
-                            <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-                        </a>
-                    </ScrollReveal>
-                </div>
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-12">
+          <ul className="flex gap-2 overflow-x-auto pb-2 lg:flex-col lg:overflow-visible lg:pb-0" role="list">
+            {services.map((s, i) => (
+              <li key={s.slug} className="shrink-0 lg:shrink">
+                <button
+                  type="button"
+                  onClick={() => setActive(i)}
+                  onMouseEnter={() => {
+                    if (window.matchMedia("(hover: hover)").matches) setActive(i);
+                  }}
+                  onFocus={() => setActive(i)}
+                  className={cn(
+                    "w-full rounded-xl border px-4 py-3.5 text-left transition-colors min-h-11",
+                    i === active
+                      ? "border-brand-primary-dark bg-brand-primary-soft"
+                      : "border-border bg-surface hover:border-border-strong",
+                  )}
+                  aria-current={i === active ? "true" : undefined}
+                >
+                  <span className="block font-semibold text-text-primary">
+                    {s.name.replace(" in Ja-Ela", "").replace(" in Ja-Ela & Surrounds", "")}
+                  </span>
+                  <span className="mt-1 hidden text-sm text-text-muted lg:block line-clamp-2">
+                    {s.shortDesc}
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {services.map((service, index) => {
-                        const Icon = service.icon;
-                        return (
-                            <ScrollReveal key={index} delay={service.delay}>
-                                <a href={service.href} className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl hover:border-stLukes-100 transition-all duration-300 group cursor-pointer h-full flex flex-col">
-
-                                    <div className="w-14 h-14 rounded-2xl bg-stLukes-50 text-stLukes-500 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-stLukes-500 group-hover:text-white transition-all duration-300">
-                                        <Icon size={28} />
-                                    </div>
-
-                                    <h4 className="text-xl font-bold text-slate-900 mb-3 group-hover:text-stLukes-500 transition-colors">
-                                        {service.title}
-                                    </h4>
-                                    <p className="text-slate-600 leading-relaxed flex-grow">
-                                        {service.description}
-                                    </p>
-
-                                    <div className="mt-8 flex items-center gap-2 text-sm font-semibold text-slate-400 group-hover:text-stLukes-500 transition-colors">
-                                        Learn more <ArrowRight size={16} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
-                                    </div>
-                                </a>
-                            </ScrollReveal>
-                        );
-                    })}
-                </div>
-
+          <div className="overflow-hidden rounded-2xl border border-border bg-surface-soft">
+            <div className="relative aspect-[16/10] bg-white">
+              {visual && (
+                <Image
+                  src={visual.src}
+                  alt={visual.alt}
+                  fill
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  className={cn(
+                    "p-6",
+                    service.slug === "home-blood-collection" ? "object-cover p-0" : "object-contain",
+                  )}
+                />
+              )}
             </div>
-        </section>
-    );
+            <div className="p-6 md:p-8">
+              <h3 className="type-h3 text-text-primary">{service.name}</h3>
+              <p className="mt-3 text-text-secondary leading-relaxed">{service.what}</p>
+              {visual && (
+                visual.href.startsWith("tel:") ? (
+                  <a href={visual.href} className="btn btn-primary mt-6">
+                    {visual.cta}
+                    <ArrowRight size={16} className="btn-arrow" />
+                  </a>
+                ) : (
+                  <Link href={visual.href} className="btn btn-primary mt-6">
+                    {visual.cta}
+                    <ArrowRight size={16} className="btn-arrow" />
+                  </Link>
+                )
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 }

@@ -1,31 +1,43 @@
-import dynamic from "next/dynamic";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import StickyMobileActions from "@/components/StickyMobileActions";
 import Hero from "@/components/Hero";
+import HomePricing from "@/components/HomePricing";
+import HomeCollection from "@/components/HomeCollection";
 import Features from "@/components/Features";
 import Analyzers from "@/components/Analyzers";
 import SimpleSteps from "@/components/SimpleSteps";
 import Pricing from "@/components/Pricing";
 import Locations from "@/components/Locations";
+import HealthCampCarousel from "@/components/HealthCampCarousel";
 import Blog from "@/components/Blog";
-import Footer from "@/components/Footer";
+import FinalCTA from "@/components/FinalCTA";
 
-const HealthCampCarousel = dynamic(
-  () => import("@/components/HealthCampCarousel"),
-);
-
+/**
+ * Section rhythm, deliberately alternating rather than stacking card grids:
+ *   big moment (Hero) → utility (price finder) → story (home collection)
+ *   → interaction (services) → proof (technology) → story (why)
+ *   → utility (locations) → proof (health camps) → story (blog) → CTA
+ */
 export default function Home() {
   return (
-    <main className="min-h-screen bg-white">
+    <div className="flex min-h-screen flex-col bg-surface">
       <Navbar />
-      <Hero />
-      <Features />
-      <Analyzers />
-      <SimpleSteps />
-      <Pricing />
-      <Locations />
-      <HealthCampCarousel />
-      <Blog />
+      <main id="main-content">
+        <Hero />
+        <HomePricing />
+        <HomeCollection />
+        <Features />
+        <Analyzers />
+        <SimpleSteps />
+        <Pricing />
+        <Locations />
+        <HealthCampCarousel />
+        <Blog />
+        <FinalCTA />
+      </main>
       <Footer />
-    </main>
+      <StickyMobileActions />
+    </div>
   );
 }

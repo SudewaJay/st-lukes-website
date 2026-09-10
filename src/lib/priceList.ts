@@ -118,3 +118,17 @@ export const priceList: PriceCategory[] = [
     tests: [{ name: "Full Body Tests", price: 4300 }],
   },
 ];
+
+export type FlatTest = Test & { category: string };
+
+export const allTests: FlatTest[] = priceList.flatMap((cat) =>
+  cat.tests.map((t) => ({ ...t, category: cat.category })),
+);
+
+export const testCount = allTests.length;
+
+export const formatLKR = (n: number) => n.toLocaleString("en-LK");
+
+export function findTest(name: string): FlatTest | undefined {
+  return allTests.find((t) => t.name === name);
+}

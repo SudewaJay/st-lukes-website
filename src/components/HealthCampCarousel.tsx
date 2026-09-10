@@ -1,252 +1,247 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { ChevronLeft, ChevronRight, HeartPulse, ShieldAlert, Award } from "lucide-react";
-import { motion, AnimatePresence, type Variants } from "framer-motion";
-import { ScrollReveal } from "./ui/ScrollReveal";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 import CldImage from "./CldImage";
+import { cn } from "@/lib/cn";
 
-interface Slide {
-    id: number;
-    publicId: string;
-    title: string;
-    description: string;
-    badge: string;
-    icon: typeof HeartPulse;
-}
+type Slide = {
+  publicId: string;
+  title: string;
+  description: string;
+  badge: string;
+};
 
 const slides: Slide[] = [
-    {
-        id: 1,
-        publicId: "v1781057107/484407834_659255019896801_3765573860770218545_n_uurwq0.jpg",
-        title: "Free Blood Sugar & Diabetes Screening",
-        description: "Helping community members detect early markers for diabetes with quick, accurate blood sugar testing administered by our trained phlebotomists.",
-        badge: "Outreach Screening",
-        icon: HeartPulse,
-    },
-    {
-        id: 2,
-        publicId: "v1781057107/484739243_659254396563530_2331351593399046075_n_ks7u5d.jpg",
-        title: "Professional Doctor Consultations",
-        description: "Patients receive immediate, personalized guidance from medical professionals who explain laboratory reports and suggest lifestyle improvements.",
-        badge: "Medical Advice",
-        icon: Award,
-    },
-    {
-        id: 3,
-        publicId: "v1781057107/485045013_659254436563526_4404986998653390691_n_y09qrg.jpg",
-        title: "Vital Health Indicators Check",
-        description: "Monitoring blood pressure and checking general health vitals to help residents maintain active and healthy lives.",
-        badge: "Wellness Vitals",
-        icon: ShieldAlert,
-    },
-    {
-        id: 4,
-        publicId: "v1781057107/484816069_659255086563461_6644517396448799252_n_i3xc5c.jpg",
-        title: "Mobile Lab Support & Reporting",
-        description: "Conducting diagnostic setups and sample verification on-site to ensure patients get reliable laboratory results as fast as possible.",
-        badge: "On-Site Laboratory",
-        icon: HeartPulse,
-    },
+  {
+    publicId:
+      "v1781057107/484407834_659255019896801_3765573860770218545_n_uurwq0.jpg",
+    title: "Free blood sugar and diabetes screening",
+    description:
+      "Community members are screened for early diabetes markers with quick blood sugar testing, administered by our own phlebotomists.",
+    badge: "Outreach screening",
+  },
+  {
+    publicId:
+      "v1781057107/484739243_659254396563530_2331351593399046075_n_ks7u5d.jpg",
+    title: "Consultations with medical professionals",
+    description:
+      "Patients get their laboratory reports explained on the spot, with practical guidance on what the numbers mean.",
+    badge: "Medical advice",
+  },
+  {
+    publicId:
+      "v1781057107/485045013_659254436563526_4404986998653390691_n_y09qrg.jpg",
+    title: "Vital health indicator checks",
+    description:
+      "Blood pressure and general vitals are recorded so residents can track the basics between full screenings.",
+    badge: "Wellness vitals",
+  },
+  {
+    publicId:
+      "v1781057107/484816069_659255086563461_6644517396448799252_n_i3xc5c.jpg",
+    title: "Mobile laboratory support",
+    description:
+      "Diagnostic setup and sample verification happen on site, so results come back as quickly as they would at the lab.",
+    badge: "On-site laboratory",
+  },
 ];
 
+const INTERVAL = 6000;
+
+/**
+ * Editorial gallery of the free health camps. These are the only photographs
+ * on the site of the business actually serving its community, so they are
+ * given the space they deserve rather than a thumbnail strip.
+ */
 export default function HealthCampCarousel() {
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [isPlaying, setIsPlaying] = useState(true);
-    const [direction, setDirection] = useState(0); // -1 for left, 1 for right
-    const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const [index, setIndex] = useState(0);
+  const [playing, setPlaying] = useState(true);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-    const slideNext = () => {
-        setDirection(1);
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % slides.length);
-    };
+  const go = useCallback((i: number) => {
+    setIndex(((i % slides.length) + slides.length) % slides.length);
+  }, []);
 
-    const slidePrev = () => {
-        setDirection(-1);
-        setCurrentIndex((prevIndex) => (prevIndex - 1 + slides.length) % slides.length);
-    };
+  const next = useCallback(() => go(index + 1), [go, index]);
+  const prev = useCallback(() => go(index - 1), [go, index]);
 
-    const handleDotClick = (index: number) => {
-        setDirection(index > currentIndex ? 1 : -1);
-        setCurrentIndex(index);
-    };
+  useEffect(() => {
+    if (!playing) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const t = setInterval(() => setIndex((i) => (i + 1) % slides.length), INTERVAL);
+    return () => clearInterval(t);
+  }, [playing, index]);
 
-    // Autoplay logic
-    useEffect(() => {
-        if (isPlaying) {
-            timerRef.current = setInterval(slideNext, 6000);
-        }
-        return () => {
-            if (timerRef.current) clearInterval(timerRef.current);
-        };
-    }, [isPlaying, currentIndex]);
+  // Swipe
+  const touch = useRef<number | null>(null);
+  const onTouchStart = (e: React.TouchEvent) => {
+    touch.current = e.targetTouches[0].clientX;
+  };
+  const onTouchEnd = (e: React.TouchEvent) => {
+    if (touch.current === null) return;
+    const delta = touch.current - e.changedTouches[0].clientX;
+    if (Math.abs(delta) > 50) {
+      setPlaying(false);
+      if (delta > 0) next();
+      else prev();
+    }
+    touch.current = null;
+  };
 
-    // Handle touch swipe for mobile responsiveness
-    const [touchStart, setTouchStart] = useState<number | null>(null);
-    const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "ArrowRight") {
+      e.preventDefault();
+      setPlaying(false);
+      next();
+    } else if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      setPlaying(false);
+      prev();
+    }
+  };
 
-    const minSwipeDistance = 50;
+  const slide = slides[index];
 
-    const onTouchStart = (e: React.TouchEvent) => {
-        setTouchEnd(null);
-        setTouchStart(e.targetTouches[0].clientX);
-    };
+  return (
+    <section className="section-padding bg-surface-dark text-text-inverse" id="health-camp">
+      <div className="container-content">
+        <div className="mb-10 max-w-2xl md:mb-12">
+          <p className="eyebrow eyebrow-invert mb-3">Serving our community</p>
+          <h2 className="type-h2 text-white">
+            St. Luke&apos;s free health camps.
+          </h2>
+          <p className="mt-4 text-lg leading-relaxed text-white/70">
+            We run free diagnostics, vital checks and specialist consultations in
+            the towns we serve. These are our own photographs, from our own camps.
+          </p>
+        </div>
 
-    const onTouchMove = (e: React.TouchEvent) => {
-        setTouchEnd(e.targetTouches[0].clientX);
-    };
+        <div
+          ref={containerRef}
+          role="group"
+          aria-roledescription="carousel"
+          aria-label="Health camp photographs"
+          tabIndex={0}
+          onKeyDown={onKeyDown}
+          onTouchStart={onTouchStart}
+          onTouchEnd={onTouchEnd}
+          onMouseEnter={() => setPlaying(false)}
+          onMouseLeave={() => setPlaying(true)}
+          onFocus={() => setPlaying(false)}
+          className="grid gap-6 rounded-2xl outline-none lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] lg:gap-10"
+        >
+          {/* Stage */}
+          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-black md:aspect-[16/10]">
+            {slides.map((s, i) => (
+              <CldImage
+                key={s.publicId}
+                publicId={s.publicId}
+                alt={s.title}
+                fill
+                priority={i === 0}
+                sizes="(min-width: 1024px) 62vw, 100vw"
+                className={cn(
+                  "object-cover transition-opacity duration-500",
+                  i === index ? "opacity-100" : "opacity-0",
+                )}
+                aria-hidden={i !== index}
+              />
+            ))}
 
-    const onTouchEnd = () => {
-        if (!touchStart || !touchEnd) return;
-        const distance = touchStart - touchEnd;
-        const isLeftSwipe = distance > minSwipeDistance;
-        const isRightSwipe = distance < -minSwipeDistance;
-        if (isLeftSwipe) {
-            slideNext();
-        } else if (isRightSwipe) {
-            slidePrev();
-        }
-    };
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"
+            />
 
-    const slideVariants: Variants = {
-        enter: (dir: number) => ({
-            x: dir > 0 ? "100%" : "-100%",
-            opacity: 0,
-            scale: 0.95,
-        }),
-        center: {
-            x: 0,
-            opacity: 1,
-            scale: 1,
-            transition: {
-                x: { type: "spring" as const, stiffness: 300, damping: 30 },
-                opacity: { duration: 0.4 },
-                scale: { duration: 0.4 },
-            },
-        },
-        exit: (dir: number) => ({
-            x: dir < 0 ? "100%" : "-100%",
-            opacity: 0,
-            scale: 0.95,
-            transition: {
-                x: { type: "spring" as const, stiffness: 300, damping: 30 },
-                opacity: { duration: 0.4 },
-                scale: { duration: 0.4 },
-            },
-        }),
-    };
+            <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-3 p-4">
+              <p className="type-numeric rounded-lg bg-black/45 px-3 py-1.5 text-sm font-semibold text-white backdrop-blur-sm">
+                {String(index + 1).padStart(2, "0")}
+                <span className="text-white/70">
+                  {" / "}
+                  {String(slides.length).padStart(2, "0")}
+                </span>
+              </p>
 
-    const CurrentIcon = slides[currentIndex].icon;
-
-    return (
-        <section className="py-24 bg-gradient-to-b from-white to-slate-50 overflow-hidden" id="health-camp">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                
-                {/* Header */}
-                <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
-                    <div className="max-w-2xl">
-                        <ScrollReveal>
-                            <h2 className="text-sm font-bold tracking-widest text-stLukes-500 uppercase mb-3">
-                                Serving Our Community
-                            </h2>
-                            <h3 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">
-                                St. Luke's Free Health Camps.
-                            </h3>
-                            <p className="mt-4 text-slate-600 text-base md:text-lg">
-                                We regularly organize free medical diagnostics, vital checks, and specialist consultations, bringing quality healthcare to local communities.
-                            </p>
-                        </ScrollReveal>
-                    </div>
-                </div>
-
-                {/* Carousel Area */}
-                <ScrollReveal delay={0.1}>
-                    <div 
-                        className="relative w-full aspect-[4/3] md:aspect-[21/9] rounded-[2rem] overflow-hidden bg-slate-900 border border-slate-200/50 shadow-2xl group"
-                        onMouseEnter={() => setIsPlaying(false)}
-                        onMouseLeave={() => setIsPlaying(true)}
-                        onTouchStart={onTouchStart}
-                        onTouchMove={onTouchMove}
-                        onTouchEnd={onTouchEnd}
-                    >
-                        {/* Slides Container */}
-                        <div className="absolute inset-0 w-full h-full">
-                            <AnimatePresence initial={false} custom={direction} mode="popLayout">
-                                <motion.div
-                                    key={currentIndex}
-                                    custom={direction}
-                                    variants={slideVariants}
-                                    initial="enter"
-                                    animate="center"
-                                    exit="exit"
-                                    className="absolute inset-0 w-full h-full"
-                                >
-                                    <div className="relative w-full h-full">
-                                        {/* Image */}
-                                        <CldImage 
-                                            publicId={slides[currentIndex].publicId} 
-                                            alt={slides[currentIndex].title}
-                                            fill
-                                            priority
-                                            sizes="(min-width: 1200px) 1200px, 100vw"
-                                            className="object-cover object-center brightness-[0.85] transition-all duration-700"
-                                        />
-                                        
-                                        {/* Overlay Shadow for Text Readability */}
-                                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent"></div>
-                                        
-                                        {/* Text Details Box */}
-                                        <div className="absolute bottom-6 left-6 right-6 md:bottom-12 md:left-12 md:max-w-xl bg-white/10 backdrop-blur-md border border-white/20 p-6 md:p-8 rounded-[1.5rem] text-white shadow-lg">
-                                            <span className="inline-flex items-center gap-2 text-[10px] md:text-xs font-bold uppercase tracking-widest text-stLukes-50 bg-stLukes-500 px-3 py-1 rounded-full mb-3 md:mb-4">
-                                                <CurrentIcon size={12} className="animate-pulse" />
-                                                {slides[currentIndex].badge}
-                                            </span>
-                                            <h4 className="text-xl md:text-2xl font-bold tracking-tight mb-2 leading-tight">
-                                                {slides[currentIndex].title}
-                                            </h4>
-                                            <p className="text-xs md:text-sm text-slate-200 leading-relaxed font-light">
-                                                {slides[currentIndex].description}
-                                            </p>
-                                        </div>
-                                    </div>
-                                </motion.div>
-                            </AnimatePresence>
-                        </div>
-
-                        {/* Navigation Arrows */}
-                        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between px-4 z-20 pointer-events-none">
-                            <button
-                                onClick={slidePrev}
-                                className="pointer-events-auto w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/20 hover:bg-white/95 backdrop-blur-sm text-white hover:text-slate-900 border border-white/10 hover:border-white flex items-center justify-center transition-all duration-300 shadow-md group/btn scale-90 sm:scale-100 cursor-pointer"
-                                aria-label="Previous slide"
-                            >
-                                <ChevronLeft className="w-6 h-6 group-hover/btn:-translate-x-0.5 transition-transform" />
-                            </button>
-                            <button
-                                onClick={slideNext}
-                                className="pointer-events-auto w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/20 hover:bg-white/95 backdrop-blur-sm text-white hover:text-slate-900 border border-white/10 hover:border-white flex items-center justify-center transition-all duration-300 shadow-md group/btn scale-90 sm:scale-100 cursor-pointer"
-                                aria-label="Next slide"
-                            >
-                                <ChevronRight className="w-6 h-6 group-hover/btn:translate-x-0.5 transition-transform" />
-                            </button>
-                        </div>
-
-                        {/* Pagination Dots */}
-                        <div className="absolute bottom-6 md:bottom-12 right-6 md:right-12 z-20 flex gap-2">
-                            {slides.map((_, index) => (
-                                <button
-                                    key={index}
-                                    onClick={() => handleDotClick(index)}
-                                    className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
-                                        index === currentIndex ? "w-8 bg-stLukes-500" : "w-2.5 bg-white/45 hover:bg-white/80"
-                                    }`}
-                                    aria-label={`Go to slide ${index + 1}`}
-                                />
-                            ))}
-                        </div>
-                    </div>
-                </ScrollReveal>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setPlaying((p) => !p)}
+                  aria-label={playing ? "Pause slideshow" : "Play slideshow"}
+                  className="flex h-11 w-11 items-center justify-center rounded-lg bg-black/45 text-white backdrop-blur-sm transition-colors hover:bg-black/70"
+                >
+                  {playing ? <Pause size={16} /> : <Play size={16} />}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPlaying(false);
+                    prev();
+                  }}
+                  aria-label="Previous photograph"
+                  className="flex h-11 w-11 items-center justify-center rounded-lg bg-black/45 text-white backdrop-blur-sm transition-colors hover:bg-black/70"
+                >
+                  <ChevronLeft size={18} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPlaying(false);
+                    next();
+                  }}
+                  aria-label="Next photograph"
+                  className="flex h-11 w-11 items-center justify-center rounded-lg bg-black/45 text-white backdrop-blur-sm transition-colors hover:bg-black/70"
+                >
+                  <ChevronRight size={18} />
+                </button>
+              </div>
             </div>
-        </section>
-    );
+          </div>
+
+          {/* Caption + thumbnail rail */}
+          <div className="flex flex-col justify-between">
+            <div aria-live="polite" aria-atomic="true">
+              <p className="eyebrow eyebrow-invert mb-3">{slide.badge}</p>
+              <h3 key={slide.title} className="panel-in type-h3 text-white">
+                {slide.title}
+              </h3>
+              <p key={slide.description} className="panel-in mt-4 leading-relaxed text-white/70">
+                {slide.description}
+              </p>
+            </div>
+
+            <ul className="mt-8 grid grid-cols-4 gap-2">
+              {slides.map((s, i) => (
+                <li key={s.publicId}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setPlaying(false);
+                      go(i);
+                    }}
+                    aria-label={`Show photograph ${i + 1}: ${s.title}`}
+                    aria-current={i === index ? "true" : undefined}
+                    className={cn(
+                      "relative block aspect-[4/3] w-full overflow-hidden rounded-lg ring-offset-2 ring-offset-[#0f172a] transition-all",
+                      i === index
+                        ? "ring-2 ring-brand-primary"
+                        : "opacity-70 hover:opacity-100",
+                    )}
+                  >
+                    <CldImage
+                      publicId={s.publicId}
+                      alt=""
+                      fill
+                      sizes="140px"
+                      className="object-cover"
+                    />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 }

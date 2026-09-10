@@ -1,12 +1,8 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import dynamic from "next/dynamic";
+import { Inter, Barlow_Condensed } from "next/font/google";
 import "./globals.css";
 import { JsonLd } from "@/components/JsonLd";
-
-const ChatWidget = dynamic(
-  () => import("@/components/ChatWidget").then((m) => m.ChatWidget),
-);
+import RevealObserver from "@/components/ui/RevealObserver";
 import {
   medicalBusinessSchema,
   faqSchema,
@@ -17,6 +13,16 @@ import {
 const inter = Inter({
   variable: "--font-sans",
   subsets: ["latin"],
+  display: "swap",
+});
+
+// Display face — the brand's editorial voice. Condensed, so headlines can run
+// large without wrapping, which is what the layout depends on.
+const barlowCondensed = Barlow_Condensed({
+  variable: "--font-display",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -67,13 +73,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} antialiased`}>
+      <body className={`${inter.variable} ${barlowCondensed.variable} antialiased`}>
+        <a href="#main-content" className="skip-link">
+          Skip to main content
+        </a>
         <JsonLd data={medicalBusinessSchema} />
         <JsonLd data={websiteSchema} />
         <JsonLd data={siteNavigationSchema} />
         <JsonLd data={faqSchema} />
         {children}
-        <ChatWidget />
+        <RevealObserver />
       </body>
     </html>
   );

@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { MapPin, ArrowRight } from "lucide-react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import { ArrowRight, Building2, Home, Phone } from "lucide-react";
+import { PageShell } from "@/components/ui/PageShell";
+import { Reveal } from "@/components/ui/Reveal";
 import { locations } from "@/lib/locations";
 
 export const metadata: Metadata = {
@@ -13,73 +13,128 @@ export const metadata: Metadata = {
 };
 
 export default function LocationsIndex() {
+  const walkIn = locations.filter((l) => !l.isServiceArea);
+  const serviceAreas = locations.filter((l) => l.isServiceArea);
+
   return (
-    <main className="min-h-screen bg-white flex flex-col">
-      <Navbar />
-
-      <section className="pt-32 pb-12 px-4 sm:px-6 lg:px-8 bg-stLukes-50">
-        <div className="mx-auto max-w-4xl">
-          <p className="text-stLukes-500 text-sm font-semibold uppercase tracking-widest mb-3">
-            Our Network
-          </p>
-          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight mb-5">
-Areas We Serve Across Ja-Ela &amp; Beyond
+    <PageShell>
+      <section className="border-b border-border bg-brand-primary-soft pb-14 pt-28 md:pt-32">
+        <div className="container-content">
+          <p className="eyebrow mb-4">Our network</p>
+          <h1 className="type-h1 max-w-3xl text-text-primary">
+            Areas we serve across Ja-Ela and beyond
           </h1>
-          <p className="text-lg text-slate-700 max-w-2xl">
-            Our lab is on Old Negombo Road, Ja-Ela — walk in any day for your tests. From there we bring home sample collection right along the Negombo Road corridor and up to the airport and Negombo: Kandana, Welisara, Ragama, Wattala, Batagama, Thudella, Seeduwa, Katunayake and Negombo. Every test is priced transparently in LKR, with most reports back within 24 hours.
+          <p className="mt-5 max-w-2xl type-body-large">
+            Our laboratory is on Old Negombo Road, Ja-Ela. From there we bring
+            home sample collection along the Negombo Road corridor, up to the
+            airport and Negombo. Every test is priced in LKR, and most reports
+            are back within 24 hours.
           </p>
         </div>
       </section>
 
-      <section className="py-16 px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-5xl grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {locations.map((loc) => (
-            <Link
-              key={loc.slug}
-              href={`/locations/${loc.slug}`}
-              className="group block p-6 rounded-3xl border border-slate-200 bg-white hover:border-stLukes-500 hover:shadow-xl transition-all"
-            >
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-xl bg-stLukes-50 text-stLukes-500 flex items-center justify-center">
-                  <MapPin size={18} />
-                </div>
-                <div>
-                  <h2 className="text-lg font-bold text-slate-900 group-hover:text-stLukes-600">
-                    {loc.name}
-                  </h2>
-                  {loc.isHQ && (
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-stLukes-600">
-                      Headquarters
+      <section className="section-padding bg-surface">
+        <div className="container-content space-y-14">
+          <div>
+            <div className="mb-7 flex items-center gap-2.5">
+              <Building2 size={18} className="text-brand-primary-dark" aria-hidden="true" />
+              <h2 className="type-h3 text-text-primary">
+                Walk-in and home visits
+              </h2>
+            </div>
+            <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {walkIn.map((loc, i) => (
+                <Reveal as="li" key={loc.slug} delay={(i % 3) * 0.05} className="flex">
+                  <Link
+                    href={`/locations/${loc.slug}`}
+                    className="group flex w-full flex-col rounded-2xl border border-border bg-surface p-6 shadow-sm transition-shadow hover:shadow-lg"
+                  >
+                    <h3 className="type-h3 text-text-primary transition-colors group-hover:text-brand-primary-dark">
+                      {loc.name}
+                    </h3>
+                    {loc.isHQ && (
+                      <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.14em] text-brand-primary-dark">
+                        Headquarters
+                      </p>
+                    )}
+                    <p className="mt-3 flex-1 text-sm leading-relaxed text-text-secondary">
+                      {loc.blurb}
                     </p>
-                  )}
-                </div>
-              </div>
-              <p className="text-sm text-slate-600 leading-relaxed mb-4">{loc.blurb}</p>
-              <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-stLukes-500">
-                View {loc.name} page
-                <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-              </span>
-            </Link>
-          ))}
+                    <p className="link-cta mt-4 text-sm">
+                      {loc.name} details
+                      <ArrowRight
+                        size={14}
+                        className="transition-transform group-hover:translate-x-1"
+                        aria-hidden="true"
+                      />
+                    </p>
+                  </Link>
+                </Reveal>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <div className="mb-3 flex items-center gap-2.5">
+              <Home size={18} className="text-brand-primary-dark" aria-hidden="true" />
+              <h2 className="type-h3 text-text-primary">
+                Home collection service areas
+              </h2>
+            </div>
+            <p className="mb-7 max-w-2xl text-sm text-text-secondary">
+              We do not have a walk-in branch in these towns. A phlebotomist
+              collects your sample at home or at work, and it is processed at
+              our Ja-Ela laboratory.
+            </p>
+            <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {serviceAreas.map((loc, i) => (
+                <Reveal as="li" key={loc.slug} delay={(i % 3) * 0.05} className="flex">
+                  <Link
+                    href={`/locations/${loc.slug}`}
+                    className="group flex w-full flex-col rounded-2xl border border-border-brand bg-brand-primary-soft p-6 transition-colors hover:border-brand-primary-dark"
+                  >
+                    <h3 className="type-h3 text-text-primary transition-colors group-hover:text-brand-primary-dark">
+                      {loc.name}
+                    </h3>
+                    <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.14em] text-brand-primary-dark">
+                      Home visits only
+                    </p>
+                    <p className="mt-3 flex-1 text-sm leading-relaxed text-text-secondary">
+                      {loc.blurb}
+                    </p>
+                    <p className="link-cta mt-4 text-sm">
+                      {loc.name} details
+                      <ArrowRight
+                        size={14}
+                        className="transition-transform group-hover:translate-x-1"
+                        aria-hidden="true"
+                      />
+                    </p>
+                  </Link>
+                </Reveal>
+              ))}
+            </ul>
+          </div>
         </div>
       </section>
 
-      <section className="pb-20 px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-3xl p-8 rounded-3xl bg-stLukes-50 border border-stLukes-100 text-center">
-          <h2 className="text-xl font-bold text-slate-900 mb-2">Don&apos;t see your town?</h2>
-          <p className="text-slate-600 mb-4">
-            Call us — we may still cover your area for home sample collection.
-          </p>
-          <a
-            href="tel:+94711231954"
-            className="inline-flex items-center bg-stLukesRed-500 hover:bg-stLukesRed-600 text-white px-6 py-3 rounded-full font-semibold"
-          >
+      <section className="section-padding bg-surface-soft">
+        <div className="container-content flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
+          <div className="max-w-xl">
+            <h2 className="type-h2 text-text-primary">
+              Don&apos;t see your town?
+            </h2>
+            <p className="mt-3 text-text-secondary">
+              Call us. We may still be able to reach you for home sample
+              collection.
+            </p>
+          </div>
+          <a href="tel:+94711231954" className="btn btn-primary shrink-0" data-track="phone_click">
+            <Phone size={16} aria-hidden="true" />
             Call 071 123 1954
           </a>
         </div>
       </section>
-
-      <Footer />
-    </main>
+    </PageShell>
   );
 }

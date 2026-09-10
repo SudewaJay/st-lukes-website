@@ -1,70 +1,126 @@
-import { ScrollReveal } from "./ui/ScrollReveal";
-import { UserPlus, TestTube, FileCheck } from "lucide-react";
+"use client";
 
+import { useRef, useState } from "react";
+import { cn } from "@/lib/cn";
+
+const values = [
+  {
+    n: "01",
+    title: "Local",
+    line: "Closer to the communities we serve.",
+    body: "Our laboratory is on Old Negombo Road, Ja-Ela. We name the towns we actually cover — from Kandana and Wattala to Seeduwa, Katunayake and Negombo — instead of hiding behind a generic “Colombo and suburbs” line.",
+  },
+  {
+    n: "02",
+    title: "Transparent",
+    line: "Know your test price before visiting.",
+    body: "Every test on our public list is priced in LKR. No hidden charges at the counter. Confirm the published price when you book.",
+  },
+  {
+    n: "03",
+    title: "Technology",
+    line: "Modern diagnostic equipment.",
+    body: "Samples run on BioSystems A15 biochemistry, CLIA immunoassay, Medonic hematology and Audicom electrolyte analyzers — calibrated daily with quality-control samples.",
+  },
+  {
+    n: "04",
+    title: "Human",
+    line: "Care from real people.",
+    body: "Walk-ins, first-time patients and elderly home visits meet the same professional team. Reports are delivered digitally so you can share them with your physician.",
+  },
+];
+
+/**
+ * The values narrative. A proper ARIA tab set: arrow keys move between tabs,
+ * only the selected tab is in the tab order, and the panel is wired to the tab
+ * that labels it.
+ */
 export default function SimpleSteps() {
-    const steps = [
-        {
-            title: "Visit Our Lab or Book Home Collection",
-            description: "Walk into our Ja-Ela laboratory or schedule a convenient home visit online or by phone.",
-            icon: UserPlus,
-            delay: 0,
-        },
-        {
-            title: "Provide Sample",
-            description: "Our friendly, professional phlebotomists will collect your sample quickly and painlessly.",
-            icon: TestTube,
-            delay: 0.2,
-        },
-        {
-            title: "Access Digital Reports Fast",
-            description: "Receive secure, accurate results on your device as soon as they are ready.",
-            icon: FileCheck,
-            delay: 0.4,
-        },
-    ];
+  const [active, setActive] = useState(0);
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const v = values[active];
 
-    return (
-        <section className="py-24 bg-white" id="how-it-works">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    let next = active;
+    if (e.key === "ArrowRight" || e.key === "ArrowDown") next = (active + 1) % values.length;
+    else if (e.key === "ArrowLeft" || e.key === "ArrowUp")
+      next = (active - 1 + values.length) % values.length;
+    else if (e.key === "Home") next = 0;
+    else if (e.key === "End") next = values.length - 1;
+    else return;
 
-                <div className="text-center max-w-2xl mx-auto mb-20">
-                    <ScrollReveal>
-                        <h2 className="text-sm font-bold tracking-widest text-stLukes-500 uppercase mb-3">Simple Process</h2>
-                        <h3 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">
-                            3 Steps to Better Health
-                        </h3>
-                    </ScrollReveal>
-                </div>
+    e.preventDefault();
+    setActive(next);
+    tabRefs.current[next]?.focus();
+  };
 
-                <div className="relative">
-                    {/* Connecting Line */}
-                    <div className="hidden md:block absolute top-[50%] left-[10%] right-[10%] h-0.5 bg-gradient-to-r from-stLukes-100 via-stLukes-200 to-stLukes-100 -translate-y-1/2 z-0"></div>
+  return (
+    <section className="section-padding bg-surface" id="why-st-lukes">
+      <div className="container-content">
+        <p className="eyebrow mb-3">Why St. Luke&apos;s</p>
+        <h2 className="type-h2 mb-10 text-text-primary">
+          A neighbourhood lab, built with intent.
+        </h2>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative z-10">
-                        {steps.map((step, index) => {
-                            const Icon = step.icon;
-                            return (
-                                <ScrollReveal key={index} delay={step.delay} className="flex flex-col items-center text-center">
+        <div className="grid gap-8 lg:grid-cols-[1fr_1.3fr] lg:gap-12">
+          <div
+            role="tablist"
+            aria-label="What St. Luke's stands for"
+            aria-orientation="vertical"
+            onKeyDown={onKeyDown}
+            className="flex gap-3 overflow-x-auto pb-2 lg:flex-col lg:overflow-visible lg:pb-0"
+          >
+            {values.map((item, i) => (
+              <button
+                key={item.n}
+                ref={(el) => {
+                  tabRefs.current[i] = el;
+                }}
+                type="button"
+                role="tab"
+                id={`value-tab-${item.n}`}
+                aria-selected={i === active}
+                aria-controls="value-panel"
+                tabIndex={i === active ? 0 : -1}
+                onClick={() => setActive(i)}
+                className={cn(
+                  "min-h-14 min-w-[10rem] shrink-0 rounded-xl border px-4 py-3 text-left transition-colors lg:min-w-0 lg:shrink",
+                  i === active
+                    ? "border-brand-primary-dark bg-brand-primary-soft"
+                    : "border-border hover:border-border-strong",
+                )}
+              >
+                <span className="type-numeric block text-xs font-semibold text-brand-primary-dark">
+                  {item.n}
+                </span>
+                <span className="mt-0.5 block font-semibold text-text-primary">
+                  {item.title}
+                </span>
+              </button>
+            ))}
+          </div>
 
-                                    {/* Step Number Badge */}
-                                    <div className="w-8 h-8 rounded-full bg-slate-900 text-white text-sm font-bold flex items-center justify-center mb-6 shadow-md absolute top-0 -translate-y-1/2 -ml-12 z-20 border-4 border-white">
-                                        {index + 1}
-                                    </div>
-
-                                    {/* Icon Container */}
-                                    <div className="w-24 h-24 rounded-full bg-white border-8 border-stLukes-50 flex items-center justify-center text-stLukes-500 mb-8 shadow-xl shadow-stLukes-500/10 group-hover:scale-110 transition-transform">
-                                        <Icon size={32} />
-                                    </div>
-
-                                    <h4 className="text-xl font-bold text-slate-900 mb-3">{step.title}</h4>
-                                    <p className="text-slate-600 leading-relaxed max-w-xs">{step.description}</p>
-                                </ScrollReveal>
-                            );
-                        })}
-                    </div>
-                </div>
-
-            </div>
-        </section>
-    );
+          <div
+            key={v.n}
+            id="value-panel"
+            role="tabpanel"
+            aria-labelledby={`value-tab-${v.n}`}
+            tabIndex={0}
+            className="panel-in rounded-2xl bg-brand-primary-soft p-8 md:p-12"
+          >
+            <p
+              aria-hidden="true"
+              className="font-display text-[clamp(2.6rem,6vw,5rem)] leading-[0.92] text-brand-primary-dark"
+            >
+              {v.title.toUpperCase()}
+            </p>
+            <p className="mt-6 text-xl text-text-primary">{v.line}</p>
+            <p className="mt-4 max-w-xl leading-relaxed text-text-secondary">
+              {v.body}
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 }

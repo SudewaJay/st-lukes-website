@@ -1,81 +1,97 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Calendar, User } from "lucide-react";
-import { ScrollReveal } from "./ui/ScrollReveal";
+import { ArrowRight } from "lucide-react";
+import { Reveal } from "./ui/Reveal";
 import { getAllPosts, formatPostDate } from "@/lib/blog";
 
+/**
+ * Editorial teaser: one lead article at full width, the rest as a compact
+ * index. Reads as a publication rather than three identical cards.
+ */
 export default async function Blog() {
-    const posts = (await getAllPosts()).slice(0, 3);
-    if (posts.length === 0) return null;
+  const posts = (await getAllPosts()).slice(0, 4);
+  if (posts.length === 0) return null;
 
-    return (
-        <section className="py-24 bg-white" id="blog">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
-                    <div className="max-w-2xl">
-                        <ScrollReveal>
-                            <h2 className="text-sm font-bold tracking-widest text-stLukes-500 uppercase mb-3">Health Tips &amp; Lab-Test Guides</h2>
-                            <h3 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">
-                                Latest Insights &amp; Advice.
-                            </h3>
-                        </ScrollReveal>
-                    </div>
-                    <ScrollReveal delay={0.2}>
-                        <Link href="/blog" className="flex items-center gap-2 text-stLukes-500 font-semibold hover:text-stLukes-600 transition-colors group border border-slate-200 px-6 py-3 rounded-full hover:bg-slate-50">
-                            Visit Our Blog
-                            <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-                        </Link>
-                    </ScrollReveal>
-                </div>
+  const [lead, ...rest] = posts;
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {posts.map((post, index) => (
-                        <ScrollReveal key={post.slug} delay={index * 0.1}>
-                            <Link
-                                href={`/blog/${post.slug}`}
-                                className="group cursor-pointer h-full flex flex-col border border-slate-100 rounded-3xl overflow-hidden hover:shadow-xl hover:border-stLukes-100 transition-all duration-300"
-                            >
-                                <div className="aspect-[16/9] w-full bg-slate-100 relative overflow-hidden">
-                                    {post.image && (
-                                        <Image
-                                            src={post.image}
-                                            alt={post.title}
-                                            fill
-                                            sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-                                            className="object-cover transition-transform duration-700 group-hover:scale-105"
-                                        />
-                                    )}
-                                    <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-sm px-3 py-1 text-xs font-bold text-stLukes-600 rounded-full">
-                                        {post.category}
-                                    </div>
-                                </div>
+  return (
+    <section className="section-padding bg-surface" id="blog">
+      <div className="container-content">
+        <div className="mb-10 flex flex-col justify-between gap-4 md:mb-12 md:flex-row md:items-end">
+          <div className="max-w-2xl">
+            <p className="eyebrow mb-3">Health guides</p>
+            <h2 className="type-h2 text-text-primary">
+              Understanding your test results.
+            </h2>
+          </div>
+          <Link href="/blog" className="btn btn-secondary !text-sm">
+            All articles
+            <ArrowRight size={15} className="btn-arrow" aria-hidden="true" />
+          </Link>
+        </div>
 
-                                <div className="p-6 flex flex-col flex-grow bg-white">
-                                    <div className="flex items-center gap-4 text-xs text-slate-400 mb-4 font-medium">
-                                        <div className="flex items-center gap-1">
-                                            <Calendar size={14} /> {formatPostDate(post.date)}
-                                        </div>
-                                        <div className="flex items-center gap-1">
-                                            <User size={14} /> {post.author}
-                                        </div>
-                                    </div>
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:gap-12">
+          <Reveal>
+            <Link href={`/blog/${lead.slug}`} className="group block">
+              <div className="media-frame relative aspect-[16/9] overflow-hidden rounded-2xl">
+                {lead.image && (
+                  <Image
+                    src={lead.image}
+                    alt=""
+                    fill
+                    sizes="(min-width: 1024px) 58vw, 100vw"
+                    className="object-cover"
+                  />
+                )}
+              </div>
+              <p className="eyebrow mt-5">{lead.category}</p>
+              <h3 className="type-h3 mt-2 text-text-primary transition-colors group-hover:text-brand-primary-dark">
+                {lead.title}
+              </h3>
+              <p className="mt-3 max-w-xl leading-relaxed text-text-secondary">
+                {lead.excerpt}
+              </p>
+              <p className="mt-4 flex items-center gap-3 text-xs text-text-muted">
+                <time dateTime={lead.date}>{formatPostDate(lead.date)}</time>
+                <span aria-hidden="true">·</span>
+                <span>{lead.author}</span>
+              </p>
+            </Link>
+          </Reveal>
 
-                                    <h4 className="text-xl font-bold text-slate-900 mb-3 group-hover:text-stLukes-500 transition-colors line-clamp-2">
-                                        {post.title}
-                                    </h4>
-                                    <p className="text-slate-600 text-sm leading-relaxed mb-6 line-clamp-3 flex-grow">
-                                        {post.excerpt}
-                                    </p>
-
-                                    <div className="flex items-center gap-2 text-sm font-semibold text-stLukes-500 mt-auto">
-                                        Read Article <ArrowRight size={16} className="group-hover:translate-x-2 transition-transform" />
-                                    </div>
-                                </div>
-                            </Link>
-                        </ScrollReveal>
-                    ))}
-                </div>
-            </div>
-        </section>
-    );
+          <ul className="divide-y divide-border border-t border-border">
+            {rest.map((post, i) => (
+              <Reveal as="li" key={post.slug} delay={0.06 * (i + 1)}>
+                <Link
+                  href={`/blog/${post.slug}`}
+                  className="group flex items-start gap-4 py-5 transition-colors"
+                >
+                  <div className="media-frame relative aspect-square w-20 shrink-0 overflow-hidden rounded-lg sm:w-24">
+                    {post.image && (
+                      <Image
+                        src={post.image}
+                        alt=""
+                        fill
+                        sizes="96px"
+                        className="object-cover"
+                      />
+                    )}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="eyebrow">{post.category}</p>
+                    <h3 className="type-h4 mt-1.5 text-text-primary transition-colors group-hover:text-brand-primary-dark">
+                      {post.title}
+                    </h3>
+                    <p className="mt-1.5 text-xs text-text-muted">
+                      <time dateTime={post.date}>{formatPostDate(post.date)}</time>
+                    </p>
+                  </div>
+                </Link>
+              </Reveal>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+  );
 }

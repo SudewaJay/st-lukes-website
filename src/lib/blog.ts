@@ -60,7 +60,12 @@ async function readAll(): Promise<Post[]> {
 /** All posts, newest first. Excludes drafts in production. */
 export async function getAllPosts(): Promise<PostMeta[]> {
   const all = await readAll();
-  return all.map(({ content: _content, ...meta }) => meta);
+  // Metadata only — the index pages never need the MDX body.
+  return all.map((post) => {
+    const meta = { ...post } as Partial<Post>;
+    delete meta.content;
+    return meta as PostMeta;
+  });
 }
 
 /** A single post by slug, with full MDX content. Null if not found. */

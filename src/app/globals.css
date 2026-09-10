@@ -1,44 +1,620 @@
 @import "tailwindcss";
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   ST. LUKE'S MEDICAL LABORATORY — DESIGN SYSTEM
+   ═══════════════════════════════════════════════════════════════════════════
+   Design DNA Principles:
+   01 — Evidence over decoration
+   02 — Clarity over complexity
+   03 — Human over stock
+   04 — Intent over repetition
+   05 — Motion with purpose
+   06 — Accessibility by default
+   07 — Mobile is first-class
+   08 — Trust is earned
+   09 — Performance is part of UX
+   10 — Every screen has a next step
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Root Design Tokens ──────────────────────────────────────────────────── */
 :root {
   --background: #ffffff;
   --foreground: #0f172a;
-  /* stLukes-900 */
+
+  /* Brand Green — Primary */
+  --brand-primary: #58B330;         /* fills, backgrounds, decorative */
+  --brand-primary-hover: #4DA029;
+  --brand-primary-dark: #3F7D24;    /* accessible text green */
+  --brand-primary-darker: #2F5E1B;  /* dark green for emphasis */
+  --brand-primary-soft: #f4fbf0;    /* tinted backgrounds */
+
+  /* Brand Red — Accent / Urgency */
+  --brand-red: #DC2626;
+  --brand-red-hover: #B91C1C;
+  --brand-red-dark: #991b1b;
+  --brand-red-soft: #fef2f2;
+
+  /* Text Hierarchy */
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --text-subtle: #94a3b8;
+  --text-inverse: #ffffff;
+
+  /* Surfaces */
+  --surface: #ffffff;
+  --surface-soft: #f8fafc;
+  --surface-elevated: #ffffff;
+  --surface-dark: #0f172a;
+  --surface-brand: #f4fbf0;
+
+  /* Borders */
+  --border: #e2e8f0;
+  --border-strong: #cbd5e1;
+  --border-brand: #d1e7c4;
+
+  /* Feedback */
+  --success: #16a34a;
+  --warning: #d97706;
+  --error: #dc2626;
+  --info: #0284c7;
+
+  /* Typography */
+  /* next/font overrides --font-sans and --font-display on <body>. */
+
+  /* Spacing Scale (px → rem at 16px base) */
+  --space-1: 0.25rem;   /* 4px */
+  --space-2: 0.5rem;    /* 8px */
+  --space-3: 0.75rem;   /* 12px */
+  --space-4: 1rem;      /* 16px */
+  --space-5: 1.25rem;   /* 20px */
+  --space-6: 1.5rem;    /* 24px */
+  --space-8: 2rem;      /* 32px */
+  --space-10: 2.5rem;   /* 40px */
+  --space-12: 3rem;     /* 48px */
+  --space-16: 4rem;     /* 64px */
+  --space-20: 5rem;     /* 80px */
+  --space-24: 6rem;     /* 96px */
+  --space-30: 7.5rem;   /* 120px */
+  --space-40: 10rem;    /* 160px */
+
+  /* Border Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.04), 0 2px 4px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.04), 0 4px 6px rgba(0, 0, 0, 0.06);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.06), 0 8px 10px rgba(0, 0, 0, 0.04);
+
+  /* Motion */
+  --duration-micro: 150ms;
+  --duration-interaction: 250ms;
+  --duration-reveal: 500ms;
+  --duration-hero: 700ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Layout */
+  --content-width: 1200px;
+  --wide-width: 1400px;
+  --text-measure: 72ch;
 }
 
+/* ── Tailwind v4 Theme Extension ─────────────────────────────────────────── */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: 'Inter', sans-serif;
+
+  /* Font families — next/font sets --font-sans / --font-display on <body>.
+     These are the fallbacks used before that class applies. */
+  --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display: "Barlow Condensed", Inter, ui-sans-serif, system-ui, sans-serif;
+
+  /* Semantic brand — Tailwind: bg-brand-primary, text-brand-primary-dark */
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-primary-hover: var(--brand-primary-hover);
+  --color-brand-primary-dark: var(--brand-primary-dark);
+  --color-brand-primary-darker: var(--brand-primary-darker);
+  --color-brand-primary-soft: var(--brand-primary-soft);
+  --color-brand-red: var(--brand-red);
+  --color-brand-red-hover: var(--brand-red-hover);
+  --color-brand-red-dark: var(--brand-red-dark);
+  --color-brand-red-soft: var(--brand-red-soft);
+
+  /* Semantic text */
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-text-inverse: var(--text-inverse);
+
+  /* Semantic surfaces */
+  --color-surface: var(--surface);
+  --color-surface-soft: var(--surface-soft);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-surface-dark: var(--surface-dark);
+
+  /* Semantic borders */
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-border-brand: var(--border-brand);
+
+  /* States */
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-error: var(--error);
+  --color-info: var(--info);
+
+  /* Complete stLukes green palette — mapped to semantic scale */
   --color-stLukes-50: #f4fbf0;
   --color-stLukes-100: #e5f5df;
+  --color-stLukes-200: #c8e8b8;
+  --color-stLukes-300: #9ed685;
+  --color-stLukes-400: #74c455;
   --color-stLukes-500: #58b330;
   --color-stLukes-600: #469623;
+  --color-stLukes-700: #3f7d24;
+  --color-stLukes-800: #2f5e1b;
   --color-stLukes-900: #0f172a;
+
+  /* Complete stLukesRed palette */
   --color-stLukesRed-50: #fef2f2;
-  --color-stLukesRed-500: #ff0000;
-  --color-stLukesRed-600: #dc2626;
+  --color-stLukesRed-100: #fee2e2;
+  --color-stLukesRed-500: #dc2626;
+  --color-stLukesRed-600: #b91c1c;
+  --color-stLukesRed-700: #991b1b;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* ── Base Styles ─────────────────────────────────────────────────────────── */
 html {
   scroll-behavior: smooth;
+  color-scheme: light only;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
 }
 
+/* ── Typography System ───────────────────────────────────────────────────── */
+/* Display face is Barlow Condensed. Condensed faces are already tight, so the
+   scale runs larger and the tracking stays near-neutral rather than negative. */
+.text-display {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.02;
+  letter-spacing: -0.005em;
+  text-wrap: balance;
+}
+
+.text-headline {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: 0;
+}
+
+.type-display { font-family: var(--font-display); font-weight: 600; font-size: clamp(2.6rem, 7vw, 5.5rem); line-height: 0.98; letter-spacing: -0.01em; text-wrap: balance; }
+.type-h1 { font-family: var(--font-display); font-weight: 600; font-size: clamp(2.4rem, 5.6vw, 4.25rem); line-height: 1.02; letter-spacing: -0.005em; text-wrap: balance; }
+.type-h2 { font-family: var(--font-display); font-weight: 600; font-size: clamp(2rem, 4.2vw, 3.1rem); line-height: 1.06; letter-spacing: -0.005em; text-wrap: balance; }
+.type-h3 { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.4rem, 2.2vw, 1.85rem); line-height: 1.12; }
+.type-h4 { font-family: var(--font-sans); font-weight: 600; font-size: 1.0625rem; line-height: 1.35; letter-spacing: -0.01em; }
+.type-body-large { font-size: 1.0625rem; line-height: 1.65; color: var(--color-text-secondary); }
+@media (min-width: 768px) { .type-body-large { font-size: 1.15rem; } }
+.type-body { font-size: 1rem; line-height: 1.65; }
+.type-body-small { font-size: 0.875rem; line-height: 1.55; }
+.type-caption { font-size: 0.75rem; line-height: 1.4; color: var(--color-text-muted); }
+.type-label { font-size: 0.8125rem; font-weight: 600; letter-spacing: -0.005em; }
+
+/* Numerals in a condensed face read poorly at small sizes — prices, counters
+   and stats use the body face with tabular figures instead. */
+.type-numeric {
+  font-family: var(--font-sans);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-brand-primary-dark);
+}
+
+/* Eyebrow on a dark surface. #58B330 on #0f172a measures 7.6:1, where the
+   dark text green would only reach 3.6:1. Doubled selector so it wins over
+   .eyebrow regardless of how the stylesheet is ordered at build time. */
+.eyebrow-invert.eyebrow-invert {
+  color: var(--color-brand-primary);
+}
+
+/* ── Focus System ────────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--color-brand-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Remove default focus ring for mouse users */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ── Button System ───────────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  border-radius: var(--radius-md);
+  min-height: 48px;
+  padding: 0.75rem 1.75rem;
+  transition: all var(--duration-interaction) var(--ease-out);
+  cursor: pointer;
+  text-decoration: none;
+  border: none;
+  white-space: nowrap;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn .btn-arrow {
+  transition: transform var(--duration-interaction) var(--ease-out);
+}
+
+.btn:hover .btn-arrow {
+  transform: translateX(4px);
+}
+
+.btn-primary {
+  background: var(--color-brand-primary-dark);
+  color: var(--color-text-inverse);
+}
+
+.btn-primary:hover {
+  background: var(--color-brand-primary-darker);
+  box-shadow: 0 4px 14px rgba(47, 94, 27, 0.22);
+}
+
+.btn-secondary {
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+}
+
+.btn-secondary:hover {
+  background: var(--color-surface-soft);
+  border-color: var(--color-border-strong);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--color-brand-primary-dark);
+}
+
+.btn-ghost:hover {
+  background: var(--color-brand-primary-soft);
+}
+
+.btn-danger {
+  background: var(--color-brand-red);
+  color: var(--color-text-inverse);
+}
+
+.btn-danger:hover {
+  background: var(--color-brand-red-hover);
+}
+
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ── Card System ─────────────────────────────────────────────────────────── */
+.card-elevated {
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--duration-interaction) var(--ease-out),
+              border-color var(--duration-interaction) var(--ease-out);
+}
+
+.card-elevated:hover {
+  box-shadow: var(--shadow-lg);
+  border-color: var(--color-border-brand);
+}
+
+.card-flat {
+  background: var(--color-surface-soft);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+/* ── Utility Classes ─────────────────────────────────────────────────────── */
+.container-content {
+  max-width: var(--content-width);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .container-content {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container-content {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+.container-wide {
+  max-width: var(--wide-width);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .container-wide {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container-wide {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+.text-measure {
+  max-width: var(--text-measure);
+}
+
+/* Section spacing */
+.section-padding {
+  padding-top: var(--space-16);
+  padding-bottom: var(--space-16);
+}
+
+@media (min-width: 768px) {
+  .section-padding {
+    padding-top: var(--space-20);
+    padding-bottom: var(--space-20);
+  }
+}
+
+@media (min-width: 1024px) {
+  .section-padding {
+    padding-top: var(--space-24);
+    padding-bottom: var(--space-24);
+  }
+}
+
+/* ── Accessible Green Text ───────────────────────────────────────────────── */
+.text-brand {
+  color: var(--color-brand-primary-dark);
+}
+
+.text-brand-light {
+  color: var(--color-brand-primary);
+}
+
+.bg-brand {
+  background-color: var(--color-brand-primary);
+}
+
+.bg-brand-soft {
+  background-color: var(--color-brand-primary-soft);
+}
+
+/* ── Gradient Utilities ──────────────────────────────────────────────────── */
 .bg-soft-gradient {
   background: radial-gradient(circle at 50% 50%, var(--color-stLukes-100) 0%, #ffffff 50%);
+}
+
+/* Standalone inline link that acts as a call to action. Padded to a 44px hit
+   area without changing how the text sits. Inline links inside a sentence
+   keep their natural size — WCAG exempts those. */
+.link-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-height: 44px;
+  font-weight: 600;
+  color: var(--color-brand-primary-dark);
+}
+
+/* ── Interactive Target Size ─────────────────────────────────────────────── */
+.touch-target {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+/* Carousel dots: visual dot + accessible hit area */
+.dot-button {
+  position: relative;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+/* ── Reduced Motion ──────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ── Selection ───────────────────────────────────────────────────────────── */
+::selection {
+  background-color: var(--color-stLukes-200);
+  color: var(--color-text-primary);
+}
+
+/* ── Scrollbar ───────────────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-surface-soft);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-strong);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-muted);
+}
+
+/* ── Link underline reveal ───────────────────────────────────────────────── */
+.link-reveal {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-size: 0 1.5px;
+  transition: background-size var(--duration-interaction) var(--ease-out);
+}
+.link-reveal:hover,
+.link-reveal:focus-visible {
+  background-size: 100% 1.5px;
+}
+
+/* ── Skip link ───────────────────────────────────────────────────────────── */
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 100;
+  background: var(--color-surface-dark);
+  color: var(--color-text-inverse);
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+}
+.skip-link:focus {
+  top: 1rem;
+}
+
+/* ── Drawer / sheet ──────────────────────────────────────────────────────── */
+.drawer-backdrop {
+  background: rgba(15, 23, 42, 0.45);
+}
+
+/* ── Match highlight ─────────────────────────────────────────────────────── */
+.mark-hit {
+  background: #e5f5df;
+  color: inherit;
+  border-radius: 2px;
+  padding: 0 1px;
+}
+
+/* ── Scroll progress ─────────────────────────────────────────────────────── */
+.reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  background: var(--color-brand-primary);
+  z-index: 60;
+  transform-origin: left;
+}
+
+/* ── Scroll reveal ──────────────────────────────────────────────────────────
+   Content renders at its resting state. `RevealObserver` adds `js` to <html>
+   and then flips [data-revealed] as elements scroll in, so if the script never
+   runs — slow network, JS error, no JS — everything is already visible. The
+   animation is the enhancement; it is never the gate. */
+html.js [data-reveal] {
+  transition: opacity var(--duration-reveal) var(--ease-out),
+              transform var(--duration-reveal) var(--ease-out);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+html.js [data-reveal]:not([data-revealed]) {
+  opacity: 0;
+  transform: translate3d(0, 18px, 0);
+}
+
+html.js [data-reveal][data-revealed] {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.js [data-reveal],
+  html.js [data-reveal]:not([data-revealed]) {
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* ── Panel crossfade — used by the tabbed explorers ──────────────────────── */
+@keyframes panel-in {
+  from { opacity: 0; transform: translate3d(0, 8px, 0); }
+  to   { opacity: 1; transform: none; }
+}
+.panel-in {
+  animation: panel-in var(--duration-interaction) var(--ease-out) both;
+}
+
+/* ── Hairline rule used to open editorial sections ───────────────────────── */
+.rule-top {
+  border-top: 1px solid var(--color-border);
+}
+
+/* ── Media frames ────────────────────────────────────────────────────────── */
+.media-frame {
+  overflow: hidden;
+  background: var(--color-surface-soft);
+}
+.media-frame img {
+  transition: transform var(--duration-reveal) var(--ease-out);
+}
+.group:hover .media-frame img,
+.media-frame:hover img {
+  transform: scale(1.03);
+}
+@media (prefers-reduced-motion: reduce) {
+  .media-frame img { transition: none; }
+  .group:hover .media-frame img,
+  .media-frame:hover img { transform: none; }
 }

@@ -1,240 +1,199 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
+import Image from "next/image";
+import { ArrowLeft, ArrowRight, Clock, Phone } from "lucide-react";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import { PageShell } from "@/components/ui/PageShell";
+import ReadingProgress from "@/components/ui/ReadingProgress";
+import { getPost, getAllPosts, formatPostDate } from "@/lib/blog";
 import { JsonLd } from "@/components/JsonLd";
-import { getAllSlugs, getPost, getAllPosts, formatPostDate, ogImageUrl } from "@/lib/blog";
 import { SITE } from "@/lib/seo";
+import { articleComponents } from "./mdx-components";
 
 export async function generateStaticParams() {
-  const slugs = await getAllSlugs();
-  return slugs.map((slug) => ({ slug }));
+  const posts = await getAllPosts();
+  return posts.map((post) => ({ slug: post.slug }));
 }
 
-export async function generateMetadata(
-  { params }: { params: Promise<{ slug: string }> }
-): Promise<Metadata> {
-  const { slug } = await params;
-  const post = await getPost(slug);
+type Props = {
+  params: Promise<{ slug: string }>;
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const p = await params;
+  const post = await getPost(p.slug);
   if (!post) return {};
-  const ogImage = post.image
-    ? [
-        {
-          url: ogImageUrl(post.image),
-          width: 1200,
-          height: 630,
-          alt: post.title,
-          type: "image/jpeg",
-        },
-      ]
-    : undefined;
 
   return {
-    title: post.title,
+    title: `${post.title} | St. Luke's Health Hub`,
     description: post.excerpt,
     alternates: { canonical: `/blog/${post.slug}` },
     openGraph: {
+      type: "article",
       title: post.title,
       description: post.excerpt,
-      type: "article",
       publishedTime: post.date,
       authors: [post.author],
-      images: ogImage,
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: post.title,
-      description: post.excerpt,
-      images: ogImage,
     },
   };
 }
 
-// MDX component overrides — keeps Tailwind typography consistent.
-const components = {
-  h1: (p: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h1 className="text-3xl font-bold text-slate-900 mt-10 mb-4" {...p} />
-  ),
-  h2: (p: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h2 className="text-2xl font-bold text-slate-900 mt-10 mb-3" {...p} />
-  ),
-  h3: (p: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h3 className="text-xl font-bold text-slate-900 mt-8 mb-2" {...p} />
-  ),
-  p: (p: React.HTMLAttributes<HTMLParagraphElement>) => (
-    <p className="text-slate-700 leading-relaxed mb-4" {...p} />
-  ),
-  ul: (p: React.HTMLAttributes<HTMLUListElement>) => (
-    <ul className="list-disc pl-6 mb-4 space-y-1 text-slate-700" {...p} />
-  ),
-  ol: (p: React.OlHTMLAttributes<HTMLOListElement>) => (
-    <ol className="list-decimal pl-6 mb-4 space-y-1 text-slate-700" {...p} />
-  ),
-  li: (p: React.LiHTMLAttributes<HTMLLIElement>) => <li className="leading-relaxed" {...p} />,
-  a: (p: React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
-    <a className="text-stLukes-600 underline hover:text-stLukes-700" {...p} />
-  ),
-  strong: (p: React.HTMLAttributes<HTMLElement>) => (
-    <strong className="font-semibold text-slate-900" {...p} />
-  ),
-  table: (p: React.HTMLAttributes<HTMLTableElement>) => (
-    <div className="my-6 overflow-x-auto">
-      <table className="min-w-full text-sm border-collapse" {...p} />
-    </div>
-  ),
-  thead: (p: React.HTMLAttributes<HTMLTableSectionElement>) => (
-    <thead className="bg-slate-100" {...p} />
-  ),
-  th: (p: React.ThHTMLAttributes<HTMLTableCellElement>) => (
-    <th className="text-left px-3 py-2 font-semibold text-slate-900 border-b border-slate-200" {...p} />
-  ),
-  td: (p: React.TdHTMLAttributes<HTMLTableCellElement>) => (
-    <td className="px-3 py-2 border-b border-slate-100 align-top text-slate-700" {...p} />
-  ),
-  blockquote: (p: React.HTMLAttributes<HTMLQuoteElement>) => (
-    <blockquote
-      className="border-l-4 border-stLukes-500 bg-stLukes-50/40 pl-4 pr-3 py-2 italic text-slate-700 my-6"
-      {...p}
-    />
-  ),
-  code: (p: React.HTMLAttributes<HTMLElement>) => (
-    <code className="bg-slate-100 text-slate-800 px-1.5 py-0.5 rounded text-[0.9em]" {...p} />
-  ),
-};
-
-export default async function BlogPost(
-  { params }: { params: Promise<{ slug: string }> }
-) {
-  const { slug } = await params;
-  const post = await getPost(slug);
+export default async function BlogPostPage({ params }: Props) {
+  const p = await params;
+  const post = await getPost(p.slug);
   if (!post) notFound();
 
-  const all = await getAllPosts();
-  const related = all.filter((p) => p.slug !== post.slug).slice(0, 3);
+  const wordCount = post.content.split(/\s+/).length;
+  const readingTime = `${Math.ceil(wordCount / 200)} min read`;
 
   const articleSchema = {
     "@context": "https://schema.org",
-    "@type": "Article",
+    "@type": "MedicalWebPage",
     headline: post.title,
     description: post.excerpt,
-    image: post.image || undefined,
     datePublished: post.date,
     author: { "@type": "Person", name: post.author },
-    ...(post.reviewedBy && {
-      reviewedBy: { "@type": "Person", name: post.reviewedBy },
-    }),
     publisher: { "@id": `${SITE}/#organization` },
-    mainEntityOfPage: `${SITE}/blog/${post.slug}`,
   };
 
-  const breadcrumbSchema = {
+  const breadcrumbs = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: `${SITE}/` },
-      { "@type": "ListItem", position: 2, name: "Health Hub", item: `${SITE}/blog` },
-      { "@type": "ListItem", position: 3, name: post.title, item: `${SITE}/blog/${post.slug}` },
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE },
+      { "@type": "ListItem", position: 2, name: "Blog", item: `${SITE}/blog` },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: post.title,
+        item: `${SITE}/blog/${post.slug}`,
+      },
     ],
   };
 
-  return (
-    <main className="min-h-screen bg-white flex flex-col">
-      <Navbar />
-      <JsonLd data={articleSchema} />
-      <JsonLd data={breadcrumbSchema} />
+  // Same category first, then anything else, so "related" means something.
+  const all = await getAllPosts();
+  const related = [
+    ...all.filter((a) => a.slug !== post.slug && a.category === post.category),
+    ...all.filter((a) => a.slug !== post.slug && a.category !== post.category),
+  ].slice(0, 3);
 
-      <article className="pt-28 pb-16">
-        {/* Hero image */}
+  return (
+    <PageShell>
+      <JsonLd data={articleSchema} />
+      <JsonLd data={breadcrumbs} />
+      <ReadingProgress />
+
+      <article>
+        <header className="border-b border-border bg-brand-primary-soft pb-12 pt-28 md:pt-32">
+          <div className="container-content max-w-3xl">
+            <Link
+              href="/blog"
+              className="group mb-7 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-primary-dark"
+            >
+              <ArrowLeft
+                size={15}
+                className="transition-transform group-hover:-translate-x-1"
+                aria-hidden="true"
+              />
+              Health hub
+            </Link>
+
+            <p className="eyebrow mb-4">{post.category}</p>
+            <h1 className="type-h1 text-text-primary">{post.title}</h1>
+            <p className="mt-5 text-lg leading-relaxed text-text-secondary">
+              {post.excerpt}
+            </p>
+
+            <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-text-muted">
+              <span>{post.author}</span>
+              <span aria-hidden="true">·</span>
+              <time dateTime={post.date}>{formatPostDate(post.date)}</time>
+              <span aria-hidden="true">·</span>
+              <span className="flex items-center gap-1.5">
+                <Clock size={14} aria-hidden="true" />
+                {readingTime}
+              </span>
+            </div>
+          </div>
+        </header>
+
         {post.image && (
-          <div className="relative w-full aspect-[21/9] max-h-[480px] bg-slate-100 mb-8">
-            <Image
-              src={post.image}
-              alt={post.title}
-              fill
-              priority
-              sizes="100vw"
-              className="object-cover"
-            />
+          <div className="container-content max-w-4xl -mt-0 pt-10">
+            <div className="relative aspect-[16/9] overflow-hidden rounded-2xl">
+              <Image
+                src={post.image}
+                alt=""
+                fill
+                priority
+                sizes="(min-width: 1024px) 900px, 100vw"
+                className="object-cover"
+              />
+            </div>
           </div>
         )}
 
-        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-          <nav className="text-sm text-slate-500 mb-4">
-            <Link href="/" className="hover:text-stLukes-600">Home</Link>
-            <span className="mx-2">/</span>
-            <Link href="/blog" className="hover:text-stLukes-600">Health Hub</Link>
-            <span className="mx-2">/</span>
-            <span className="text-slate-700">{post.title}</span>
-          </nav>
+        <div className="container-content max-w-3xl py-12 md:py-16">
+          <MDXRemote
+            source={post.content}
+            components={articleComponents}
+            options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }}
+          />
 
-          <span className="inline-block text-xs font-bold uppercase tracking-wider text-stLukes-600 bg-stLukes-50 px-2.5 py-1 rounded-full mb-4">
-            {post.category}
-          </span>
-          <h1 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight mb-3 leading-tight">
-            {post.title}
-          </h1>
-          <p className="text-sm text-slate-500 mb-8">
-            {formatPostDate(post.date)} · {post.author}
-            {post.reviewedBy && (
-              <>
-                <br />
-                <span className="text-slate-400">Medically reviewed by {post.reviewedBy}</span>
-              </>
-            )}
-          </p>
-
-          <div className="prose-content">
-            <MDXRemote
-              source={post.content}
-              components={components}
-              options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }}
-            />
-          </div>
-
-          <div className="mt-12 p-6 rounded-3xl bg-stLukes-50 border border-stLukes-100">
-            <h2 className="text-lg font-bold text-slate-900 mb-1">Book a test at St. Luke&apos;s</h2>
-            <p className="text-sm text-slate-600 mb-4">
-              See our full{" "}
-              <Link href="/price-list" className="text-stLukes-600 underline">
-                price list
-              </Link>{" "}
-              or call to schedule.
+          <aside className="mt-14 rounded-2xl border border-border bg-surface-soft p-7 md:p-8">
+            <h2 className="type-h3 text-text-primary">Ready to book a test?</h2>
+            <p className="mt-3 text-text-secondary">
+              Walk into our Ja-Ela lab, or book a home collection. Every price
+              is published in LKR.
             </p>
-            <a
-              href="tel:+94711231954"
-              className="inline-flex items-center bg-stLukesRed-500 hover:bg-stLukesRed-600 text-white px-5 py-2.5 rounded-full font-semibold text-sm"
-            >
-              Call 071 123 1954
-            </a>
-          </div>
-
-          {related.length > 0 && (
-            <section className="mt-16">
-              <h2 className="text-xl font-bold text-slate-900 mb-5">Read next</h2>
-              <div className="grid gap-4 sm:grid-cols-3">
-                {related.map((r) => (
-                  <Link
-                    key={r.slug}
-                    href={`/blog/${r.slug}`}
-                    className="block rounded-2xl border border-slate-200 p-4 hover:border-stLukes-500 hover:shadow-md transition"
-                  >
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-stLukes-600 mb-1">
-                      {r.category}
-                    </p>
-                    <p className="font-semibold text-slate-900 text-sm leading-snug">{r.title}</p>
-                  </Link>
-                ))}
-              </div>
-            </section>
-          )}
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              <a href="tel:+94711231954" className="btn btn-primary" data-track="phone_click">
+                <Phone size={16} aria-hidden="true" />
+                Call 071 123 1954
+              </a>
+              <Link href="/price-list" className="btn btn-secondary">
+                View test prices
+                <ArrowRight size={15} className="btn-arrow" aria-hidden="true" />
+              </Link>
+            </div>
+          </aside>
         </div>
       </article>
 
-      <Footer />
-    </main>
+      {related.length > 0 && (
+        <section className="border-t border-border bg-surface py-14">
+          <div className="container-content">
+            <h2 className="mb-8 text-sm font-semibold uppercase tracking-[0.14em] text-text-muted">
+              Read next
+            </h2>
+            <ul className="grid gap-x-6 gap-y-9 sm:grid-cols-3">
+              {related.map((r) => (
+                <li key={r.slug}>
+                  <Link href={`/blog/${r.slug}`} className="group block">
+                    <div className="media-frame relative aspect-[16/10] overflow-hidden rounded-xl">
+                      {r.image && (
+                        <Image
+                          src={r.image}
+                          alt=""
+                          fill
+                          sizes="(min-width: 640px) 30vw, 100vw"
+                          className="object-cover"
+                        />
+                      )}
+                    </div>
+                    <p className="eyebrow mt-4">{r.category}</p>
+                    <h3 className="type-h4 mt-2 text-text-primary transition-colors group-hover:text-brand-primary-dark">
+                      {r.title}
+                    </h3>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
+    </PageShell>
   );
 }

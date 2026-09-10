@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import { ArrowRight, Phone } from "lucide-react";
+import { PageShell } from "@/components/ui/PageShell";
+import { Reveal } from "@/components/ui/Reveal";
 import { getAllPosts, formatPostDate } from "@/lib/blog";
 
 export const metadata: Metadata = {
@@ -14,77 +15,140 @@ export const metadata: Metadata = {
 
 export default async function BlogIndex() {
   const posts = await getAllPosts();
+  const [lead, ...rest] = posts;
 
   return (
-    <main className="min-h-screen bg-white flex flex-col">
-      <Navbar />
-      <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-6xl">
-          <p className="text-stLukes-500 text-sm font-semibold uppercase tracking-widest mb-3">
-            Health Hub
-          </p>
-          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight mb-5">
-            Health Tips &amp; Lab-Test Guides
+    <PageShell>
+      <section className="border-b border-border bg-brand-primary-soft pb-14 pt-28 md:pt-32">
+        <div className="container-content">
+          <p className="eyebrow mb-4">Health hub</p>
+          <h1 className="type-h1 max-w-3xl text-text-primary">
+            Health tips and lab-test guides
           </h1>
-          <p className="text-lg text-slate-600 mb-12 max-w-2xl">
-            Plain-English explainers on blood tests, ECG, full-body checkups and everyday wellness from the St. Luke&apos;s clinical team in Ja-Ela.
+          <p className="mt-5 max-w-2xl type-body-large">
+            Plain-English explainers on blood tests, ECG and full-body checkups,
+            written for patients in Ja-Ela and the towns around it.
           </p>
+        </div>
+      </section>
 
-          {posts.length === 0 ? (
-            <p className="text-slate-500">No posts published yet. Check back soon.</p>
-          ) : (
-            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-              {posts.map((post) => (
-                <Link
-                  key={post.slug}
-                  href={`/blog/${post.slug}`}
-                  className="group h-full flex flex-col rounded-3xl border border-slate-100 overflow-hidden bg-white shadow-sm hover:shadow-xl hover:border-stLukes-100 transition-all duration-300"
-                >
-                  <div className="aspect-[16/9] relative bg-slate-100 overflow-hidden">
-                    {post.image && (
-                      <Image
-                        src={post.image}
-                        alt={post.title}
-                        fill
-                        sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-                        className="object-cover transition-transform duration-700 group-hover:scale-105"
-                      />
-                    )}
-                    <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-sm px-3 py-1 text-xs font-bold text-stLukes-600 rounded-full">
-                      {post.category}
-                    </div>
-                  </div>
-                  <div className="p-6 flex flex-col flex-grow">
-                    <p className="text-xs text-slate-400 mb-2">
-                      {formatPostDate(post.date)} · {post.author}
-                    </p>
-                    <h2 className="text-lg font-bold text-slate-900 mb-2 group-hover:text-stLukes-500 transition-colors">
-                      {post.title}
-                    </h2>
-                    <p className="text-sm text-slate-600 leading-relaxed">{post.excerpt}</p>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          )}
-
-          <div className="mt-16 p-8 bg-stLukes-50 rounded-3xl border border-stLukes-100">
-            <h2 className="text-2xl font-bold text-slate-900 mb-2">Need a test now?</h2>
-            <p className="text-slate-600 mb-4">
-              Browse our full{" "}
-              <Link href="/price-list" className="text-stLukes-600 underline">
-                price list
-              </Link>{" "}
-              or call{" "}
-              <a href="tel:+94711231954" className="text-stLukes-600 underline">
-                071 123 1954
-              </a>{" "}
-              to book a home visit.
+      {posts.length === 0 ? (
+        <section className="section-padding bg-surface">
+          <div className="container-content">
+            <p className="text-text-muted">
+              No articles published yet. Check back soon.
             </p>
+          </div>
+        </section>
+      ) : (
+        <>
+          {/* Featured article */}
+          <section className="border-b border-border bg-surface py-12 md:py-16">
+            <div className="container-content">
+              <Link
+                href={`/blog/${lead.slug}`}
+                className="group grid gap-8 md:grid-cols-2 md:items-center md:gap-12"
+              >
+                <div className="media-frame relative aspect-[16/10] overflow-hidden rounded-2xl">
+                  {lead.image && (
+                    <Image
+                      src={lead.image}
+                      alt=""
+                      fill
+                      priority
+                      sizes="(min-width: 768px) 50vw, 100vw"
+                      className="object-cover"
+                    />
+                  )}
+                </div>
+                <div>
+                  <p className="eyebrow">Latest · {lead.category}</p>
+                  <h2 className="type-h2 mt-3 text-text-primary transition-colors group-hover:text-brand-primary-dark">
+                    {lead.title}
+                  </h2>
+                  <p className="mt-4 leading-relaxed text-text-secondary">
+                    {lead.excerpt}
+                  </p>
+                  <p className="mt-5 flex items-center gap-3 text-xs text-text-muted">
+                    <time dateTime={lead.date}>{formatPostDate(lead.date)}</time>
+                    <span aria-hidden="true">·</span>
+                    <span>{lead.author}</span>
+                  </p>
+                  <p className="link-cta mt-5 text-sm">
+                    Read this article
+                    <ArrowRight
+                      size={15}
+                      className="transition-transform group-hover:translate-x-1"
+                      aria-hidden="true"
+                    />
+                  </p>
+                </div>
+              </Link>
+            </div>
+          </section>
+
+          <section className="section-padding bg-surface">
+            <div className="container-content">
+              <h2 className="mb-8 text-sm font-semibold uppercase tracking-[0.14em] text-text-muted">
+                All articles
+              </h2>
+              <ul className="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+                {rest.map((post, i) => (
+                  <Reveal as="li" key={post.slug} delay={(i % 3) * 0.05}>
+                    <Link href={`/blog/${post.slug}`} className="group block">
+                      <div className="media-frame relative aspect-[16/10] overflow-hidden rounded-xl">
+                        {post.image && (
+                          <Image
+                            src={post.image}
+                            alt=""
+                            fill
+                            sizes="(min-width: 1024px) 30vw, (min-width: 640px) 46vw, 100vw"
+                            className="object-cover"
+                          />
+                        )}
+                      </div>
+                      <p className="eyebrow mt-4">{post.category}</p>
+                      <h3 className="type-h4 mt-2 text-text-primary transition-colors group-hover:text-brand-primary-dark">
+                        {post.title}
+                      </h3>
+                      <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-text-secondary">
+                        {post.excerpt}
+                      </p>
+                      <p className="mt-3 text-xs text-text-muted">
+                        <time dateTime={post.date}>
+                          {formatPostDate(post.date)}
+                        </time>
+                      </p>
+                    </Link>
+                  </Reveal>
+                ))}
+              </ul>
+            </div>
+          </section>
+        </>
+      )}
+
+      <section className="border-t border-border bg-surface-soft">
+        <div className="container-content flex flex-col items-start justify-between gap-6 py-12 md:flex-row md:items-center">
+          <div className="max-w-xl">
+            <h2 className="type-h2 text-text-primary">Need the test itself?</h2>
+            <p className="mt-3 text-text-secondary">
+              Every price is published in LKR. Search the list, or call and book
+              a home visit.
+            </p>
+          </div>
+          <div className="flex shrink-0 flex-col gap-3 sm:flex-row">
+            <Link href="/price-list" className="btn btn-primary">
+              View test prices
+              <ArrowRight size={16} className="btn-arrow" aria-hidden="true" />
+            </Link>
+            <a href="tel:+94711231954" className="btn btn-secondary" data-track="phone_click">
+              <Phone size={16} aria-hidden="true" />
+              Call 071 123 1954
+            </a>
           </div>
         </div>
       </section>
-      <Footer />
-    </main>
+    </PageShell>
   );
 }

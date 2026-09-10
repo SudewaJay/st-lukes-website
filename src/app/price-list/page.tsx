@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import Link from "next/link";
+import { ArrowRight, Home, Clock } from "lucide-react";
+import { PageShell } from "@/components/ui/PageShell";
 import ClientPriceList from "./ClientPriceList";
-import { priceList } from "@/lib/priceList";
+import { priceList, allTests } from "@/lib/priceList";
 
 export const metadata: Metadata = {
   title: "Lab Test Price List (LKR) — Ja-Ela",
@@ -12,63 +13,84 @@ export const metadata: Metadata = {
 };
 
 export default function PriceListPage() {
-  const totalTests = priceList.reduce((n, c) => n + c.tests.length, 0);
-  const totalCategories = priceList.length;
+  const totalTests = allTests.length;
+  const cheapest = Math.min(...allTests.map((t) => t.price));
 
   return (
-    <main className="min-h-screen bg-slate-50 flex flex-col">
-      <Navbar />
-
-      {/* Hero Header */}
-      <div className="relative bg-[#051a0c] overflow-hidden pt-32 pb-16">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-stLukes-500/10 blur-[120px] pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-stLukes-600/8 blur-[100px] pointer-events-none" />
-        <div
-          className="absolute inset-0 opacity-[0.03]"
-          style={{ backgroundImage: "radial-gradient(#fff 1px, transparent 1px)", backgroundSize: "22px 22px" }}
-        />
-
-        <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p className="text-stLukes-400 text-sm font-semibold uppercase tracking-widest mb-3">
-            Transparent Pricing
-          </p>
-          <h1 className="text-4xl md:text-5xl font-bold text-white tracking-tight mb-4 leading-tight">
-            Lab Test Price List
+    <PageShell>
+      <section className="border-b border-border bg-brand-primary-soft pb-12 pt-28 md:pb-14 md:pt-32">
+        <div className="container-content">
+          <p className="eyebrow mb-4">Transparent pricing</p>
+          <h1 className="type-h1 max-w-3xl text-text-primary">
+            Every price, published.
           </h1>
-          <p className="text-white/60 text-lg mb-8">
-            All prices in LKR. No hidden charges. Home sample collection available across Ja-Ela &amp; nearby towns.
+          <p className="mt-5 max-w-2xl type-body-large">
+            The national chains will not tell you what a test costs until you
+            are standing at their counter. Here is our entire list, in LKR, with
+            no hidden charges.
           </p>
 
-          <div className="flex items-center justify-center gap-8 mb-6">
-            {[
-              { value: `${totalTests}+`, label: "Tests Available" },
-              { value: `${totalCategories}`, label: "Categories" },
-              { value: "LKR", label: "Currency" },
-            ].map((s) => (
-              <div key={s.label} className="text-center">
-                <p className="text-2xl font-bold text-white">{s.value}</p>
-                <p className="text-white/50 text-xs mt-0.5">{s.label}</p>
-              </div>
-            ))}
-          </div>
+          <dl className="mt-9 flex flex-wrap gap-x-10 gap-y-5">
+            <div>
+              <dt className="text-[11px] font-semibold uppercase tracking-[0.14em] text-text-muted">
+                Tests listed
+              </dt>
+              <dd className="type-numeric mt-1 text-2xl font-bold text-text-primary">
+                {totalTests}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-[11px] font-semibold uppercase tracking-[0.14em] text-text-muted">
+                Categories
+              </dt>
+              <dd className="type-numeric mt-1 text-2xl font-bold text-text-primary">
+                {priceList.length}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-[11px] font-semibold uppercase tracking-[0.14em] text-text-muted">
+                From
+              </dt>
+              <dd className="type-numeric mt-1 text-2xl font-bold text-text-primary">
+                LKR {cheapest}
+              </dd>
+            </div>
+          </dl>
+
+          <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-text-secondary">
+            <li className="flex items-center gap-2">
+              <Home size={15} className="text-brand-primary-dark" aria-hidden="true" />
+              Home collection at the same price
+            </li>
+            <li className="flex items-center gap-2">
+              <Clock size={15} className="text-brand-primary-dark" aria-hidden="true" />
+              Most reports within 24 hours
+            </li>
+          </ul>
         </div>
+      </section>
 
-        <div
-          className="absolute bottom-0 left-0 right-0 h-4"
-          aria-hidden="true"
-          style={{
-            backgroundImage: "repeating-conic-gradient(#58b330 0% 25%, transparent 0% 50%)",
-            backgroundSize: "16px 16px",
-            opacity: 0.4,
-          }}
-        />
-      </div>
-
-      <div className="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-12">
+      <div className="container-content py-10 md:py-12">
         <ClientPriceList data={priceList} />
       </div>
 
-      <Footer />
-    </main>
+      <section className="border-t border-border bg-surface-soft">
+        <div className="container-content flex flex-col items-start justify-between gap-5 py-12 md:flex-row md:items-center">
+          <div>
+            <h2 className="type-h3 text-text-primary">
+              Several tests at once? A package may cost less.
+            </h2>
+            <p className="mt-2 max-w-lg text-text-secondary">
+              Our bundled health screens group the tests people usually order
+              together at one fixed price.
+            </p>
+          </div>
+          <Link href="/packages" className="btn btn-primary shrink-0">
+            Compare packages
+            <ArrowRight size={16} className="btn-arrow" aria-hidden="true" />
+          </Link>
+        </div>
+      </section>
+    </PageShell>
   );
 }

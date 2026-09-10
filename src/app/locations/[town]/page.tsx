@@ -1,87 +1,82 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import { JsonLd } from "@/components/JsonLd";
+import { ArrowLeft, ArrowRight, Building2, Phone, Home, MessageCircle, Clock } from "lucide-react";
+import { PageShell } from "@/components/ui/PageShell";
+import { Accordion } from "@/components/ui/Accordion";
 import { LocationMap } from "@/components/LocationMap";
-import { locations, getLocation } from "@/lib/locations";
-import { medicalBusinessSchema, SITE } from "@/lib/seo";
-import { services } from "@/lib/services";
+import { getLocation, locations } from "@/lib/locations";
+import { SITE, medicalBusinessSchema } from "@/lib/seo";
+import { JsonLd } from "@/components/JsonLd";
 
-export function generateStaticParams() {
-  return locations.map((l) => ({ town: l.slug }));
+export async function generateStaticParams() {
+  return locations.map((loc) => ({ town: loc.slug }));
 }
 
-export async function generateMetadata(
-  { params }: { params: Promise<{ town: string }> }
-): Promise<Metadata> {
-  const { town } = await params;
-  const loc = getLocation(town);
+type Props = {
+  params: Promise<{ town: string }>;
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const p = await params;
+  const loc = getLocation(p.town);
   if (!loc) return {};
-  // Service-area towns (no walk-in branch) lead with the home-visit promise;
-  // HQ / near towns can promise walk-in + home visits.
-  const title = loc.isServiceArea
-    ? `Blood Tests & Home Visits in ${loc.name} | St. Luke's Medical Lab`
-    : `Medical Laboratory in ${loc.name} | Blood Tests & Home Visits`;
-  const description = loc.isServiceArea
-    ? `Home blood tests, ECG and full-body checkups in ${loc.name} — a qualified phlebotomist collects your sample at home or work, with 24hr digital reports and transparent LKR pricing. Call 071 123 1954.`
-    : `St. Luke's Medical Laboratory serves ${loc.name} with blood tests, ECG, full-body checkups and home sample collection. 24hr reports, transparent LKR pricing. Call 071 123 1954.`;
+
   return {
-    title,
-    description,
+    title: `Medical Laboratory & Blood Tests in ${loc.name}`,
+    description: loc.intro,
     alternates: { canonical: `/locations/${loc.slug}` },
   };
 }
 
-export default async function LocationPage(
-  { params }: { params: Promise<{ town: string }> }
-) {
-  const { town } = await params;
-  const loc = getLocation(town);
+const DEFAULT_TESTS = [
+  "Full Blood Count (FBC)",
+  "Fasting Blood Sugar (FBS)",
+  "Lipid Profile (Cholesterol)",
+  "Liver Function Test (LFT)",
+  "Renal / Kidney Profile",
+  "Dengue NS1 Antigen",
+];
+
+const bookingSteps = (town: string) => [
+  "Call or WhatsApp us with the tests you need.",
+  "We confirm the published LKR price and book a time.",
+  `Our phlebotomist visits your address in ${town}.`,
+  "Most reports are ready within 24 hours, delivered digitally.",
+];
+
+export default async function LocationPage({ params }: Props) {
+  const p = await params;
+  const loc = getLocation(p.town);
   if (!loc) notFound();
 
-  // Service node for this area, linked back to the single org entity so we
-  // never create competing duplicate MedicalBusiness records.
-  const areaServed = [
-    { "@type": "City", name: loc.name },
-    ...(loc.neighbourhoods ?? []).map((n) => ({ "@type": "Place", name: n })),
-  ];
   const schema = {
     ...medicalBusinessSchema,
-    "@id": `${SITE}/locations/${loc.slug}#service`,
-    name: `${medicalBusinessSchema.name} — ${loc.name}`,
-    parentOrganization: { "@id": `${SITE}/#organization` },
-    areaServed,
+    "@id": `${SITE}/locations/${loc.slug}#organization`,
+    areaServed: { "@type": "City", name: loc.name },
   };
 
-  // Map: service-area towns centre on the town (honest — no branch there);
-  // HQ and walk-in towns centre on the real Ja-Ela laboratory.
-  const HQ_QUERY = "St. Luke's Medical Laboratory, No. 67 Old Negombo Road, Ja-Ela, Sri Lanka";
-  // An exact per-centre pin (loc.mapQuery) always wins; otherwise service-area
-  // towns show the town and walk-in towns show the HQ lab.
-  const mapQuery = loc.mapQuery ?? (loc.isServiceArea ? `${loc.name}, Sri Lanka` : HQ_QUERY);
-  const mapCaption = loc.isServiceArea
-    ? `${loc.name} is a home-visit service area — our nearest laboratory is our Ja-Ela HQ (${loc.distanceFromHQ}).`
-    : loc.isHQ
-      ? "St. Luke's Medical Laboratory — No. 67, Old Negombo Road, Ja-Ela."
-      : `Your nearest walk-in lab is our Ja-Ela HQ — and we come to you in ${loc.name} for home visits.`;
-  const mapSectionHeading = loc.isServiceArea
-    ? `Where we serve in ${loc.name}`
-    : loc.isHQ
-      ? "Find our laboratory"
-      : `Your nearest St. Luke's laboratory`;
-
-  const breadcrumb = {
+  const breadcrumbs = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: `${SITE}/` },
-      { "@type": "ListItem", position: 2, name: "Locations", item: `${SITE}/locations` },
-      { "@type": "ListItem", position: 3, name: loc.name, item: `${SITE}/locations/${loc.slug}` },
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Locations",
+        item: `${SITE}/locations`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: loc.name,
+        item: `${SITE}/locations/${loc.slug}`,
+      },
     ],
   };
 
+  // Per-town FAQPage schema, built from this town's own unique questions.
   const faqSchema =
     loc.faqs && loc.faqs.length > 0
       ? {
@@ -96,197 +91,243 @@ export default async function LocationPage(
         }
       : null;
 
+  const nearby = locations.filter((l) => l.slug !== loc.slug).slice(0, 6);
+
   return (
-    <main className="min-h-screen bg-white flex flex-col">
-      <Navbar />
+    <PageShell>
       <JsonLd data={schema} />
-      <JsonLd data={breadcrumb} />
+      <JsonLd data={breadcrumbs} />
       {faqSchema && <JsonLd data={faqSchema} />}
 
-      <section className="pt-32 pb-16 px-4 sm:px-6 lg:px-8 bg-stLukes-50">
-        <div className="mx-auto max-w-4xl">
-          <nav className="text-sm text-slate-500 mb-4">
-            <Link href="/" className="hover:text-stLukes-600">Home</Link>
-            <span className="mx-2">/</span>
-            <Link href="/locations" className="hover:text-stLukes-600">Locations</Link>
-            <span className="mx-2">/</span>
-            <span className="text-slate-700">{loc.name}</span>
-          </nav>
-          <p className="text-stLukes-500 text-sm font-semibold uppercase tracking-widest mb-3">
-            {loc.isHQ ? "Headquarters" : loc.isServiceArea ? "Home-Visit Service Area" : "Service Area"}
-          </p>
-          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight mb-5">
-            {loc.isServiceArea
-              ? `Blood Tests & Home Visits in ${loc.name}`
-              : `Medical Laboratory in ${loc.name}`}
-          </h1>
-          <p className="text-lg text-slate-700 max-w-2xl">{loc.intro}</p>
-        </div>
-      </section>
+      <section className="border-b border-border bg-brand-primary-soft pb-14 pt-28 md:pt-32">
+        <div className="container-content">
+          <Link
+            href="/locations"
+            className="group mb-7 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-primary-dark"
+          >
+            <ArrowLeft
+              size={15}
+              className="transition-transform group-hover:-translate-x-1"
+              aria-hidden="true"
+            />
+            All service areas
+          </Link>
 
-      <section className="py-16 px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-4xl">
-          {loc.serviceAngle && (
-            <>
-              <h2 className="text-2xl font-bold text-slate-900 mb-4">
-                Why {loc.name} patients choose St. Luke&apos;s
-              </h2>
-              <p className="text-slate-600 mb-10 leading-relaxed">{loc.serviceAngle}</p>
-            </>
-          )}
-
-          <h2 className="text-2xl font-bold text-slate-900 mb-4">
-            Blood Tests &amp; Diagnostics in {loc.name}
-          </h2>
-          <p className="text-slate-600 mb-6">
-            From routine Complete Blood Count (CBC) and Lipid Profile to specialist Liver Function Test (LFT), Kidney Profile, Thyroid panels and Dengue NS1 — we cover the full range of testing {loc.name} residents need, with most reports back within 24 hours.
-          </p>
-
-          {loc.localFocus && loc.localFocus.length > 0 && (
-            <>
-              <h3 className="text-lg font-semibold text-slate-900 mt-8 mb-3">
-                Most requested in {loc.name}
-              </h3>
-              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-slate-700 mb-4">
-                {loc.localFocus.map((item) => (
-                  <li key={item} className="flex items-start gap-2">
-                    <span className="mt-2 w-1.5 h-1.5 rounded-full bg-stLukesRed-500 shrink-0" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </>
-          )}
-
-          <h2 className="text-2xl font-bold text-slate-900 mt-12 mb-4">
-            Home Sample Collection in {loc.name}
-          </h2>
-          <p className="text-slate-600 mb-4">
+          <p className="eyebrow mb-4 flex items-center gap-2">
             {loc.isServiceArea ? (
               <>
-                We don&apos;t run a walk-in branch in {loc.name} — instead a qualified phlebotomist comes to your home or office, collects the sample under proper conditions, and transports it to our Ja-Ela lab. {loc.distanceFromHQ}.
+                <Home size={13} aria-hidden="true" /> Home visit service area
               </>
             ) : (
               <>
-                A qualified phlebotomist will visit your home or office in {loc.name}. Samples are transported under temperature control to our Ja-Ela lab. {loc.distanceFromHQ}.
+                <Building2 size={13} aria-hidden="true" /> Walk-in &amp; home visits
               </>
             )}
           </p>
-          <p className="text-slate-600 mb-8">
-            Book a home visit on{" "}
-            <a href="tel:+94711231954" className="text-stLukes-600 font-semibold underline">
-              071 123 1954
-            </a>
-            .
-          </p>
 
-          <h2 className="text-2xl font-bold text-slate-900 mt-12 mb-4">
-            {mapSectionHeading}
-          </h2>
-          <div className="mb-12">
-            <LocationMap
-              query={mapQuery}
-              caption={mapCaption}
-              title={`Map of ${loc.name} — St. Luke's Medical Laboratory`}
-            />
-          </div>
+          <h1 className="type-h1 max-w-3xl text-text-primary">
+            Medical lab &amp; blood tests in{" "}
+            <span className="text-brand-primary-dark">{loc.name}</span>
+          </h1>
+          <p className="mt-5 max-w-2xl type-body-large">{loc.blurb}</p>
 
-          <h2 className="text-2xl font-bold text-slate-900 mt-12 mb-4">
-            {loc.neighbourhoods && loc.neighbourhoods.length > 0
-              ? `Neighbourhoods & landmarks we serve in ${loc.name}`
-              : `Local landmarks we serve in ${loc.name}`}
-          </h2>
-          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-slate-700 mb-6">
-            {(loc.neighbourhoods && loc.neighbourhoods.length > 0
-              ? loc.neighbourhoods
-              : loc.landmarks
-            ).map((lm) => (
-              <li key={lm} className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-stLukes-500" />
-                {lm}
-              </li>
-            ))}
-          </ul>
-          {loc.neighbourhoods && loc.neighbourhoods.length > 0 && (
-            <p className="text-sm text-slate-500 mb-12">
-              Key landmarks nearby: {loc.landmarks.join(", ")}.
-            </p>
-          )}
-
-          <h2 className="text-2xl font-bold text-slate-900 mt-12 mb-4">
-            Popular services in {loc.name}
-          </h2>
-          <div className="grid sm:grid-cols-2 gap-4 mb-12">
-            {services.map((svc) => (
-              <Link
-                key={svc.slug}
-                href={`/services/${svc.slug}`}
-                className="block p-5 rounded-2xl border border-slate-200 hover:border-stLukes-500 hover:shadow-md transition"
-              >
-                <h3 className="font-semibold text-slate-900 mb-1">{svc.name}</h3>
-                <p className="text-sm text-slate-600">{svc.shortDesc}</p>
-              </Link>
-            ))}
-          </div>
-
-          {loc.faqs && loc.faqs.length > 0 && (
-            <div className="mb-12">
-              <h2 className="text-2xl font-bold text-slate-900 mb-6">
-                {loc.name} — frequently asked questions
-              </h2>
-              <div className="space-y-4">
-                {loc.faqs.map((f) => (
-                  <details
-                    key={f.q}
-                    className="group rounded-2xl border border-slate-200 p-5 open:border-stLukes-300 open:bg-stLukes-50/40"
-                  >
-                    <summary className="cursor-pointer list-none font-semibold text-slate-900 flex items-start justify-between gap-4">
-                      {f.q}
-                      <span className="text-stLukes-500 transition-transform group-open:rotate-45 shrink-0">+</span>
-                    </summary>
-                    <p className="text-slate-600 mt-3 leading-relaxed">{f.a}</p>
-                  </details>
-                ))}
+          <dl className="mt-9 flex flex-wrap gap-x-10 gap-y-5 text-sm">
+            <div>
+              <dt className="text-[11px] font-semibold uppercase tracking-[0.14em] text-text-muted">
+                {loc.isHQ ? "Our address" : "Distance from our lab"}
+              </dt>
+              <dd className="mt-1.5 font-medium text-text-primary">
+                {loc.isHQ
+                  ? "No. 67, Old Negombo Road, Ja-Ela"
+                  : loc.distanceFromHQ}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-[11px] font-semibold uppercase tracking-[0.14em] text-text-muted">
+                Opening hours
+              </dt>
+              <dd className="mt-1.5 font-medium text-text-primary">
+                Mon–Sat 07:00–19:30 · Sun 07:30–12:30
+              </dd>
+            </div>
+            {loc.postcode && (
+              <div>
+                <dt className="text-[11px] font-semibold uppercase tracking-[0.14em] text-text-muted">
+                  Postcode
+                </dt>
+                <dd className="mt-1.5 font-medium text-text-primary tabular-nums">
+                  {loc.postcode}
+                </dd>
               </div>
-            </div>
-          )}
-
-          <div className="p-8 rounded-3xl bg-stLukes-50 border border-stLukes-100">
-            <h2 className="text-xl font-bold text-slate-900 mb-2">
-              Need a test in {loc.name}?
-            </h2>
-            <p className="text-slate-600 mb-4">
-              See our full <Link href="/price-list" className="text-stLukes-600 underline">price list</Link>{" "}
-              or explore our <Link href="/packages" className="text-stLukes-600 underline">health packages</Link>, then call us to book a home visit.
-            </p>
-            <a
-              href="tel:+94711231954"
-              className="inline-flex items-center bg-stLukesRed-500 hover:bg-stLukesRed-600 text-white px-6 py-3 rounded-full font-semibold"
-            >
-              Call 071 123 1954
-            </a>
-          </div>
-
-          <div className="mt-12">
-            <h2 className="text-xl font-bold text-slate-900 mb-4">Other areas we serve</h2>
-            <div className="flex flex-wrap gap-2">
-              {locations
-                .filter((l) => l.slug !== loc.slug)
-                .map((l) => (
-                  <Link
-                    key={l.slug}
-                    href={`/locations/${l.slug}`}
-                    className="px-4 py-1.5 rounded-full bg-slate-100 hover:bg-stLukes-100 text-sm font-medium text-slate-700 hover:text-stLukes-700 transition-colors"
-                  >
-                    {l.name}
-                  </Link>
-                ))}
-            </div>
-          </div>
+            )}
+          </dl>
         </div>
       </section>
 
-      <Footer />
-    </main>
+      <section className="section-padding bg-surface">
+        <div className="container-content grid gap-12 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] lg:gap-16">
+          <div className="max-w-2xl">
+            <h2 className="type-h2 text-text-primary">
+              Diagnostics in {loc.name}
+            </h2>
+            <p className="mt-4 text-lg leading-relaxed text-text-secondary">
+              {loc.intro}
+            </p>
+            {loc.serviceAngle && (
+              <p className="mt-4 leading-relaxed text-text-secondary">
+                {loc.serviceAngle}
+              </p>
+            )}
+
+            {loc.neighbourhoods && loc.neighbourhoods.length > 0 && (
+              <>
+                <h2 className="type-h3 mt-12 text-text-primary">
+                  Areas we cover in {loc.name}
+                </h2>
+                <ul className="mt-4 flex flex-wrap gap-2">
+                  {loc.neighbourhoods.map((n) => (
+                    <li
+                      key={n}
+                      className="rounded-lg bg-brand-primary-soft px-3 py-1.5 text-sm text-brand-primary-darker"
+                    >
+                      {n}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+
+            {loc.landmarks && loc.landmarks.length > 0 && (
+              <p className="mt-6 text-sm text-text-muted">
+                Nearby landmarks: {loc.landmarks.join(" · ")}
+              </p>
+            )}
+
+            <h2 className="type-h3 mt-12 text-text-primary">
+              Commonly requested in {loc.name}
+            </h2>
+            <ul className="mt-4 grid gap-2.5 sm:grid-cols-2">
+              {(loc.localFocus ?? DEFAULT_TESTS).map((test) => (
+                <li
+                  key={test}
+                  className="rounded-xl border border-border bg-surface-soft px-4 py-3 text-sm font-medium text-text-secondary"
+                >
+                  {test}
+                </li>
+              ))}
+            </ul>
+            <p className="mt-5">
+              <Link
+                href="/price-list"
+                className="link-cta link-reveal text-sm"
+              >
+                See every test price in LKR
+                <ArrowRight size={14} className="btn-arrow" aria-hidden="true" />
+              </Link>
+            </p>
+          </div>
+
+          <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start">
+            <div className="rounded-2xl border border-border bg-surface-soft p-6">
+              <h2 className="type-h3 text-text-primary">
+                Book a home visit in {loc.name}
+              </h2>
+              <ol className="mt-5 space-y-3.5">
+                {bookingSteps(loc.name).map((step, i) => (
+                  <li key={step} className="flex gap-3 text-sm">
+                    <span className="type-numeric flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-primary-dark text-[11px] font-bold text-text-inverse">
+                      {i + 1}
+                    </span>
+                    <span className="mt-0.5 text-text-secondary">{step}</span>
+                  </li>
+                ))}
+              </ol>
+
+              <div className="mt-6 flex flex-col gap-3">
+                <a
+                  href="tel:+94711231954"
+                  className="btn btn-primary w-full !text-sm"
+                  data-track="phone_click"
+                >
+                  <Phone size={15} aria-hidden="true" />
+                  Call 071 123 1954
+                </a>
+                <a
+                  href={`https://wa.me/94711231954?text=${encodeURIComponent(
+                    `Hi, I'm in ${loc.name} and need to book a home visit.`,
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-secondary w-full !text-sm"
+                  data-track="whatsapp_click"
+                >
+                  <MessageCircle size={15} aria-hidden="true" />
+                  WhatsApp us
+                </a>
+              </div>
+
+              <p className="mt-5 flex items-start gap-2 text-xs leading-relaxed text-text-muted">
+                <Clock size={13} className="mt-0.5 shrink-0" aria-hidden="true" />
+                Fasting tests are best booked early morning.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="mb-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-text-muted">
+                {loc.isHQ ? "Find us" : "Where your sample is processed"}
+              </h2>
+              <LocationMap
+                query={
+                  loc.mapQuery ??
+                  "St. Luke's Medical Laboratory, No. 67 Old Negombo Road, Ja-Ela, Sri Lanka"
+                }
+                caption={
+                  loc.isHQ
+                    ? "Our central processing facility"
+                    : "Our nearest processing facility"
+                }
+                title={
+                  loc.isHQ
+                    ? `Map of St. Luke's Medical Laboratory, ${loc.name}`
+                    : "Map of St. Luke's Medical Laboratory, Ja-Ela"
+                }
+              />
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      {loc.faqs && loc.faqs.length > 0 && (
+        <section className="section-padding bg-surface-soft">
+          <div className="container-content max-w-3xl">
+            <p className="eyebrow mb-3">Questions</p>
+            <h2 className="type-h2 mb-8 text-text-primary">
+              Frequently asked about {loc.name}
+            </h2>
+            <Accordion items={loc.faqs} />
+          </div>
+        </section>
+      )}
+
+      <section className="border-t border-border bg-surface py-12">
+        <div className="container-content">
+          <h2 className="mb-4 text-sm font-semibold text-text-muted">
+            Also serving nearby towns
+          </h2>
+          <ul className="flex flex-wrap gap-2">
+            {nearby.map((other) => (
+              <li key={other.slug}>
+                <Link
+                  href={`/locations/${other.slug}`}
+                  className="flex min-h-11 items-center rounded-lg border border-border bg-surface px-3.5 text-sm font-medium text-text-secondary transition-colors hover:border-brand-primary-dark hover:text-brand-primary-dark"
+                >
+                  {other.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    </PageShell>
   );
 }

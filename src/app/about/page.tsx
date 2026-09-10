@@ -1,10 +1,23 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ShieldCheck, Clock, MapPin, Users, FlaskConical, HeartHandshake } from "lucide-react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import Image from "next/image";
+import {
+  ShieldCheck,
+  Clock,
+  MapPin,
+  FlaskConical,
+  HeartHandshake,
+  FileText,
+  Phone,
+  ArrowRight,
+} from "lucide-react";
+import { PageShell } from "@/components/ui/PageShell";
+import { Reveal } from "@/components/ui/Reveal";
 import { JsonLd } from "@/components/JsonLd";
 import { SITE } from "@/lib/seo";
+import { locations } from "@/lib/locations";
+import { testCount } from "@/lib/priceList";
+import { analyzers } from "@/lib/analyzers";
 
 export const metadata: Metadata = {
   title: "About Us — Trusted Medical Laboratory in Ja-Ela",
@@ -17,32 +30,32 @@ const values = [
   {
     icon: ShieldCheck,
     title: "Transparent pricing",
-    body: "Every test price is published in LKR on our website. No hidden charges, no surprises at the counter.",
+    body: "Every test price is published in LKR on this website. No hidden charges, and nothing you only find out at the counter.",
   },
   {
     icon: Clock,
     title: "24-hour reports",
-    body: "Most reports — including routine blood tests, ECG and full-body panels — are ready within 24 hours and delivered digitally.",
+    body: "Most reports, including routine blood tests, ECG and full-body panels, are ready within 24 hours and delivered digitally.",
   },
   {
     icon: MapPin,
     title: "Genuinely local",
-    body: "We serve seven neighbouring towns by name — Ja-Ela, Kandana, Welisara, Ragama, Wattala, Batagama and Thudella.",
+    body: `We name the ${locations.length} towns we actually serve, from Ja-Ela up to Negombo, with home sample collection along the whole corridor.`,
   },
   {
     icon: FlaskConical,
     title: "Modern equipment",
-    body: "Our lab runs on internationally proven analyzers — BioSystems A15 biochemistry, CLIA immunoassay, Medonic hematology and Audicom electrolyte.",
+    body: `Samples run on ${analyzers.length} internationally proven analyzers — biochemistry, immunoassay, haematology and electrolyte — calibrated daily.`,
   },
   {
     icon: HeartHandshake,
     title: "Compassionate care",
-    body: "From walk-ins to nervous first-timers and elderly patients on home visits, every patient meets a friendly, professional team.",
+    body: "Walk-ins, nervous first-timers and elderly patients on home visits all meet the same professional team.",
   },
   {
-    icon: Users,
-    title: "Trusted by doctors",
-    body: "Hundreds of partner physicians in the region rely on our reports to make confident clinical decisions for their patients.",
+    icon: FileText,
+    title: "Reports you can share",
+    body: "Results are delivered digitally in a format your physician can read, so you are never the one carrying paper between clinics.",
   },
 ];
 
@@ -56,112 +69,140 @@ const aboutSchema = {
 
 export default function About() {
   return (
-    <main className="min-h-screen bg-white flex flex-col">
-      <Navbar />
+    <PageShell>
       <JsonLd data={aboutSchema} />
 
-      {/* Hero */}
-      <section className="pt-32 pb-16 px-4 sm:px-6 lg:px-8 bg-stLukes-50">
-        <div className="mx-auto max-w-4xl text-center">
-          <p className="text-stLukes-500 text-sm font-semibold uppercase tracking-widest mb-3">
-            About St. Luke&apos;s
-          </p>
-          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight mb-5">
-            A neighbourhood lab built around <span className="text-stLukes-500">trust, speed and clear pricing</span>.
+      <section className="border-b border-border bg-brand-primary-soft pb-14 pt-28 md:pt-32">
+        <div className="container-content">
+          <p className="eyebrow mb-4">About St. Luke&apos;s</p>
+          <h1 className="type-h1 max-w-4xl text-text-primary">
+            A neighbourhood lab built around{" "}
+            <span className="text-brand-primary-dark">
+              trust, speed and clear pricing
+            </span>
+            .
           </h1>
-          <p className="text-lg text-slate-700 max-w-2xl mx-auto">
-            St. Luke&apos;s Medical Laboratory is an independent diagnostic lab on Old Negombo Road, Ja-Ela. We believe great healthcare starts with two simple ideas — patients should know what a test costs before they pay for it, and reports should be back in their hands fast.
+          <p className="mt-5 max-w-2xl type-body-large">
+            St. Luke&apos;s Medical Laboratory is an independent diagnostic lab
+            on Old Negombo Road, Ja-Ela. Two ideas run the place: you should
+            know what a test costs before you pay for it, and your report should
+            come back fast.
           </p>
         </div>
       </section>
 
-      {/* Story */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-3xl space-y-6">
-          <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Our story</h2>
-          <p className="text-slate-700 leading-relaxed">
-            We started St. Luke&apos;s because the people of Ja-Ela and the surrounding towns deserved a better lab. The national chains in Colombo don&apos;t publish their prices, don&apos;t name our towns, and treat patients like ticket numbers. We do the opposite — we publish every price in LKR, we serve seven local towns by name with home sample collection, and every patient gets the same standard of care our own families would expect.
-          </p>
-          <p className="text-slate-700 leading-relaxed">
-            Today our HQ in Ja-Ela runs a full panel of modern analyzers — BioSystems A15 biochemistry, CLIA immunoassay, Medonic hematology and Audicom electrolyte — and partners with hundreds of physicians across the region. Our Ja-Ela lab makes it easy to walk in, and our home-visit phlebotomists make it easy to never have to.
-          </p>
-        </div>
-      </section>
-
-      {/* Values */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-slate-50">
-        <div className="mx-auto max-w-6xl">
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <h2 className="text-3xl font-bold text-slate-900 tracking-tight mb-4">
-              What we stand for
-            </h2>
-            <p className="text-slate-600">
-              Six commitments that shape every decision in this lab.
+      <section className="section-padding bg-surface">
+        <div className="container-content grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+          <div className="max-w-xl">
+            <h2 className="type-h2 text-text-primary">Our story</h2>
+            <p className="mt-5 leading-relaxed text-text-secondary">
+              We started St. Luke&apos;s because Ja-Ela and the towns around it
+              deserved a better laboratory. The national chains in Colombo do
+              not publish their prices, do not name our towns, and treat
+              patients like ticket numbers.
+            </p>
+            <p className="mt-4 leading-relaxed text-text-secondary">
+              We do the opposite. Every price is published in LKR. We serve{" "}
+              {locations.length} local towns by name with home sample
+              collection. And every patient gets the standard of care we would
+              want for our own families.
+            </p>
+            <p className="mt-4 leading-relaxed text-text-secondary">
+              Our Ja-Ela headquarters runs a full panel of modern analyzers and
+              works with physicians across the region. Walking in is easy. So is
+              never having to.
             </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {values.map(({ icon: Icon, title, body }) => (
-              <div
-                key={title}
-                className="bg-white p-7 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition-all"
-              >
-                <div className="w-12 h-12 rounded-2xl bg-stLukes-50 text-stLukes-500 flex items-center justify-center mb-5">
-                  <Icon size={24} />
-                </div>
-                <h3 className="text-lg font-bold text-slate-900 mb-2">{title}</h3>
-                <p className="text-sm text-slate-600 leading-relaxed">{body}</p>
-              </div>
-            ))}
+
+          <div className="media-frame relative aspect-[4/3] overflow-hidden rounded-2xl">
+            <Image
+              src="/hero-photo.jpeg"
+              alt="Inside the St. Luke's Medical Laboratory diagnostic centre in Ja-Ela"
+              fill
+              sizes="(min-width: 1024px) 46vw, 100vw"
+              className="object-cover"
+            />
           </div>
         </div>
       </section>
 
-      {/* By the numbers */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-5xl">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+      {/* Only facts the rest of the site can substantiate. */}
+      <section className="border-y border-border bg-surface-soft py-12">
+        <div className="container-content">
+          <dl className="grid grid-cols-2 gap-8 md:grid-cols-4">
             {[
-              { value: "100%", label: "Prices in LKR" },
-              { value: "500+", label: "Partner Doctors" },
-              { value: "24hr", label: "Report Turnaround" },
-              { value: "10", label: "Towns Served" },
+              { value: "100%", label: "Prices published in LKR" },
+              { value: "24hr", label: "Typical report turnaround" },
+              { value: String(locations.length), label: "Towns served" },
+              { value: String(testCount), label: "Tests on the public list" },
             ].map((s) => (
-              <div key={s.label} className="text-center">
-                <p className="text-4xl font-bold text-stLukes-500">{s.value}</p>
-                <p className="text-sm text-slate-500 mt-1">{s.label}</p>
+              <div key={s.label}>
+                <dt className="sr-only">{s.label}</dt>
+                <dd>
+                  <span className="type-numeric block text-3xl font-bold text-brand-primary-dark md:text-4xl">
+                    {s.value}
+                  </span>
+                  <span className="mt-1.5 block text-sm text-text-muted">
+                    {s.label}
+                  </span>
+                </dd>
               </div>
             ))}
-          </div>
+          </dl>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-stLukes-50">
-        <div className="mx-auto max-w-3xl text-center">
-          <h2 className="text-3xl font-bold text-slate-900 tracking-tight mb-4">
-            Visit us, or we&apos;ll come to you.
-          </h2>
-          <p className="text-slate-600 mb-8 text-lg">
-            Walk into our Ja-Ela headquarters at No. 67, Old Negombo Road, or book a home visit and a qualified phlebotomist will come to your door.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <a
-              href="tel:+94711231954"
-              className="inline-flex items-center justify-center bg-stLukesRed-500 hover:bg-stLukesRed-600 text-white font-semibold px-8 py-3.5 rounded-full shadow-lg shadow-stLukesRed-500/25"
-            >
+      <section className="section-padding bg-surface">
+        <div className="container-content">
+          <div className="mb-10 max-w-2xl md:mb-12">
+            <p className="eyebrow mb-3">What we stand for</p>
+            <h2 className="type-h2 text-text-primary">
+              Six commitments that shape every decision here.
+            </h2>
+          </div>
+
+          <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {values.map(({ icon: Icon, title, body }, i) => (
+              <Reveal as="li" key={title} delay={(i % 3) * 0.05}>
+                <div className="h-full border-t border-border pt-6">
+                  <span className="mb-5 flex h-11 w-11 items-center justify-center rounded-xl bg-brand-primary-soft text-brand-primary-dark">
+                    <Icon size={20} aria-hidden="true" />
+                  </span>
+                  <h3 className="type-h4 text-text-primary">{title}</h3>
+                  <p className="mt-2.5 text-sm leading-relaxed text-text-secondary">
+                    {body}
+                  </p>
+                </div>
+              </Reveal>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      <section className="section-padding bg-surface-soft">
+        <div className="container-content flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
+          <div className="max-w-xl">
+            <h2 className="type-h2 text-text-primary">
+              Visit us, or we&apos;ll come to you.
+            </h2>
+            <p className="mt-3 text-text-secondary">
+              Walk into our Ja-Ela headquarters at No. 67, Old Negombo Road, or
+              book a home visit and a qualified phlebotomist will come to your
+              door.
+            </p>
+          </div>
+          <div className="flex shrink-0 flex-col gap-3 sm:flex-row">
+            <a href="tel:+94711231954" className="btn btn-primary" data-track="phone_click">
+              <Phone size={16} aria-hidden="true" />
               Call 071 123 1954
             </a>
-            <Link
-              href="/price-list"
-              className="inline-flex items-center justify-center bg-white hover:bg-slate-50 text-slate-900 font-semibold px-8 py-3.5 rounded-full border border-slate-200"
-            >
-              See full price list
+            <Link href="/price-list" className="btn btn-secondary">
+              See the price list
+              <ArrowRight size={15} className="btn-arrow" aria-hidden="true" />
             </Link>
           </div>
         </div>
       </section>
-
-      <Footer />
-    </main>
+    </PageShell>
   );
 }

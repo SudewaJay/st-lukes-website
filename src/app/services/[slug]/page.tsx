@@ -1,151 +1,191 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import { ArrowLeft, ArrowRight, Clock, Phone, MessageCircle } from "lucide-react";
+import { PageShell } from "@/components/ui/PageShell";
+import { getService, services } from "@/lib/services";
 import { JsonLd } from "@/components/JsonLd";
-import { services, getService } from "@/lib/services";
-import { locations } from "@/lib/locations";
 import { SITE } from "@/lib/seo";
+import { locations } from "@/lib/locations";
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
   return services.map((s) => ({ slug: s.slug }));
 }
 
-export async function generateMetadata(
-  { params }: { params: Promise<{ slug: string }> }
-): Promise<Metadata> {
-  const { slug } = await params;
-  const svc = getService(slug);
-  if (!svc) return {};
+type Props = {
+  params: Promise<{ slug: string }>;
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const p = await params;
+  const s = getService(p.slug);
+  if (!s) return {};
+
   return {
-    title: svc.name,
-    description: svc.shortDesc,
-    alternates: { canonical: `/services/${svc.slug}` },
+    title: `${s.name} — St. Luke's Medical Laboratory, Ja-Ela`,
+    description: s.shortDesc,
+    alternates: { canonical: `/services/${s.slug}` },
   };
 }
 
-export default async function ServicePage(
-  { params }: { params: Promise<{ slug: string }> }
-) {
-  const { slug } = await params;
-  const svc = getService(slug);
-  if (!svc) notFound();
+export default async function ServicePage({ params }: Props) {
+  const p = await params;
+  const s = getService(p.slug);
+  if (!s) notFound();
 
   const schema = {
     "@context": "https://schema.org",
-    "@type": svc.schemaType,
-    name: svc.name,
-    description: svc.shortDesc,
-    url: `${SITE}/services/${svc.slug}`,
+    "@type": s.schemaType,
+    name: s.name,
+    description: s.shortDesc,
     provider: { "@id": `${SITE}/#organization` },
   };
 
-  const breadcrumb = {
+  const breadcrumbs = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: `${SITE}/` },
-      { "@type": "ListItem", position: 2, name: "Services", item: `${SITE}/services/${svc.slug}` },
-      { "@type": "ListItem", position: 3, name: svc.name, item: `${SITE}/services/${svc.slug}` },
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Services",
+        item: `${SITE}/services`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: s.name,
+        item: `${SITE}/services/${s.slug}`,
+      },
     ],
   };
 
+  const others = services.filter((other) => other.slug !== s.slug);
+
   return (
-    <main className="min-h-screen bg-white flex flex-col">
-      <Navbar />
+    <PageShell>
       <JsonLd data={schema} />
-      <JsonLd data={breadcrumb} />
+      <JsonLd data={breadcrumbs} />
 
-      <section className="pt-32 pb-12 px-4 sm:px-6 lg:px-8 bg-stLukes-50">
-        <div className="mx-auto max-w-4xl">
-          <nav className="text-sm text-slate-500 mb-4">
-            <Link href="/" className="hover:text-stLukes-600">Home</Link>
-            <span className="mx-2">/</span>
-            <span>Services</span>
-            <span className="mx-2">/</span>
-            <span className="text-slate-700">{svc.name}</span>
-          </nav>
-          <p className="text-stLukes-500 text-sm font-semibold uppercase tracking-widest mb-3">
-            Diagnostic Service
-          </p>
-          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight mb-5">
-            {svc.name}
-          </h1>
-          <p className="text-lg text-slate-700 max-w-2xl">{svc.shortDesc}</p>
+      <section className="border-b border-border bg-brand-primary-soft pb-14 pt-28 md:pt-32">
+        <div className="container-content">
+          <Link
+            href="/services"
+            className="group mb-7 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-primary-dark"
+          >
+            <ArrowLeft
+              size={15}
+              className="transition-transform group-hover:-translate-x-1"
+              aria-hidden="true"
+            />
+            All services
+          </Link>
+
+          <h1 className="type-h1 max-w-3xl text-text-primary">{s.name}</h1>
+          <p className="mt-5 max-w-2xl type-body-large">{s.shortDesc}</p>
         </div>
       </section>
 
-      <section className="py-16 px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-4xl space-y-10">
-          <div>
-            <h2 className="text-2xl font-bold text-slate-900 mb-3">What it is</h2>
-            <p className="text-slate-600">{svc.what}</p>
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold text-slate-900 mb-3">Why it matters</h2>
-            <p className="text-slate-600">{svc.why}</p>
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold text-slate-900 mb-3">How to prepare</h2>
-            <p className="text-slate-600">{svc.preparation}</p>
-          </div>
+      <section className="section-padding bg-surface">
+        <div className="container-content grid gap-12 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] lg:gap-16">
+          <div className="max-w-2xl">
+            <h2 className="type-h2 text-text-primary">What this is</h2>
+            <p className="mt-4 leading-relaxed text-text-secondary">{s.what}</p>
 
-          <div className="p-8 rounded-3xl bg-stLukes-50 border border-stLukes-100">
-            <h2 className="text-xl font-bold text-slate-900 mb-2">Ready to book?</h2>
-            <p className="text-slate-600 mb-4">
-              See pricing on our{" "}
-              <Link href="/price-list" className="text-stLukes-600 underline">
-                price list
-              </Link>{" "}
-              or call to schedule a home visit.
+            <h2 className="type-h2 mt-12 text-text-primary">Why it matters</h2>
+            <p className="mt-4 leading-relaxed text-text-secondary">{s.why}</p>
+
+            <div className="mt-12 rounded-2xl border border-border-brand bg-brand-primary-soft p-6 md:p-8">
+              <h2 className="type-h3 flex items-center gap-2.5 text-text-primary">
+                <Clock size={20} className="text-brand-primary-dark" aria-hidden="true" />
+                How to prepare
+              </h2>
+              <p className="mt-3 leading-relaxed text-text-secondary">
+                {s.preparation}
+              </p>
+            </div>
+
+            <h2 className="type-h2 mt-12 text-text-primary">Where we do this</h2>
+            <p className="mt-4 leading-relaxed text-text-secondary">
+              Walk in at our Ja-Ela laboratory, or book a home visit in any of
+              the towns we serve.
             </p>
-            <a
-              href="tel:+94711231954"
-              className="inline-flex items-center bg-stLukesRed-500 hover:bg-stLukesRed-600 text-white px-6 py-3 rounded-full font-semibold"
-            >
-              Call 071 123 1954
-            </a>
-          </div>
-
-          <div>
-            <h2 className="text-xl font-bold text-slate-900 mb-4">
-              Available across our service areas
-            </h2>
-            <div className="flex flex-wrap gap-2">
-              {locations.map((l) => (
-                <Link
-                  key={l.slug}
-                  href={`/locations/${l.slug}`}
-                  className="px-4 py-1.5 rounded-full bg-slate-100 hover:bg-stLukes-100 text-sm font-medium text-slate-700 hover:text-stLukes-700 transition-colors"
-                >
-                  {l.name}
-                </Link>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <h2 className="text-xl font-bold text-slate-900 mb-4">Other services</h2>
-            <div className="grid sm:grid-cols-2 gap-4">
-              {services
-                .filter((s) => s.slug !== svc.slug)
-                .map((s) => (
+            <ul className="mt-5 flex flex-wrap gap-2">
+              {locations.map((loc) => (
+                <li key={loc.slug}>
                   <Link
-                    key={s.slug}
-                    href={`/services/${s.slug}`}
-                    className="block p-5 rounded-2xl border border-slate-200 hover:border-stLukes-500 hover:shadow-md transition"
+                    href={`/locations/${loc.slug}`}
+                    className="flex min-h-11 items-center rounded-lg border border-border bg-surface px-3.5 text-sm font-medium text-text-secondary transition-colors hover:border-brand-primary-dark hover:text-brand-primary-dark"
                   >
-                    <h3 className="font-semibold text-slate-900 mb-1">{s.name}</h3>
-                    <p className="text-sm text-slate-600">{s.shortDesc}</p>
+                    {loc.name}
                   </Link>
-                ))}
-            </div>
+                </li>
+              ))}
+            </ul>
           </div>
+
+          <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start">
+            <div className="rounded-2xl border border-border bg-surface-soft p-6">
+              <h2 className="type-h3 text-text-primary">Book this service</h2>
+              <p className="mt-2 text-sm text-text-secondary">
+                Call to confirm the published price and arrange a time, at the
+                lab or at your home.
+              </p>
+              <div className="mt-6 flex flex-col gap-3">
+                <a
+                  href="tel:+94711231954"
+                  className="btn btn-primary w-full !text-sm"
+                  data-track="phone_click"
+                >
+                  <Phone size={15} aria-hidden="true" />
+                  Call 071 123 1954
+                </a>
+                <a
+                  href={`https://wa.me/94711231954?text=${encodeURIComponent(
+                    `Hi, I'd like to ask about ${s.name}.`,
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-secondary w-full !text-sm"
+                  data-track="whatsapp_click"
+                >
+                  <MessageCircle size={15} aria-hidden="true" />
+                  WhatsApp us
+                </a>
+                <Link href="/price-list" className="btn btn-ghost w-full !text-sm">
+                  View test prices
+                  <ArrowRight size={14} className="btn-arrow" aria-hidden="true" />
+                </Link>
+              </div>
+            </div>
+
+            <nav
+              className="rounded-2xl border border-border bg-surface p-6"
+              aria-label="Other services"
+            >
+              <h2 className="type-h4 text-text-primary">Other services</h2>
+              <ul className="mt-4 divide-y divide-border">
+                {others.map((other) => (
+                  <li key={other.slug}>
+                    <Link
+                      href={`/services/${other.slug}`}
+                      className="group flex min-h-11 items-center justify-between gap-3 py-2.5 text-sm font-medium text-text-secondary transition-colors hover:text-brand-primary-dark"
+                    >
+                      {other.name.replace(" in Ja-Ela", "")}
+                      <ArrowRight
+                        size={14}
+                        className="shrink-0 text-text-muted transition-transform group-hover:translate-x-0.5"
+                        aria-hidden="true"
+                      />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </aside>
         </div>
       </section>
-
-      <Footer />
-    </main>
+    </PageShell>
   );
 }

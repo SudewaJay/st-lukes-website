@@ -37,7 +37,7 @@ export function LocationMap({ query, caption, title }: LocationMapProps) {
 
   return (
     <div>
-      <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-stLukes-50">
+      <div className="relative overflow-hidden rounded-2xl border border-border bg-brand-primary-soft">
         {loaded ? (
           <iframe
             src={src}
@@ -55,27 +55,27 @@ export function LocationMap({ query, caption, title }: LocationMapProps) {
             className="group relative flex h-[320px] w-full flex-col items-center justify-center gap-3 md:h-[400px]"
             style={{
               backgroundImage:
-                "linear-gradient(rgba(226,232,240,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(226,232,240,0.6) 1px, transparent 1px)",
+                "linear-gradient(rgba(15,23,42,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(15,23,42,0.06) 1px, transparent 1px)",
               backgroundSize: "40px 40px",
             }}
           >
-            <span className="flex h-14 w-14 items-center justify-center rounded-full bg-stLukesRed-500 text-white shadow-lg transition-transform group-hover:scale-110">
+            <span className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-primary-dark text-white shadow-lg transition-transform group-hover:scale-110">
               <MapPin size={26} />
             </span>
-            <span className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2 text-sm font-semibold text-slate-800 shadow-sm ring-1 ring-slate-200 transition group-hover:ring-stLukes-400">
+            <span className="inline-flex items-center gap-2 rounded-full bg-surface px-5 py-2 text-sm font-semibold text-text-primary shadow-sm ring-1 ring-border transition group-hover:ring-brand-primary-dark">
               View map
             </span>
           </button>
         )}
       </div>
 
-      <p className="mt-3 flex flex-col gap-1 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+      <p className="mt-3 flex flex-col gap-1 text-sm text-text-muted sm:flex-row sm:items-center sm:justify-between">
         <span>{caption}</span>
         <a
           href={HQ_MAPS_LINK}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 font-semibold text-stLukes-600 hover:text-stLukes-700"
+          className="inline-flex items-center gap-1.5 link-reveal font-semibold text-brand-primary-dark"
         >
           <Navigation size={14} />
           Directions to our Ja-Ela lab
