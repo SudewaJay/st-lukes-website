@@ -8,7 +8,7 @@ Every file in this folder ending in `.mdx` becomes a live blog post.
 2. Click **Add file → Create new file**
 3. Name it `your-post-slug.mdx` (the slug becomes the URL: `/blog/your-post-slug`)
 4. Paste the template below
-5. Click **Commit changes** — Vercel auto-deploys in ~30 seconds
+5. Click **Commit changes**, then deploy with `npx vercel --prod` from `st-lukes-lab-web/` (pushing alone does not update the live site)
 
 ## Template
 
