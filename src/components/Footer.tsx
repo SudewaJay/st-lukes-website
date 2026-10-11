@@ -1,6 +1,7 @@
 import { Mail, Phone, MapPin, Clock, MessageCircle, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { testPages } from "@/lib/testPages";
 
 const columns = [
   {
@@ -158,6 +159,24 @@ export default function Footer() {
           </ul>
         </div>
       </div>
+
+      <nav className="border-t border-white/10" aria-label="Popular test prices">
+        <div className="container-content py-8">
+          <h2 className="mb-3 text-sm font-semibold text-white">Popular test prices</h2>
+          <ul className="flex flex-wrap gap-x-5 gap-y-1">
+            {testPages.map((t) => (
+              <li key={t.slug}>
+                <Link
+                  href={`/price-list/${t.slug}`}
+                  className="flex min-h-9 items-center text-sm text-white/60 transition-colors hover:text-brand-primary"
+                >
+                  {t.shortName} test price
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </nav>
 
       <div className="border-t border-white/10">
         <div className="container-content flex flex-col items-center justify-between gap-4 py-6 text-xs text-white/45 md:flex-row">

@@ -16,6 +16,8 @@ Every file in this folder ending in `.mdx` becomes a live blog post.
 ---
 title: "Your post title here"
 excerpt: "One or two sentences that show up on the blog index card."
+# seoTitle: "Optional title for Google (≤ 60 chars) — lead with the search phrase"
+# seoDescription: "Optional Google snippet (≤ 155 chars) — put the price in it"
 category: "Health Tips"   # or Cardiology, Patient Guide, etc.
 date: "2026-03-01"        # ISO YYYY-MM-DD — drives sorting
 author: "Dr. L. Perera"

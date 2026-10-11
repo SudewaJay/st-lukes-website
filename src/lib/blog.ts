@@ -8,6 +8,9 @@ export type PostMeta = {
   slug: string;
   title: string;
   excerpt: string;
+  /** Optional search-result title/description; fall back to title/excerpt. */
+  seoTitle?: string;
+  seoDescription?: string;
   category: string;
   date: string; // ISO YYYY-MM-DD
   author: string;
@@ -41,6 +44,8 @@ async function readAll(): Promise<Post[]> {
           slug,
           title: (data.title as string) ?? slug,
           excerpt: (data.excerpt as string) ?? "",
+          seoTitle: (data.seoTitle as string) ?? undefined,
+          seoDescription: (data.seoDescription as string) ?? undefined,
           category: (data.category as string) ?? "Health Tips",
           date: (data.date as string) ?? new Date().toISOString().slice(0, 10),
           author: (data.author as string) ?? "St. Luke's Team",

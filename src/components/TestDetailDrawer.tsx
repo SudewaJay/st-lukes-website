@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { X, Phone, MessageCircle } from "lucide-react";
+import Link from "next/link";
+import { X, Phone, MessageCircle, ArrowRight } from "lucide-react";
 import { formatLKR, type FlatTest } from "@/lib/priceList";
 
 /**
@@ -12,9 +13,12 @@ import { formatLKR, type FlatTest } from "@/lib/priceList";
  */
 export function TestDetailDrawer({
   test,
+  detailHref,
   onClose,
 }: {
   test: FlatTest | null;
+  /** Dedicated /price-list/<slug> page, when the test has one. */
+  detailHref?: string;
   onClose: () => void;
 }) {
   const panelRef = useRef<HTMLDivElement>(null);
@@ -134,6 +138,12 @@ export function TestDetailDrawer({
             <MessageCircle size={17} aria-hidden="true" />
             Ask on WhatsApp
           </a>
+          {detailHref && (
+            <Link href={detailHref} className="btn btn-ghost w-full">
+              What it's for &amp; how to prepare
+              <ArrowRight size={16} className="btn-arrow" aria-hidden="true" />
+            </Link>
+          )}
         </div>
       </div>
     </div>

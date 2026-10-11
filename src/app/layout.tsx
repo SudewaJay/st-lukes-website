@@ -3,6 +3,7 @@ import { Inter, Barlow_Condensed } from "next/font/google";
 import "./globals.css";
 import { JsonLd } from "@/components/JsonLd";
 import RevealObserver from "@/components/ui/RevealObserver";
+import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 import {
   medicalBusinessSchema,
   faqSchema,
@@ -29,7 +30,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://www.stlukesmedilab.com"),
   title: {
     // Leads with the brand so it doesn't get truncated by Google.
-    default: "St. Luke's Medical Laboratory — Ja-Ela | Blood Tests & ECG",
+    default: "St. Luke's Medical Laboratory, Ja-Ela | Blood Tests, ECG & LKR Prices",
     template: "%s | St. Luke's Medical Laboratory",
   },
   description:
@@ -82,6 +83,7 @@ export default function RootLayout({
         <JsonLd data={siteNavigationSchema} />
         <JsonLd data={faqSchema} />
         {children}
+        <FloatingWhatsApp />
         <RevealObserver />
       </body>
     </html>

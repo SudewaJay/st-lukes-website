@@ -27,8 +27,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!post) return {};
 
   return {
-    title: `${post.title} | St. Luke's Health Hub`,
-    description: post.excerpt,
+    // The root layout template appends the brand, so don't add it here too.
+    title: post.seoTitle ?? post.title,
+    description: post.seoDescription ?? post.excerpt,
     alternates: { canonical: `/blog/${post.slug}` },
     openGraph: {
       type: "article",

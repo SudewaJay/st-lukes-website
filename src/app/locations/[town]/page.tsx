@@ -23,8 +23,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!loc) return {};
 
   return {
-    title: `Medical Laboratory & Blood Tests in ${loc.name}`,
-    description: loc.intro,
+    // Service-area towns have no walk-in branch — never title them as one.
+    title: loc.isServiceArea
+      ? `Home Blood Test Collection in ${loc.name} — Prices in LKR`
+      : `Medical Lab & Blood Tests in ${loc.name} — Prices in LKR`,
+    description: `${loc.blurb} Published LKR prices, most reports in 24 hours. Call or WhatsApp 071 123 1954.`,
     alternates: { canonical: `/locations/${loc.slug}` },
   };
 }

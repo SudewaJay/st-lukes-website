@@ -22,7 +22,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!s) return {};
 
   return {
-    title: `${s.name} — St. Luke's Medical Laboratory, Ja-Ela`,
+    // Brand comes from the layout template.
+    title: `${s.name} — Published Prices & 24-Hour Reports`,
     description: s.shortDesc,
     alternates: { canonical: `/services/${s.slug}` },
   };

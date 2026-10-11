@@ -6,7 +6,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { locations } from "@/lib/locations";
 
 export const metadata: Metadata = {
-  title: "Areas We Serve — Ja-Ela, Wattala, Seeduwa, Katunayake & Negombo",
+  title: "Medical Lab Near You — Ja-Ela, Wattala, Ragama, Negombo & More",
   description:
     "St. Luke's Medical Laboratory serves Ja-Ela, Kandana, Welisara, Ragama, Wattala, Batagama, Thudella, Seeduwa, Katunayake and Negombo — walk-in tests at our Ja-Ela lab plus home sample collection across the Negombo Road corridor.",
   alternates: { canonical: "/locations" },

@@ -25,8 +25,10 @@ function highlight(text: string, query: string) {
 
 export default function TestFinder({
   variant = "compact",
+  slugMap = {},
 }: {
   variant?: "compact" | "full";
+  slugMap?: Record<string, string>;
 }) {
   const listId = useId();
   const [query, setQuery] = useState("");
@@ -206,7 +208,15 @@ export default function TestFinder({
         </p>
       )}
 
-      <TestDetailDrawer test={selected} onClose={() => setSelected(null)} />
+      <TestDetailDrawer
+        test={selected}
+        detailHref={
+          selected && slugMap[selected.name]
+            ? `/price-list/${slugMap[selected.name]}`
+            : undefined
+        }
+        onClose={() => setSelected(null)}
+      />
     </div>
   );
 }

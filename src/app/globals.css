@@ -59,6 +59,10 @@
   --error: #dc2626;
   --info: #0284c7;
 
+  /* Third-party brand — WhatsApp's own green, used only on WhatsApp CTAs */
+  --whatsapp: #25D366;
+  --whatsapp-hover: #1EBE5A;
+
   /* Typography */
   /* next/font overrides --font-sans and --font-display on <body>. */
 
@@ -147,6 +151,8 @@
   --color-warning: var(--warning);
   --color-error: var(--error);
   --color-info: var(--info);
+  --color-whatsapp: var(--whatsapp);
+  --color-whatsapp-hover: var(--whatsapp-hover);
 
   /* Complete stLukes green palette — mapped to semantic scale */
   --color-stLukes-50: #f4fbf0;
@@ -617,4 +623,41 @@ html.js [data-reveal][data-revealed] {
   .media-frame img { transition: none; }
   .group:hover .media-frame img,
   .media-frame:hover img { transform: none; }
+}
+
+/* ── Floating WhatsApp button ────────────────────────────────────────────── */
+/* On phones it rides above StickyMobileActions once that bar appears
+   (data-raised). The bar is lg:hidden, so desktop keeps one fixed spot. */
+.wa-fab {
+  bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+  transition: bottom var(--duration-interaction) var(--ease-out),
+              transform var(--duration-micro) var(--ease-out),
+              background-color var(--duration-micro) var(--ease-out);
+}
+.wa-fab[data-raised="true"] {
+  bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px));
+}
+@media (min-width: 1024px) {
+  .wa-fab,
+  .wa-fab[data-raised="true"] { bottom: 1.5rem; }
+}
+.wa-fab:hover { transform: translateY(-2px); }
+.wa-fab:active { transform: scale(0.96); }
+
+/* Three soft pulses on load to get noticed, then it stays still. */
+@keyframes wa-pulse {
+  0%   { box-shadow: 0 0 0 0 rgb(37 211 102 / 0.55); }
+  80%  { box-shadow: 0 0 0 16px rgb(37 211 102 / 0); }
+  100% { box-shadow: 0 0 0 0 rgb(37 211 102 / 0); }
+}
+.wa-fab-pulse {
+  animation: wa-pulse 2s var(--ease-out) 1.5s 3;
+}
+@media (prefers-reduced-motion: reduce) {
+  .wa-fab { transition: none; }
+  .wa-fab:hover, .wa-fab:active { transform: none; }
+  .wa-fab-pulse { animation: none; }
+}
+@media print {
+  .wa-fab { display: none; }
 }

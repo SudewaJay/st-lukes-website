@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { locations } from "@/lib/locations";
 import { services } from "@/lib/services";
 import { getAllPosts } from "@/lib/blog";
+import { testPages } from "@/lib/testPages";
 
 const base = "https://www.stlukesmedilab.com";
 
@@ -28,6 +29,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
     ...services.map((s) => ({
       url: `${base}/services/${s.slug}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    })),
+    ...testPages.map((t) => ({
+      url: `${base}/price-list/${t.slug}`,
       lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.8,

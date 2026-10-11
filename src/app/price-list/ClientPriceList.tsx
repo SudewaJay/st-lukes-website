@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Search, X, ChevronRight } from "lucide-react";
 import type { PriceCategory, FlatTest } from "@/lib/priceList";
 import { formatLKR } from "@/lib/priceList";
@@ -26,12 +26,25 @@ function highlight(text: string, query: string) {
  * search-first utility rather than a static table: type to filter instantly,
  * arrow through results, press Enter to open the detail sheet.
  */
-export default function ClientPriceList({ data }: { data: PriceCategory[] }) {
+export default function ClientPriceList({
+  data,
+  slugMap = {},
+}: {
+  data: PriceCategory[];
+  slugMap?: Record<string, string>;
+}) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("All");
   const [selected, setSelected] = useState<FlatTest | null>(null);
   const [cursor, setCursor] = useState(-1);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // `?q=` pre-fills the search — the WebSite SearchAction schema points here.
+  // Read on mount rather than via useSearchParams so the page stays static.
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search).get("q");
+    if (q) setQuery(q);
+  }, []);
 
   const categories = useMemo(
     () => ["All", ...data.map((c) => c.category)],
@@ -282,7 +295,15 @@ export default function ClientPriceList({ data }: { data: PriceCategory[] }) {
         to confirm before booking.
       </p>
 
-      <TestDetailDrawer test={selected} onClose={() => setSelected(null)} />
+      <TestDetailDrawer
+        test={selected}
+        detailHref={
+          selected && slugMap[selected.name]
+            ? `/price-list/${slugMap[selected.name]}`
+            : undefined
+        }
+        onClose={() => setSelected(null)}
+      />
     </div>
   );
 }

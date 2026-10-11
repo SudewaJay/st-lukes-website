@@ -12,6 +12,8 @@ export const NAP = {
   email: "medilabstlukes@gmail.com",
 };
 
+export const GBP_URL = "https://www.google.com/search?kgmid=/g/11t3f2pf72";
+
 export const TOWNS = [
   "Ja-Ela",
   "Kandana",
@@ -77,8 +79,9 @@ export const medicalBusinessSchema = {
     },
   ],
   // aggregateRating intentionally omitted — 5.0 from 3 reviews is too thin to safely publish.
-  // TODO <<CONFIRM>>: fill GBP and Facebook URLs (the filter strips unconfirmed placeholders)
-  sameAs: ["<<GBP_URL>>", "<<FB_URL>>"].filter((u) => !u.startsWith("<<")),
+  // Google Business Profile, by its stable Knowledge Graph ID (/g/11t3f2pf72).
+  // TODO <<CONFIRM>>: fill the Facebook URL (the filter strips unconfirmed placeholders)
+  sameAs: [GBP_URL, "<<FB_URL>>"].filter((u) => !u.startsWith("<<")),
   availableService: [
     { "@type": "MedicalTest", name: "Complete Blood Count (CBC / FBC)" },
     { "@type": "MedicalTest", name: "Lipid Profile" },

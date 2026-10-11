@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { testCount } from "@/lib/priceList";
 import TestFinder from "@/components/TestFinder";
+import { testPageSlugMap } from "@/lib/testPages";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 
 export default function HomePricing() {
@@ -23,7 +24,7 @@ export default function HomePricing() {
             </Link>
           }
         />
-        <TestFinder variant="compact" />
+        <TestFinder variant="compact" slugMap={testPageSlugMap} />
       </div>
     </section>
   );

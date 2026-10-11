@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Phone, MessageCircle, CalendarCheck } from "lucide-react";
+import Link from "next/link";
+import { Phone, Tag, CalendarCheck } from "lucide-react";
 
 export default function StickyMobileActions() {
   const [visible, setVisible] = useState(false);
@@ -36,18 +37,15 @@ export default function StickyMobileActions() {
           <span className="text-[11px] font-semibold">Call</span>
         </a>
 
-        {/* WhatsApp */}
-        <a
-          href="https://wa.me/94711231954?text=Hi%2C%20I%27d%20like%20to%20book%20a%20home%20visit."
-          target="_blank"
-          rel="noopener noreferrer"
+        {/* Prices — WhatsApp lives in the floating button above this bar */}
+        <Link
+          href="/price-list"
           className="flex flex-col items-center justify-center gap-1 py-2.5 text-text-secondary hover:bg-brand-primary-soft hover:text-brand-primary-dark transition-colors min-h-[52px]"
-          aria-label="Message on WhatsApp"
-          data-track="whatsapp_click"
+          data-track="price_view"
         >
-          <MessageCircle size={18} className="text-brand-primary-dark" />
-          <span className="text-[11px] font-semibold">WhatsApp</span>
-        </a>
+          <Tag size={18} className="text-brand-primary-dark" aria-hidden="true" />
+          <span className="text-[11px] font-semibold">Prices</span>
+        </Link>
 
         {/* Book Visit */}
         <a
