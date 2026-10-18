@@ -16,6 +16,10 @@ export type PostMeta = {
   author: string;
   reviewedBy?: string;
   image: string;
+  /** Descriptive alt text for the hero image. Empty = treated as decorative. */
+  imageAlt?: string;
+  /** ISO date of the last substantive content update. Only set when the post really changed. */
+  updated?: string;
   draft?: boolean;
 };
 
@@ -51,6 +55,8 @@ async function readAll(): Promise<Post[]> {
           author: (data.author as string) ?? "St. Luke's Team",
           reviewedBy: (data.reviewedBy as string) ?? undefined,
           image: (data.image as string) ?? "",
+          imageAlt: (data.imageAlt as string) ?? undefined,
+          updated: (data.updated as string) ?? undefined,
           draft: (data.draft as boolean) ?? false,
           content,
         } satisfies Post;
@@ -86,13 +92,21 @@ export async function getAllSlugs(): Promise<string[]> {
 }
 
 /**
- * Force a Cloudinary URL to be exactly 1200×630 by injecting transform
- * parameters between `/upload/` and the version segment. Returns non-Cloudinary
- * URLs unchanged. Required because Facebook/WhatsApp/LinkedIn social cards
+ * Force a Cloudinary or Unsplash URL to be exactly 1200×630 (Cloudinary via
+ * transform parameters between `/upload/` and the version segment, Unsplash via
+ * its query params). Returns other URLs unchanged. Required because Facebook/WhatsApp/LinkedIn social cards
  * expect 1200×630 (the OG image standard).
  */
 export function ogImageUrl(url: string): string {
   if (!url) return url;
+  // Unsplash resizes from query params; crop to the social-card shape.
+  if (url.includes("images.unsplash.com")) {
+    const u = new URL(url);
+    u.searchParams.set("fit", "crop");
+    u.searchParams.set("w", "1200");
+    u.searchParams.set("h", "630");
+    return u.toString();
+  }
   if (!url.includes("res.cloudinary.com")) return url;
   // Don't double-transform if the URL already has a transform segment
   if (/\/upload\/[a-z]_[^/]+\//.test(url)) return url;

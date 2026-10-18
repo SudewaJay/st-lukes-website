@@ -22,6 +22,9 @@ category: "Health Tips"   # or Cardiology, Patient Guide, etc.
 date: "2026-03-01"        # ISO YYYY-MM-DD — drives sorting
 author: "Dr. L. Perera"
 image: "https://images.unsplash.com/photo-XXXXXXXXXXXX?auto=format&fit=crop&w=1400&q=80"
+# imageAlt: "Describe the hero image for screen readers and image search"
+# updated: "2026-03-15"   # only when the content has genuinely changed — feeds dateModified
+# reviewedBy: "Name, qualification"  # only after that person has actually reviewed it
 # draft: true             # uncomment to keep it off the live site
 ---
 

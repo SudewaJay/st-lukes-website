@@ -7,9 +7,9 @@ import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import { PageShell } from "@/components/ui/PageShell";
 import ReadingProgress from "@/components/ui/ReadingProgress";
-import { getPost, getAllPosts, formatPostDate } from "@/lib/blog";
+import { getPost, getAllPosts, formatPostDate, ogImageUrl } from "@/lib/blog";
 import { JsonLd } from "@/components/JsonLd";
-import { SITE } from "@/lib/seo";
+import { SITE, NAP } from "@/lib/seo";
 import { articleComponents } from "./mdx-components";
 
 export async function generateStaticParams() {
@@ -31,12 +31,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: post.seoTitle ?? post.title,
     description: post.seoDescription ?? post.excerpt,
     alternates: { canonical: `/blog/${post.slug}` },
+    // Drafts only render outside production builds; keep them out of any index regardless.
+    ...(post.draft ? { robots: { index: false, follow: false } } : {}),
     openGraph: {
       type: "article",
       title: post.title,
       description: post.excerpt,
       publishedTime: post.date,
+      ...(post.updated ? { modifiedTime: post.updated } : {}),
       authors: [post.author],
+      ...(post.image
+        ? { images: [{ url: ogImageUrl(post.image), alt: post.imageAlt ?? post.title }] }
+        : {}),
     },
   };
 }
@@ -54,8 +60,15 @@ export default async function BlogPostPage({ params }: Props) {
     "@type": "MedicalWebPage",
     headline: post.title,
     description: post.excerpt,
+    url: `${SITE}/blog/${post.slug}`,
+    ...(post.image ? { image: ogImageUrl(post.image) } : {}),
     datePublished: post.date,
-    author: { "@type": "Person", name: post.author },
+    dateModified: post.updated ?? post.date,
+    // An organisation byline must not be typed as a Person.
+    author:
+      post.author === NAP.name
+        ? { "@id": `${SITE}/#organization` }
+        : { "@type": "Person", name: post.author },
     publisher: { "@id": `${SITE}/#organization` },
   };
 
@@ -126,7 +139,7 @@ export default async function BlogPostPage({ params }: Props) {
             <div className="relative aspect-[16/9] overflow-hidden rounded-2xl">
               <Image
                 src={post.image}
-                alt=""
+                alt={post.imageAlt ?? ""}
                 fill
                 priority
                 sizes="(min-width: 1024px) 900px, 100vw"
